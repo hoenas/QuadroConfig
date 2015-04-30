@@ -21,7 +21,6 @@ import java.awt.event.ActionEvent;
 public class PortConfig extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private JTextField txtCom;
 
 	public String portName;
 	public int baudRate;
@@ -65,22 +64,24 @@ public class PortConfig extends JDialog {
 			JLabel lblPortname = new JLabel("Port-Name:");
 			lblPortname.setHorizontalAlignment(SwingConstants.LEFT);
 			GridBagConstraints gbc_lblPortname = new GridBagConstraints();
-			gbc_lblPortname.anchor = GridBagConstraints.WEST;
+			gbc_lblPortname.anchor = GridBagConstraints.EAST;
 			gbc_lblPortname.insets = new Insets(0, 0, 5, 5);
 			gbc_lblPortname.gridx = 0;
 			gbc_lblPortname.gridy = 0;
 			contentPanel.add(lblPortname, gbc_lblPortname);
 		}
 		{
-			txtCom = new JTextField();
-			txtCom.setText("COM4");
-			GridBagConstraints gbc_txtCom = new GridBagConstraints();
-			gbc_txtCom.insets = new Insets(0, 0, 5, 0);
-			gbc_txtCom.fill = GridBagConstraints.HORIZONTAL;
-			gbc_txtCom.gridx = 1;
-			gbc_txtCom.gridy = 0;
-			contentPanel.add(txtCom, gbc_txtCom);
-			txtCom.setColumns(10);
+			JComboBox comboBox = new JComboBox();
+			String[] portNames = SerialPortList.getPortNames();
+	        for(int i = 0; i < portNames.length; i++){
+	            comboBox.addItem(portNames[i]);
+	        }
+			GridBagConstraints gbc_comboBox = new GridBagConstraints();
+			gbc_comboBox.insets = new Insets(0, 0, 5, 0);
+			gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
+			gbc_comboBox.gridx = 1;
+			gbc_comboBox.gridy = 0;
+			contentPanel.add(comboBox, gbc_comboBox);
 		}
 		{
 			JLabel lblBaudrate = new JLabel("Baud-Rate:");

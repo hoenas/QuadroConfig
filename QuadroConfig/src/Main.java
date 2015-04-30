@@ -114,11 +114,16 @@ public class Main {
 					port = new SerialPort( config.portName );
 					port.setParams(config.baudRate, config.databits, config.stoppbits, config.parity);
 					port.openPort();
+					
+					// Nur bei einkommenden Daten Event feuern
+					port.setEventsMask( SerialPort.MASK_RXCHAR );
+					
+					// Listener erstellen
 					portListener = new SerialPortEventListener() {
 						
 						@Override
 						public void serialEvent(SerialPortEvent arg0) {
-							// TODO: Protokoll implementieren
+							
 						}
 					};
 					port.addEventListener( portListener );
@@ -142,7 +147,7 @@ public class Main {
 							if(messungAktiv) {
 								try {
 									// Daten anfordern
-									System.out.println("LOLLINGER");
+									System.out.println("Messung angefordert");
 									//port.writeByte(COMMAND_MEASUREMENT);
 								} catch( Exception e ) {
 									System.out.println( e.getMessage() );
