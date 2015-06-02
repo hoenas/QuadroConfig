@@ -1,55 +1,34 @@
+import info.monitorenter.gui.chart.Chart2D;
+import info.monitorenter.gui.chart.ITrace2D;
+import info.monitorenter.gui.chart.traces.Trace2DSimple;
 import java.awt.EventQueue;
-
-import javax.net.ssl.SSLEngineResult.Status;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
-
-import java.awt.BorderLayout;
-
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
-
 import jssc.SerialPort;
 import jssc.SerialPortList;
-
 import javax.swing.JButton;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.sql.Time;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.JInternalFrame;
-import javax.swing.JDesktopPane;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JSeparator;
-import javax.swing.WindowConstants;
-
-import java.awt.Panel;
+import java.awt.Canvas;
 import java.awt.Font;
-import java.awt.Toolkit;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-import java.awt.Component;
-
-import javax.swing.Box;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
 
 
 public class Main {
 
 	private SerialPort port;
 	private JFrame frame;
-	private JFrame visualisierung = new JFrame();
 	private Timer messtimer;
 	private int messintervall = 200;
 	private boolean messungAktiv = false;
@@ -67,11 +46,35 @@ public class Main {
 	private static byte COMMAND_GET_CONFIGURATION = (byte)0b00100000;
 	private static byte COMMAND_SET_CONFIGURATION = (byte)0b00010000;
 	// TODO: richtige Werte
-	private static int MEASUREMENT_FRAME_LENGTH = 24;
+	private static int MEASUREMENT_FRAME_LENGTH = 80;
 	public float[] messdaten = new float[MEASUREMENT_FRAME_LENGTH];
 	private static int CONFIGURATION_FRAME_LENGTH = 24;	
 	// Timeout in ms
 	private static long COMMUNICATION_TIMEOUT = 100;
+	private long anzahlMessungen = 0;
+	// #########################################################
+	// Visualisierung:
+	// #########################################################
+	private JFrame visualisierung = new JFrame();
+	private Canvas canvasVisualisierung = new Canvas();
+	// Motoren:
+	private Chart2D motorVisualisierung = new Chart2D(); 
+    private ITrace2D traceMotor1 = new Trace2DSimple();
+    private ITrace2D traceMotor2 = new Trace2DSimple();
+    private ITrace2D traceMotor3 = new Trace2DSimple();
+    private ITrace2D traceMotor4 = new Trace2DSimple();
+    // Accelerometer
+    private Chart2D accelVisualisierung = new Chart2D();
+    private ITrace2D traceAccelX = new Trace2DSimple();
+    private ITrace2D traceAccelY = new Trace2DSimple();
+    private ITrace2D traceAccelZ = new Trace2DSimple();
+    // Gyro
+    private ITrace2D traceGyroP = new Trace2DSimple();
+    private ITrace2D traceGyroY = new Trace2DSimple();
+    private ITrace2D traceGyroR = new Trace2DSimple();
+    private Chart2D gyroVisualisierung = new Chart2D();
+    // #########################################################
+	
 	/**
 	 * Launch the application.
 	 */
@@ -119,6 +122,19 @@ public class Main {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		// Visualisierungen initialisieren
+		motorVisualisierung.addTrace(traceMotor1);
+		motorVisualisierung.addTrace(traceMotor2);
+		motorVisualisierung.addTrace(traceMotor3);
+		motorVisualisierung.addTrace(traceMotor4);
+		accelVisualisierung.addTrace(traceAccelX);
+		accelVisualisierung.addTrace(traceAccelY);
+		accelVisualisierung.addTrace(traceAccelZ);
+		gyroVisualisierung.addTrace(traceGyroP);
+		gyroVisualisierung.addTrace(traceGyroY);
+		gyroVisualisierung.addTrace(traceGyroR);
+		visualisierung.getContentPane().add( canvasVisualisierung );
+		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 433, 328);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -129,7 +145,7 @@ public class Main {
 		frame.getContentPane().add(tabbedPane);
 		
 		JLabel statuslabel = new JLabel("");
-		statuslabel.setBounds(10, 262, 414, 14);
+		statuslabel.setBounds(10, 262, 397, 14);
 		frame.getContentPane().add(statuslabel);
 		
 		JPanel panel = new JPanel();
@@ -295,6 +311,7 @@ public class Main {
 		panel_2.setLayout(null);
 		
 		JPanel panel_3 = new JPanel();
+		panel_3.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel_3.setBounds(10, 11, 179, 115);
 		panel_2.add(panel_3);
 		panel_3.setLayout(null);
@@ -336,6 +353,7 @@ public class Main {
 		panel_3.add(lblPidreglerXy);
 		
 		JPanel panel_4 = new JPanel();
+		panel_4.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel_4.setLayout(null);
 		panel_4.setBounds(199, 11, 179, 115);
 		panel_2.add(panel_4);
@@ -381,6 +399,7 @@ public class Main {
 			public void actionPerformed(ActionEvent e) {
 				// Keine neuen Messungen anfordern
 				messungAktiv = false;
+				btnMessungStarten.setText("Messung starten");
 				// Falls Port offen ist Konfiguration anfordern
 				while( protocolStatus != 0 ) {
 					// Abwarten, bis Portzustand: idle
@@ -431,7 +450,7 @@ public class Main {
 				}
 			}
 		});
-		btnWerteLaden.setBounds(5, 178, 113, 23);
+		btnWerteLaden.setBounds(5, 178, 155, 23);
 		panel_2.add(btnWerteLaden);
 		
 		JButton button = new JButton("Werte speichern");
@@ -478,7 +497,7 @@ public class Main {
 				}
 			}
 		});
-		button.setBounds(128, 178, 113, 23);
+		button.setBounds(226, 178, 155, 23);
 		panel_2.add(button);
 	
 		
@@ -511,7 +530,20 @@ public class Main {
 							
 							for(int i = 0; i < messdaten.length; i++) {
 								messdaten[i] = byteArrayToFloat(temp, i * 4);
-							}							
+							}
+							
+							traceMotor1.addPoint(anzahlMessungen, messdaten[0]);
+							traceMotor2.addPoint(anzahlMessungen, messdaten[1]);
+							traceMotor3.addPoint(anzahlMessungen, messdaten[2]);
+							traceMotor4.addPoint(anzahlMessungen, messdaten[3]);
+							traceAccelX.addPoint(anzahlMessungen, messdaten[4]);
+							traceAccelY.addPoint(anzahlMessungen, messdaten[5]);
+							traceAccelZ.addPoint(anzahlMessungen, messdaten[6]);
+							traceGyroP.addPoint(anzahlMessungen, messdaten[7]);
+							traceGyroY.addPoint(anzahlMessungen, messdaten[8]);
+							traceGyroR.addPoint(anzahlMessungen, messdaten[9]);
+							
+							anzahlMessungen++;
 						}
 						
 					} catch( Exception e ) {
