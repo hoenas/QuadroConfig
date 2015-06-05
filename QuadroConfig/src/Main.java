@@ -1,27 +1,38 @@
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.ITrace2D;
 import info.monitorenter.gui.chart.traces.Trace2DSimple;
+
 import java.awt.EventQueue;
+
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+
 import jssc.SerialPort;
 import jssc.SerialPortList;
+
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JSeparator;
+
 import java.awt.Canvas;
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.border.LineBorder;
+
 import java.awt.Color;
 
 
@@ -55,7 +66,8 @@ public class Main {
 	// #########################################################
 	// Visualisierung:
 	// #########################################################
-	private JFrame visualisierung = new JFrame();
+	private Messwertfenster messwertfensterfenster = new Messwertfenster();
+	private Visualisierungsfenster visualisierungsfenster = new Visualisierungsfenster();
 	private Canvas canvasVisualisierung = new Canvas();
 	// Motoren:
 	private Chart2D motorVisualisierung = new Chart2D(); 
@@ -133,7 +145,6 @@ public class Main {
 		gyroVisualisierung.addTrace(traceGyroP);
 		gyroVisualisierung.addTrace(traceGyroY);
 		gyroVisualisierung.addTrace(traceGyroR);
-		visualisierung.getContentPane().add( canvasVisualisierung );
 		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 433, 328);
@@ -296,15 +307,23 @@ public class Main {
 		btnMessungStarten.setBounds(10, 11, 371, 23);
 		panel_1.add(btnMessungStarten);
 		
-		JButton btnNewButton_1 = new JButton("Visualisierungsfenster anzeigen");
+		JButton btnNewButton_1 = new JButton("Messwerte anzeigen");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				visualisierung.setSize(500, 500);
-				visualisierung.setVisible(true);
+				messwertfensterfenster.setVisible( true );
 			}
 		});
 		btnNewButton_1.setBounds(10, 45, 371, 23);
 		panel_1.add(btnNewButton_1);
+		
+		JButton btnNewButton_2 = new JButton("Visualisierungsfenster anzeigen");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				visualisierungsfenster.setVisible( true );
+			}
+		});
+		btnNewButton_2.setBounds(10, 79, 371, 23);
+		panel_1.add(btnNewButton_2);
 		
 		JPanel panel_2 = new JPanel();
 		tabbedPane.addTab("Quadrokopter konfigurieren", null, panel_2, null);
@@ -526,26 +545,26 @@ public class Main {
 						
 						if(!timeout) {
 							// Daten auswerten
-							byte[] temp = port.readBytes();
-							
-							for(int i = 0; i < messdaten.length; i++) {
-								messdaten[i] = byteArrayToFloat(temp, i * 4);
+							if( port.getInputBufferBytesCount() == messdaten.length ) {
+								byte[] temp = port.readBytes();
+								
+								for(int i = 0; i < messdaten.length; i++) {
+									messdaten[i] = byteArrayToFloat(temp, i * 4);
+								}
+								
+								traceMotor1.addPoint(anzahlMessungen, messdaten[0]);
+								traceMotor2.addPoint(anzahlMessungen, messdaten[1]);
+								traceMotor3.addPoint(anzahlMessungen, messdaten[2]);
+								traceMotor4.addPoint(anzahlMessungen, messdaten[3]);
+								traceAccelX.addPoint(anzahlMessungen, messdaten[4]);
+								traceAccelY.addPoint(anzahlMessungen, messdaten[5]);
+								traceAccelZ.addPoint(anzahlMessungen, messdaten[6]);
+								traceGyroP.addPoint(anzahlMessungen, messdaten[7]);
+								traceGyroY.addPoint(anzahlMessungen, messdaten[8]);
+								traceGyroR.addPoint(anzahlMessungen, messdaten[9]);
+								anzahlMessungen++;
 							}
-							
-							traceMotor1.addPoint(anzahlMessungen, messdaten[0]);
-							traceMotor2.addPoint(anzahlMessungen, messdaten[1]);
-							traceMotor3.addPoint(anzahlMessungen, messdaten[2]);
-							traceMotor4.addPoint(anzahlMessungen, messdaten[3]);
-							traceAccelX.addPoint(anzahlMessungen, messdaten[4]);
-							traceAccelY.addPoint(anzahlMessungen, messdaten[5]);
-							traceAccelZ.addPoint(anzahlMessungen, messdaten[6]);
-							traceGyroP.addPoint(anzahlMessungen, messdaten[7]);
-							traceGyroY.addPoint(anzahlMessungen, messdaten[8]);
-							traceGyroR.addPoint(anzahlMessungen, messdaten[9]);
-							
-							anzahlMessungen++;
 						}
-						
 					} catch( Exception e ) {
 						System.out.println( e.getMessage() );
 					}
