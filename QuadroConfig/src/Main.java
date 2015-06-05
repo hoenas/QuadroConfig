@@ -62,7 +62,7 @@ public class Main {
 	// Timeout in ms
 	private static long COMMUNICATION_TIMEOUT = 100;
 	private long anzahlMessungen = 0;
-	private int historyLength = 100;
+	private int historyLength = 50;
 	// #########################################################
 	// Visualisierung:
 	// #########################################################
@@ -141,6 +141,9 @@ public class Main {
 		frame.getContentPane().setLayout(null);
 		
 		// VISUALISIERUNG INITIALISIEREN
+		visualisierungsfenster.motorsGraph.setRasterLineCountY(5);
+		visualisierungsfenster.motorsGraph.setRastertYColor(Color.black);
+		visualisierungsfenster.motorsGraph.setUseRasterY(true);
 		visualisierungsfenster.motorsGraph.addGraph( motor1Dataset );
 		visualisierungsfenster.motorsGraph.addGraph( motor2Dataset );
 		visualisierungsfenster.motorsGraph.addGraph( motor3Dataset );

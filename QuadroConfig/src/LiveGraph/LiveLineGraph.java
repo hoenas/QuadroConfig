@@ -17,37 +17,9 @@ public class LiveLineGraph extends JPanel{
 	private java.util.List<Dataset> graphlist = new ArrayList<Dataset>();
 	private Color backgroundColor;
 	private int max;
-	private boolean useRasterX;
-	private Color rasterXColor;
-	private int rasterLineCountX;
 	private boolean useRasterY;
 	private Color rasterYColor;
 	private int rasterLineCountY;
-
-	
-	public boolean isUseRasterX() {
-		return useRasterX;
-	}
-
-	public void setUseRasterX(boolean useRasterX) {
-		this.useRasterX = useRasterX;
-	}
-
-	public Color getRasterXColor() {
-		return rasterXColor;
-	}
-
-	public void setRasterXColor(Color rasterXColor) {
-		this.rasterXColor = rasterXColor;
-	}
-
-	public int getRasterLineCountX() {
-		return rasterLineCountX;
-	}
-
-	public void setRasterLineCountX(int rasterLineCountX) {
-		this.rasterLineCountX = rasterLineCountX;
-	}
 
 	public boolean isUseRasterY() {
 		return useRasterY;
@@ -96,19 +68,13 @@ public class LiveLineGraph extends JPanel{
 		// Graph löschen
 		g2.setColor( backgroundColor );
 		g2.fillRect(0, 0, this.getWidth(), this.getHeight());
-		// X Raster zeichnen
-		if( useRasterX ) {
-			g2.setXORMode( rasterXColor );
-			for(int i = 0; i < rasterLineCountX; i++) {
-				g2.drawLine( 0, i * this.getHeight() / rasterLineCountX, this.getHeight(), i * this.getHeight() / rasterLineCountX);
-			}
-		}
+		
 		// Y Raster zeichnen
 		if( useRasterY ) {
 			g2.setColor( rasterYColor );
 			g2.setPaintMode();
 			for(int i = 0; i < rasterLineCountY; i++) {
-				g2.drawLine( 0, i * this.getHeight() / rasterLineCountX, this.getHeight(), i * this.getHeight() / rasterLineCountX);
+				g2.drawLine( 0, i * this.getHeight() / rasterLineCountY, this.getWidth(), i * this.getHeight() / rasterLineCountY);
 			}
 		}
 		// Für jeden Graph Linien zeichnen
