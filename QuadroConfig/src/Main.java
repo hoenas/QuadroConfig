@@ -1,7 +1,3 @@
-import info.monitorenter.gui.chart.Chart2D;
-import info.monitorenter.gui.chart.ITrace2D;
-import info.monitorenter.gui.chart.traces.Trace2DSimple;
-
 import java.awt.EventQueue;
 
 import javax.imageio.ImageIO;
@@ -20,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,6 +30,8 @@ import java.awt.Image;
 
 import javax.swing.border.LineBorder;
 
+import LiveGraph.Dataset;
+
 import java.awt.Color;
 
 
@@ -41,7 +40,7 @@ public class Main {
 	private SerialPort port;
 	private JFrame frame;
 	private Timer messtimer;
-	private int messintervall = 200;
+	private int messintervall = 100;
 	private boolean messungAktiv = false;
 	// Befehle für Protokoll
 	private static int protocolStatus = 0;
@@ -63,28 +62,29 @@ public class Main {
 	// Timeout in ms
 	private static long COMMUNICATION_TIMEOUT = 100;
 	private long anzahlMessungen = 0;
+	private int historyLength = 100;
 	// #########################################################
 	// Visualisierung:
 	// #########################################################
 	private Messwertfenster messwertfensterfenster = new Messwertfenster();
 	private Visualisierungsfenster visualisierungsfenster = new Visualisierungsfenster();
-	private Canvas canvasVisualisierung = new Canvas();
-	// Motoren:
-	private Chart2D motorVisualisierung = new Chart2D(); 
-    private ITrace2D traceMotor1 = new Trace2DSimple();
-    private ITrace2D traceMotor2 = new Trace2DSimple();
-    private ITrace2D traceMotor3 = new Trace2DSimple();
-    private ITrace2D traceMotor4 = new Trace2DSimple();
-    // Accelerometer
-    private Chart2D accelVisualisierung = new Chart2D();
-    private ITrace2D traceAccelX = new Trace2DSimple();
-    private ITrace2D traceAccelY = new Trace2DSimple();
-    private ITrace2D traceAccelZ = new Trace2DSimple();
-    // Gyro
-    private ITrace2D traceGyroP = new Trace2DSimple();
-    private ITrace2D traceGyroY = new Trace2DSimple();
-    private ITrace2D traceGyroR = new Trace2DSimple();
-    private Chart2D gyroVisualisierung = new Chart2D();
+	// Motorendatensets
+	private Dataset motor1Dataset = new Dataset("Motor 1", Color.BLUE, 2, historyLength);
+	private Dataset motor2Dataset = new Dataset("Motor 2", Color.GREEN, 2, historyLength);
+	private Dataset motor3Dataset = new Dataset("Motor 3", Color.RED, 2, historyLength);
+	private Dataset motor4Dataset = new Dataset("Motor 4", Color.YELLOW, 2, historyLength);
+	// Winkeldatensets
+	private Dataset winkelXDataset = new Dataset("Winkel X", Color.GREEN, 2, historyLength);
+	private Dataset winkelYDataset = new Dataset("Winkel Y", Color.RED, 2, historyLength);
+	private Dataset winkelZDataset = new Dataset("Winkel Z", Color.YELLOW, 2, historyLength);
+	// Beschl. Datensets
+	private Dataset accXDataset = new Dataset("Accelerometer X", Color.GREEN, 1, historyLength);
+	private Dataset accYDataset = new Dataset("Accelerometer Y", Color.RED, 1, historyLength);
+	private Dataset accZDataset = new Dataset("Accelerometer Z", Color.YELLOW, 1, historyLength);
+	// Gierraten Datensets
+	private Dataset rateXDataset = new Dataset("Rate Pitch", Color.GREEN, 1, historyLength);
+	private Dataset rateYDataset = new Dataset("Rate Yaw", Color.RED, 1, historyLength);
+	private Dataset rateZDataset = new Dataset("Rate ROll", Color.YELLOW, 1, historyLength);
     // #########################################################
 	
 	/**
@@ -134,22 +134,17 @@ public class Main {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		// Visualisierungen initialisieren
-		motorVisualisierung.addTrace(traceMotor1);
-		motorVisualisierung.addTrace(traceMotor2);
-		motorVisualisierung.addTrace(traceMotor3);
-		motorVisualisierung.addTrace(traceMotor4);
-		accelVisualisierung.addTrace(traceAccelX);
-		accelVisualisierung.addTrace(traceAccelY);
-		accelVisualisierung.addTrace(traceAccelZ);
-		gyroVisualisierung.addTrace(traceGyroP);
-		gyroVisualisierung.addTrace(traceGyroY);
-		gyroVisualisierung.addTrace(traceGyroR);
 		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 433, 328);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		
+		// VISUALISIERUNG INITIALISIEREN
+		visualisierungsfenster.motorsGraph.addGraph( motor1Dataset );
+		visualisierungsfenster.motorsGraph.addGraph( motor2Dataset );
+		visualisierungsfenster.motorsGraph.addGraph( motor3Dataset );
+		visualisierungsfenster.motorsGraph.addGraph( motor4Dataset );
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(10, 11, 396, 240);
@@ -316,15 +311,15 @@ public class Main {
 		btnNewButton_1.setBounds(10, 45, 371, 23);
 		panel_1.add(btnNewButton_1);
 		
-		JButton btnNewButton_2 = new JButton("Visualisierungsfenster anzeigen");
-		btnNewButton_2.addActionListener(new ActionListener() {
+		JButton btnNewButton_3 = new JButton("Visualisierung anzeigen");
+		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				visualisierungsfenster.setVisible( true );
 			}
 		});
-		btnNewButton_2.setBounds(10, 79, 371, 23);
-		panel_1.add(btnNewButton_2);
-		
+		btnNewButton_3.setBounds(10, 79, 371, 23);
+		panel_1.add(btnNewButton_3);		
+
 		JPanel panel_2 = new JPanel();
 		tabbedPane.addTab("Quadrokopter konfigurieren", null, panel_2, null);
 		panel_2.setLayout(null);
@@ -524,7 +519,20 @@ public class Main {
 		messtimer = new Timer();
 		messtimer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
+				
+				if( visualisierungsfenster.isVisible() ) {
+					float[] update = new float[13];
+					Random ran = new Random();
+					for(int i = 0; i < 13; i++) {
+						update[i] = ran.nextFloat() * 100f;
+					}
+
+					visualisierungsfenster.motorsGraph.update(update);
+					messwertfensterfenster.setLabelText(update);
+				}
+				
 				if(messungAktiv && port.isOpened() ) {
+					
 					try {
 						// Daten anfordern
 						port.writeByte(COMMAND_MEASUREMENT);
@@ -551,17 +559,6 @@ public class Main {
 								for(int i = 0; i < messdaten.length; i++) {
 									messdaten[i] = byteArrayToFloat(temp, i * 4);
 								}
-								
-								traceMotor1.addPoint(anzahlMessungen, messdaten[0]);
-								traceMotor2.addPoint(anzahlMessungen, messdaten[1]);
-								traceMotor3.addPoint(anzahlMessungen, messdaten[2]);
-								traceMotor4.addPoint(anzahlMessungen, messdaten[3]);
-								traceAccelX.addPoint(anzahlMessungen, messdaten[4]);
-								traceAccelY.addPoint(anzahlMessungen, messdaten[5]);
-								traceAccelZ.addPoint(anzahlMessungen, messdaten[6]);
-								traceGyroP.addPoint(anzahlMessungen, messdaten[7]);
-								traceGyroY.addPoint(anzahlMessungen, messdaten[8]);
-								traceGyroR.addPoint(anzahlMessungen, messdaten[9]);
 								anzahlMessungen++;
 							}
 						}

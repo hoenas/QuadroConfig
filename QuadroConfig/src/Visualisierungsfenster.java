@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -12,6 +13,7 @@ import LiveGraph.*;
 public class Visualisierungsfenster extends JFrame {
 
 	private JPanel contentPane;
+	public LiveLineGraph motorsGraph;
 
 	/**
 	 * Create the frame.
@@ -23,6 +25,10 @@ public class Visualisierungsfenster extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
+		
+		motorsGraph = new LiveLineGraph(Color.WHITE, 100);
+		contentPane.add(motorsGraph, BorderLayout.CENTER);
+
 	}
 
 }
