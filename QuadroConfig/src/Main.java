@@ -43,25 +43,46 @@ public class Main {
 	private Timer messtimer;
 	private int messintervall = 16;
 	private boolean messungAktiv = false;
-	// Befehle für Protokoll
+	// Befehle fï¿½r Protokoll
 	private static int protocolStatus = 0;
-	/* Werte für protocolStatus:
+	/* Werte fï¿½r protocolStatus:
 	 * 0: idle
 	 * 1: receiveFrame
 	 * 2: receiveConfiguration
 	 * 3: sendConfiguration
 	 */
-	// TODO: richtige Befehlswerte senden
-	private static byte COMMAND_MEASUREMENT = (byte)0x03;
-	private static byte COMMAND_RESET = (byte)0b01000000;
-	private static byte COMMAND_GET_CONFIGURATION = (byte)0b00100000;
-	private static byte COMMAND_SET_CONFIGURATION = (byte)0b00010000;
+	
+	/* get status and global flags*/
+	private static byte USB_CMD_SEND_STATUS_FLOAT = (byte)0x03;
+	private static byte USB_CMD_GLOBAL_FLAGS = (byte)0x04;
+	
+	/* configuration*/
+	private static byte USB_CMD_CONFIG_MODE = (byte)0xC0;
+	
+	private static byte USB_CMD_GET_CONFIG = (byte)0xC1;
+	private static byte USB_CMD_UPDATE_CONFIG = (byte)0xC2;
+	private static byte USB_CMD_SAVE_CONFIG = (byte)0xCE;
+	private static byte USB_CMD_RESTORE_CONFIG = (byte)0xCF;
+
+	/* eeprom acces */
+	private static byte USB_CMD_READ_BYTE = (byte)0xC3;
+	private static byte USB_CMD_READ_2BYTES = (byte)0xC4;
+	private static byte USB_CMD_READ_4BYTES = (byte)0xC5;
+
+	private static byte USB_CMD_WRITE_BYTE = (byte)0xC6;
+	private static byte USB_CMD_WRITE_2BYTES = (byte)0xC7;
+	private static byte USB_CMD_WRITE_4BYTES = (byte)0xC8;	
+	
+	/* reset */
+	private static byte USB_CMD_RESET = (byte)0xFF;	
+	
+	
 	// TODO: richtige Werte
-	private static int MEASUREMENT_FRAME_LENGTH = 80;
-	public float[] messdaten = new float[MEASUREMENT_FRAME_LENGTH];
-	private static int CONFIGURATION_FRAME_LENGTH = 24;	
+	private static int MEASUREMENT_FRAME_LENGTH = 124;
+	public float[] messdaten = new float[MEASUREMENT_FRAME_LENGTH/4];
+	private static int CONFIGURATION_FRAME_LENGTH = 32;	
 	// Timeout in ms
-	private static long COMMUNICATION_TIMEOUT = 100;
+	private static long COMMUNICATION_TIMEOUT = 1000;
 	private long anzahlMessungen = 0;
 	private int historyLength = 1000;
 	// #########################################################
@@ -84,8 +105,33 @@ public class Main {
 	private Dataset accZDataset = new Dataset("Accelerometer Z", Color.YELLOW, 1, historyLength);
 	// Gierraten Datensets
 	private Dataset rateXDataset = new Dataset("Rate Pitch", Color.GREEN, 1, historyLength);
-	private Dataset rateYDataset = new Dataset("Rate Yaw", Color.RED, 1, historyLength);
-	private Dataset rateZDataset = new Dataset("Rate ROll", Color.YELLOW, 1, historyLength);
+	private Dataset rateYDataset = new Dataset("Rate Roll", Color.RED, 1, historyLength);
+	private Dataset rateZDataset = new Dataset("Rate Yaw", Color.YELLOW, 1, historyLength);
+	
+	/* RC Receiver */ 
+	private Dataset rcSignalRollDataset = new Dataset("RC: Roll", Color.GREEN, 1, historyLength);
+	private Dataset rcSignalNickDataset = new Dataset("RC: Nick", Color.RED, 1, historyLength);
+	private Dataset rcSignalYawDataset = new Dataset("RC: Yaw", Color.YELLOW, 1, historyLength);	
+	private Dataset rcSignalThrottleDataset = new Dataset("RC: Throttle", Color.GREEN, 1, historyLength);
+	private Dataset rcSignalLinPotiDataset = new Dataset("RC: Lin Poti", Color.RED, 1, historyLength);
+	private Dataset rcSignalSwitchDataset = new Dataset("RC: Switch", Color.YELLOW, 1, historyLength);
+	private Dataset rcSignalEnableDataset = new Dataset("RC: Motor enable", Color.YELLOW, 1, historyLength);
+	
+	/* height*/
+	private Dataset heightDataset = new Dataset("Height", Color.GREEN, 1, historyLength);
+	private Dataset relHeightDataset = new Dataset("rel Height", Color.RED, 1, historyLength);
+	private Dataset dHDataset = new Dataset("dH", Color.YELLOW, 1, historyLength);
+	
+	/* PID*/
+	private Dataset pidXOutDataset = new Dataset("PID X", Color.GREEN, 1, historyLength);
+	private Dataset pidYOutDataset = new Dataset("PID Y", Color.RED, 1, historyLength);
+	private Dataset pidZOutDataset = new Dataset("PID Z", Color.YELLOW, 1, historyLength);
+	
+	/* temp */
+	private Dataset tempDataset = new Dataset("Temperature", Color.YELLOW, 1, historyLength);
+	
+	/*akku Voltage */
+	private Dataset akkuVoltageDataset = new Dataset("Akku Voltage", Color.YELLOW, 1, historyLength);
 	
 	private boolean wasVisible = false;
     // #########################################################
@@ -264,8 +310,8 @@ public class Main {
 						comboBox_3.setEnabled(false);
 						comboBox_4.setEnabled(false);
 						comboBox_5.setEnabled(false);
-						statuslabel.setText("Port geöffnet");
-						btnNewButton.setText("Port schließen");
+						statuslabel.setText("Port geÃ¶ffnet");
+						btnNewButton.setText("Port schlieÃŸen");
 					}
 					else
 					{
@@ -276,7 +322,7 @@ public class Main {
 						comboBox_4.setEnabled(true);
 						comboBox_5.setEnabled(true);
 						statuslabel.setText("Port geschlossen");
-						btnNewButton.setText("Port öffnen");
+						btnNewButton.setText("Port Ã¶ffnen");
 					}
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
@@ -434,7 +480,7 @@ public class Main {
 				}
 				
 				try {
-					port.writeByte( COMMAND_GET_CONFIGURATION );
+					port.writeByte( USB_CMD_GET_CONFIG );
 					// Protokollstatus: receiveConfiguration
 					protocolStatus = 2;
 					
@@ -442,7 +488,7 @@ public class Main {
 					LocalTime begin = LocalTime.now();
 					while( port.getInputBufferBytesCount() != CONFIGURATION_FRAME_LENGTH) {
 						// warte bis alle Bytes da sind
-						// auf Timeout prüfen
+						// auf Timeout prÃ¼fen
 						if( LocalTime.now().isAfter( begin.plus(COMMUNICATION_TIMEOUT, ChronoUnit.MILLIS) ) ) {
 							timeout = true;
 							protocolStatus = 0;
@@ -460,6 +506,8 @@ public class Main {
 						 * 12 - 15	: P-Anteil Z (float)
 						 * 16 - 19	: I-Anteil Z (float)
 						 * 20 - 23	: D-Anteil Z (float)
+						 * 24 - 	: Complementary Filter XY
+						 * 28 - 	: Complementary Filter Z
 						 * ...
 						 */
 						byte[] byteArray = port.readBytes( CONFIGURATION_FRAME_LENGTH );
@@ -469,7 +517,9 @@ public class Main {
 						spinner_pz.setValue( byteArrayToFloat(byteArray, 12) );
 						spinner_iz.setValue( byteArrayToFloat(byteArray, 16) );
 						spinner_dz.setValue( byteArrayToFloat(byteArray, 20) );
-						
+//						spinner_cxy.setValue( byteArrayToFloat(byteArray, 24) );
+//						spinner_cz.setValue( byteArrayToFloat(byteArray, 28) );
+				
 						protocolStatus = 0;
 						statuslabel.setText("Konfiguration empfangen");
 					}
@@ -492,9 +542,7 @@ public class Main {
 						// Abwarten, bis Portzustand: idle
 					}
 					try {
-						// Anfrage stellen
-						port.writeByte( COMMAND_SET_CONFIGURATION );
-						// Protokollstatus: sendConfiguration
+						//Protokollstatus: sendConfiguration
 						protocolStatus = 3;
 						/* Konfigurationsframe:
 						 * Byte
@@ -504,20 +552,25 @@ public class Main {
 						 * 12 - 15	: P-Anteil Z (float)
 						 * 16 - 19	: I-Anteil Z (float)
 						 * 20 - 23	: D-Anteil Z (float)
+						 * 24 - 	: Complementary Filter XY
+						 * 28 - 	: Complementary Filter Z
 						 * ...
 						 */
-						byte[] outbuffer = new byte[24];
-						outbuffer = floatToByteArray( (float)spinner_pxy.getValue(), outbuffer, 0 );
-						outbuffer = floatToByteArray( (float)spinner_ixy.getValue(), outbuffer, 4 );
-						outbuffer = floatToByteArray( (float)spinner_dxy.getValue(), outbuffer, 8 );
-						outbuffer = floatToByteArray( (float)spinner_pz.getValue(), outbuffer, 12 );
-						outbuffer = floatToByteArray( (float)spinner_iz.getValue(), outbuffer, 16 );
-						outbuffer = floatToByteArray( (float)spinner_dz.getValue(), outbuffer, 20 );
+						byte[] outbuffer = new byte[CONFIGURATION_FRAME_LENGTH + 1];
+						outbuffer[1] = USB_CMD_UPDATE_CONFIG;
+						outbuffer = floatToByteArray( (float)spinner_pxy.getValue(), outbuffer, 1 );
+						outbuffer = floatToByteArray( (float)spinner_ixy.getValue(), outbuffer, 5 );
+						outbuffer = floatToByteArray( (float)spinner_dxy.getValue(), outbuffer, 9 );
+						outbuffer = floatToByteArray( (float)spinner_pz.getValue(), outbuffer, 13 );
+						outbuffer = floatToByteArray( (float)spinner_iz.getValue(), outbuffer, 17 );
+						outbuffer = floatToByteArray( (float)spinner_dz.getValue(), outbuffer, 21 );
+//						outbuffer = floatToByteArray( (float)spinner_cxy.getValue(), outbuffer, 25 );
+//						outbuffer = floatToByteArray( (float)spinner_cz.getValue(), outbuffer, 29 );
 						// ...
 
 						port.writeBytes(outbuffer);					
 						protocolStatus = 0;
-						statuslabel.setText("Konfiguration übertragen");
+						statuslabel.setText("Konfiguration Ã¼bertragen");
 						
 					} catch (Exception ex) {
 						System.out.println(ex.getMessage());
@@ -538,14 +591,14 @@ public class Main {
 					
 					try {
 						// Daten anfordern
-						port.writeByte(COMMAND_MEASUREMENT);
+						port.writeByte(USB_CMD_SEND_STATUS_FLOAT);
 						
 						// Warten auf Daten
 						boolean timeout = false;
 						LocalTime begin = LocalTime.now();
 						while( port.getInputBufferBytesCount() != MEASUREMENT_FRAME_LENGTH ) {
 							// warte bis alle Bytes da sind
-							// auf Timeout prüfen
+							// auf Timeout prÃ¼fen
 							if( LocalTime.now().isAfter( begin.plus(COMMUNICATION_TIMEOUT, ChronoUnit.MILLIS) ) ) {
 								timeout = true;
 								protocolStatus = 0;
@@ -556,12 +609,13 @@ public class Main {
 						
 						if(!timeout) {
 							// Daten auswerten
-							if( port.getInputBufferBytesCount() == messdaten.length ) {
+							if( port.getInputBufferBytesCount() == MEASUREMENT_FRAME_LENGTH ) {
 								byte[] temp = port.readBytes();
 								
 								for(int i = 0; i < messdaten.length; i++) {
 									messdaten[i] = byteArrayToFloat(temp, i * 4);
 								}
+								messwertfensterfenster.setLabelText(messdaten);
 								anzahlMessungen++;
 							}
 						}
@@ -573,3 +627,4 @@ public class Main {
 		}, 0, messintervall);
 	}
 }
+
