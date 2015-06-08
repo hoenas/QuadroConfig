@@ -8,6 +8,8 @@ import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 
+import javax.swing.text.StyledEditorKit.ForegroundAction;
+
 public class LiveArtificialHorizon extends Canvas{
 	private java.util.List<Dataset> graphlist = new ArrayList<Dataset>();
 	private Color color;
@@ -15,6 +17,9 @@ public class LiveArtificialHorizon extends Canvas{
 	private boolean useRaster;
 	private Color rasterColor;
 	private BufferStrategy bufferstrategy;
+	private int rasterWidth;
+	private int angleWidth;
+	private BasicStroke stroke;
 	
 	public boolean isUseRaster() {
 		return useRaster;
@@ -37,27 +42,52 @@ public class LiveArtificialHorizon extends Canvas{
 		bufferstrategy = this.getBufferStrategy();
 	}
 	
-	public LiveArtificialHorizon( Color backgroundColor, int max ) {
+	public LiveArtificialHorizon( Color backgroundColor, Color foregroundColor, Color rasterColor, boolean useRaster, int rasterWidth, int angleWidth) {
 		this.backgroundColor = backgroundColor;
+		this.color = foregroundColor;
+		this.rasterColor = rasterColor;
+		this.useRaster = useRaster;
+		this.rasterWidth = rasterWidth;
+		stroke = new BasicStroke( rasterWidth );
+		this.angleWidth = angleWidth;		
 	}
 	
 	public void addGraph( Dataset dataset ) {
 		graphlist.add(dataset);
 	}
 	
-	public void update( float[] values ) {
+	public void update( int angle) {
 		Graphics2D g2 = (Graphics2D) bufferstrategy.getDrawGraphics();
-		// neue Werte eintragen
-		for(int i = 0; i < graphlist.size(); i++) {
-			graphlist.get(i).addValue( values[i] );
-		}
 		// Graph loeschen
 		g2.setColor( backgroundColor );
 		g2.fillRect(0, 0, this.getWidth(), this.getHeight());
 		
-		// kuenstlichen Horizont zeichnen
+		// kuenstlichen Horizont zeichnen		
+		g2.setColor( color );		
+		g2.fillArc(0, 0, this.getWidth(), this.getHeight(), angle , 180);//angleWidth);
+		
+		// Umrandung zeichnen
+		if( useRaster ) {
+			g2.setStroke( stroke );
+			g2.setColor( rasterColor );
+			g2.drawArc(0, 0, this.getWidth(), this.getHeight(), 0, 360);
+			for(int i = 0; i < 30; i++) {
+				g2.drawArc(10, 10, this.getWidth() - 20, this.getHeight() - 20, 12*i - 1, 2);
+				g2.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);				
+			}
+		}
 		
 		bufferstrategy.show();
 		Toolkit.getDefaultToolkit().sync();
+	}
+
+	public void setAngleWidth(int angleWidth) {
+		this.angleWidth = angleWidth;
+	}
+
+
+	public void setRasterWidth(int rasterWidth) {
+		this.rasterWidth = rasterWidth;
+		this.stroke = new BasicStroke( rasterWidth );
 	}
 }

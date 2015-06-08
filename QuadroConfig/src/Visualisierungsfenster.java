@@ -9,26 +9,46 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import LiveGraph.*;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import net.miginfocom.swing.MigLayout;
+import javax.swing.JLabel;
+import javax.swing.border.LineBorder;
+import javax.swing.BoxLayout;
+import javax.swing.SpringLayout;
 
 public class Visualisierungsfenster extends JFrame {
-
-	private JPanel contentPane;
-	public LiveLineGraph motorsGraph;
-
 	/**
 	 * Create the frame.
 	 */
 	public Visualisierungsfenster() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(new BorderLayout(0, 0));
+		setBounds(100, 100, 805, 597);
+		getContentPane().setLayout(null);
 		
-		motorsGraph = new LiveLineGraph(Color.WHITE, 100);
-		contentPane.add(motorsGraph, BorderLayout.CENTER);
+		JLabel lblMotoren = new JLabel("Motoren");
+		lblMotoren.setBounds(10, 11, 46, 14);
+		getContentPane().add(lblMotoren);
+		
+		LiveLineGraph motorGraph = new LiveLineGraph((Color) null, 0);
+		motorGraph.setBounds(10, 31, 769, 138);
+		getContentPane().add(motorGraph);
+		
+		LiveLineGraph accGraph = new LiveLineGraph((Color) null, 0);
+		accGraph.setBounds(10, 195, 769, 138);
+		getContentPane().add(accGraph);
+		
+		JLabel label = new JLabel("Accelerometer:");
+		label.setBounds(10, 175, 82, 14);
+		getContentPane().add(label);
+		
+		LiveLineGraph gyroGraph = new LiveLineGraph((Color) null, 0);
+		gyroGraph.setBounds(10, 359, 769, 138);
+		getContentPane().add(gyroGraph);
+		
+		JLabel label_1 = new JLabel("Gyros:");
+		label_1.setBounds(10, 339, 82, 14);
+		getContentPane().add(label_1);
 
 	}
-
 }

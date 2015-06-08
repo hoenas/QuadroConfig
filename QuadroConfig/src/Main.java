@@ -144,6 +144,7 @@ public class Main {
 		frame.getContentPane().setLayout(null);
 		
 		// VISUALISIERUNG INITIALISIEREN
+		/*
 		visualisierungsfenster.motorsGraph.setRasterLineCountY(5);
 		visualisierungsfenster.motorsGraph.setRastertYColor(Color.black);
 		visualisierungsfenster.motorsGraph.setUseRasterY(true);
@@ -151,6 +152,7 @@ public class Main {
 		visualisierungsfenster.motorsGraph.addGraph( motor2Dataset );
 		visualisierungsfenster.motorsGraph.addGraph( motor3Dataset );
 		visualisierungsfenster.motorsGraph.addGraph( motor4Dataset );
+		*/
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(10, 11, 396, 240);
@@ -324,7 +326,8 @@ public class Main {
 				if( !wasVisible )
 				{
 					wasVisible = true;
-					visualisierungsfenster.motorsGraph.setBufferStrategy();
+					//visualisierungsfenster.motorsGraph.setBufferStrategy();
+					// visualisierungsfenster.horizon.setBufferStrategy();
 				}
 			}
 		});
@@ -530,16 +533,6 @@ public class Main {
 		messtimer = new Timer();
 		messtimer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
-				anzahlMessungen++;
-				if( visualisierungsfenster.isVisible() ) {
-					float[] update = new float[13];
-					Random ran = new Random();
-					for(int i = 0; i < 13; i++) {
-						update[i] = 50.0f * (float)(Math.sin(0.05 * ( anzahlMessungen + i * 100 ))) + 50.0f;
-					}
-					visualisierungsfenster.motorsGraph.update(update);
-					messwertfensterfenster.setLabelText(update);
-				}
 				
 				if(messungAktiv && port.isOpened() ) {
 					
