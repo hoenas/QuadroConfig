@@ -3,18 +3,10 @@ package LiveGraph;
 import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.List;
 import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import java.util.ArrayList;
-
-import javax.swing.JPanel;
 
 public class LiveLineGraph extends Canvas{
 	private java.util.List<Dataset> graphlist = new ArrayList<Dataset>();
