@@ -33,11 +33,11 @@ public class Visualisierungsfenster extends JFrame {
 		lblMotoren.setBounds(10, 11, 46, 14);
 		getContentPane().add(lblMotoren);
 		
-		motorGraph = new LiveLineGraph( Color.lightGray, 100 );
+		motorGraph = new LiveLineGraph( Color.lightGray, 101 , 1 );
 		motorGraph.setBounds(10, 31, 769, 138);
 		getContentPane().add(motorGraph);
 		
-		accGraph = new LiveLineGraph( Color.lightGray, 20);
+		accGraph = new LiveLineGraph( Color.lightGray, 20, 10);
 		accGraph.setBounds(10, 195, 769, 138);
 		getContentPane().add(accGraph);
 		
@@ -45,7 +45,7 @@ public class Visualisierungsfenster extends JFrame {
 		label.setBounds(10, 175, 82, 14);
 		getContentPane().add(label);
 		
-		gyroGraph = new LiveLineGraph( Color.lightGray, 20 );
+		gyroGraph = new LiveLineGraph( Color.lightGray, 400, 200);
 		gyroGraph.setBounds(10, 359, 769, 138);
 		getContentPane().add(gyroGraph);
 		

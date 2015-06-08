@@ -84,7 +84,7 @@ public class Main {
 	// Timeout in ms
 	private static long COMMUNICATION_TIMEOUT = 1000;
 	private long anzahlMessungen = 0;
-	private int historyLength = 1000;
+	private int historyLength = 100;
 	// #########################################################
 	// Visualisierung:
 	// #########################################################
@@ -373,7 +373,10 @@ public class Main {
 				if( !wasVisible )
 				{
 					wasVisible = true;
-					//visualisierungsfenster.motorsGraph.setBufferStrategy();
+					
+					visualisierungsfenster.motorGraph.setBufferStrategy();
+					visualisierungsfenster.gyroGraph.setBufferStrategy();
+					visualisierungsfenster.accGraph.setBufferStrategy();
 					// visualisierungsfenster.horizon.setBufferStrategy();
 				}
 			}
@@ -617,7 +620,7 @@ public class Main {
 									messdaten[i] = byteArrayToFloat(temp, i * 4);
 								}
 								messwertfensterfenster.setLabelText(messdaten);
-								/*
+								
 								if( visualisierungsfenster.isVisible() ) {
 									// Motorenwerte aktualisieren
 									float[] motoren = new float[4];
@@ -633,9 +636,10 @@ public class Main {
 									gyros[1] = messdaten[4];
 									gyros[2] = messdaten[5];
 									visualisierungsfenster.gyroGraph.update( gyros );
-								}*/
+								}
 								
 								anzahlMessungen++;
+								System.out.println(port.getInputBufferBytesCount());
 							}
 						}
 					} catch( Exception e ) {
