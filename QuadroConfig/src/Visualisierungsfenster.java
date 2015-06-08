@@ -18,6 +18,9 @@ import javax.swing.BoxLayout;
 import javax.swing.SpringLayout;
 
 public class Visualisierungsfenster extends JFrame {
+	public LiveLineGraph motorGraph;
+	public LiveLineGraph accGraph;
+	public LiveLineGraph gyroGraph;
 	/**
 	 * Create the frame.
 	 */
@@ -30,11 +33,11 @@ public class Visualisierungsfenster extends JFrame {
 		lblMotoren.setBounds(10, 11, 46, 14);
 		getContentPane().add(lblMotoren);
 		
-		LiveLineGraph motorGraph = new LiveLineGraph((Color) null, 0);
+		motorGraph = new LiveLineGraph( Color.lightGray, 100 );
 		motorGraph.setBounds(10, 31, 769, 138);
 		getContentPane().add(motorGraph);
 		
-		LiveLineGraph accGraph = new LiveLineGraph((Color) null, 0);
+		accGraph = new LiveLineGraph( Color.lightGray, 20);
 		accGraph.setBounds(10, 195, 769, 138);
 		getContentPane().add(accGraph);
 		
@@ -42,7 +45,7 @@ public class Visualisierungsfenster extends JFrame {
 		label.setBounds(10, 175, 82, 14);
 		getContentPane().add(label);
 		
-		LiveLineGraph gyroGraph = new LiveLineGraph((Color) null, 0);
+		gyroGraph = new LiveLineGraph( Color.lightGray, 20 );
 		gyroGraph.setBounds(10, 359, 769, 138);
 		getContentPane().add(gyroGraph);
 		

@@ -41,7 +41,7 @@ public class Main {
 	private SerialPort port;
 	private JFrame frame;
 	private Timer messtimer;
-	private int messintervall = 16;
+	private int messintervall = 100;
 	private boolean messungAktiv = false;
 	// Befehle f�r Protokoll
 	private static int protocolStatus = 0;
@@ -190,15 +190,16 @@ public class Main {
 		frame.getContentPane().setLayout(null);
 		
 		// VISUALISIERUNG INITIALISIEREN
-		/*
-		visualisierungsfenster.motorsGraph.setRasterLineCountY(5);
-		visualisierungsfenster.motorsGraph.setRastertYColor(Color.black);
-		visualisierungsfenster.motorsGraph.setUseRasterY(true);
-		visualisierungsfenster.motorsGraph.addGraph( motor1Dataset );
-		visualisierungsfenster.motorsGraph.addGraph( motor2Dataset );
-		visualisierungsfenster.motorsGraph.addGraph( motor3Dataset );
-		visualisierungsfenster.motorsGraph.addGraph( motor4Dataset );
-		*/
+		visualisierungsfenster.motorGraph.setRasterLineCountY(5);
+		visualisierungsfenster.motorGraph.setRastertYColor(Color.black);
+		visualisierungsfenster.motorGraph.setUseRasterY(true);
+		visualisierungsfenster.motorGraph.addGraph( motor1Dataset );
+		visualisierungsfenster.motorGraph.addGraph( motor2Dataset );
+		visualisierungsfenster.motorGraph.addGraph( motor3Dataset );
+		visualisierungsfenster.motorGraph.addGraph( motor4Dataset );
+		visualisierungsfenster.gyroGraph.addGraph( rateXDataset );
+		visualisierungsfenster.gyroGraph.addGraph( rateYDataset );
+		visualisierungsfenster.gyroGraph.addGraph( rateZDataset );
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(10, 11, 396, 240);
@@ -616,6 +617,24 @@ public class Main {
 									messdaten[i] = byteArrayToFloat(temp, i * 4);
 								}
 								messwertfensterfenster.setLabelText(messdaten);
+								/*
+								if( visualisierungsfenster.isVisible() ) {
+									// Motorenwerte aktualisieren
+									float[] motoren = new float[4];
+									motoren[0] = messdaten[19];
+									motoren[1] = messdaten[20];
+									motoren[2] = messdaten[21];
+									motoren[3] = messdaten[22];
+									visualisierungsfenster.motorGraph.update( motoren );
+									
+									// Gyrowerte aktualisieren
+									float[] gyros = new float[3];
+									gyros[0] = messdaten[3];
+									gyros[1] = messdaten[4];
+									gyros[2] = messdaten[5];
+									visualisierungsfenster.gyroGraph.update( gyros );
+								}*/
+								
 								anzahlMessungen++;
 							}
 						}
