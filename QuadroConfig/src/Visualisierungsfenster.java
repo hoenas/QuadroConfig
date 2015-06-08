@@ -45,7 +45,7 @@ public class Visualisierungsfenster extends JFrame {
 		label.setBounds(10, 175, 82, 14);
 		getContentPane().add(label);
 		
-		gyroGraph = new LiveLineGraph( Color.lightGray, 400, 200);
+		gyroGraph = new LiveLineGraph( Color.lightGray, 40, 20);
 		gyroGraph.setBounds(10, 359, 769, 138);
 		getContentPane().add(gyroGraph);
 		
