@@ -43,9 +43,9 @@ public class Main {
 	private Timer messtimer;
 	private int messintervall = 16;
 	private boolean messungAktiv = false;
-	// Befehle für Protokoll
+	// Befehle fï¿½r Protokoll
 	private static int protocolStatus = 0;
-	/* Werte für protocolStatus:
+	/* Werte fï¿½r protocolStatus:
 	 * 0: idle
 	 * 1: receiveFrame
 	 * 2: receiveConfiguration
@@ -53,6 +53,7 @@ public class Main {
 	 */
 	// TODO: richtige Befehlswerte senden
 	private static byte COMMAND_MEASUREMENT = (byte)0x03;
+	
 	private static byte COMMAND_RESET = (byte)0b01000000;
 	private static byte COMMAND_GET_CONFIGURATION = (byte)0b00100000;
 	private static byte COMMAND_SET_CONFIGURATION = (byte)0b00010000;
@@ -262,8 +263,8 @@ public class Main {
 						comboBox_3.setEnabled(false);
 						comboBox_4.setEnabled(false);
 						comboBox_5.setEnabled(false);
-						statuslabel.setText("Port geöffnet");
-						btnNewButton.setText("Port schließen");
+						statuslabel.setText("Port geï¿½ffnet");
+						btnNewButton.setText("Port schlieï¿½en");
 					}
 					else
 					{
@@ -274,7 +275,7 @@ public class Main {
 						comboBox_4.setEnabled(true);
 						comboBox_5.setEnabled(true);
 						statuslabel.setText("Port geschlossen");
-						btnNewButton.setText("Port öffnen");
+						btnNewButton.setText("Port ï¿½ffnen");
 					}
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
@@ -439,7 +440,7 @@ public class Main {
 					LocalTime begin = LocalTime.now();
 					while( port.getInputBufferBytesCount() != CONFIGURATION_FRAME_LENGTH) {
 						// warte bis alle Bytes da sind
-						// auf Timeout prüfen
+						// auf Timeout prï¿½fen
 						if( LocalTime.now().isAfter( begin.plus(COMMUNICATION_TIMEOUT, ChronoUnit.MILLIS) ) ) {
 							timeout = true;
 							protocolStatus = 0;
@@ -514,7 +515,7 @@ public class Main {
 
 						port.writeBytes(outbuffer);					
 						protocolStatus = 0;
-						statuslabel.setText("Konfiguration übertragen");
+						statuslabel.setText("Konfiguration ï¿½bertragen");
 						
 					} catch (Exception ex) {
 						System.out.println(ex.getMessage());
@@ -530,7 +531,7 @@ public class Main {
 		messtimer = new Timer();
 		messtimer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
-				anzahlMessungen++;
+
 				if( visualisierungsfenster.isVisible() ) {
 					float[] update = new float[13];
 					Random ran = new Random();
@@ -552,7 +553,7 @@ public class Main {
 						LocalTime begin = LocalTime.now();
 						while( port.getInputBufferBytesCount() != MEASUREMENT_FRAME_LENGTH ) {
 							// warte bis alle Bytes da sind
-							// auf Timeout prüfen
+							// auf Timeout prï¿½fen
 							if( LocalTime.now().isAfter( begin.plus(COMMUNICATION_TIMEOUT, ChronoUnit.MILLIS) ) ) {
 								timeout = true;
 								protocolStatus = 0;
@@ -563,7 +564,7 @@ public class Main {
 						
 						if(!timeout) {
 							// Daten auswerten
-							if( port.getInputBufferBytesCount() == messdaten.length ) {
+							if( port.getInputBufferBytesCount() == MEASUREMENT_FRAME_LENGTH ) {
 								byte[] temp = port.readBytes();
 								
 								for(int i = 0; i < messdaten.length; i++) {
