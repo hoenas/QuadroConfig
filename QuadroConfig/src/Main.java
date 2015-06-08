@@ -6,6 +6,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.SwingUtilities;
 
 import jssc.SerialPort;
 import jssc.SerialPortList;
@@ -40,7 +41,7 @@ public class Main {
 	private SerialPort port;
 	private JFrame frame;
 	private Timer messtimer;
-	private int messintervall = 100;
+	private int messintervall = 16;
 	private boolean messungAktiv = false;
 	// Befehle für Protokoll
 	private static int protocolStatus = 0;
@@ -62,7 +63,7 @@ public class Main {
 	// Timeout in ms
 	private static long COMMUNICATION_TIMEOUT = 100;
 	private long anzahlMessungen = 0;
-	private int historyLength = 50;
+	private int historyLength = 1000;
 	// #########################################################
 	// Visualisierung:
 	// #########################################################
@@ -85,13 +86,15 @@ public class Main {
 	private Dataset rateXDataset = new Dataset("Rate Pitch", Color.GREEN, 1, historyLength);
 	private Dataset rateYDataset = new Dataset("Rate Yaw", Color.RED, 1, historyLength);
 	private Dataset rateZDataset = new Dataset("Rate ROll", Color.YELLOW, 1, historyLength);
+	
+	private boolean wasVisible = false;
     // #########################################################
 	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
+		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					Main window = new Main();
@@ -318,6 +321,11 @@ public class Main {
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				visualisierungsfenster.setVisible( true );
+				if( !wasVisible )
+				{
+					wasVisible = true;
+					visualisierungsfenster.motorsGraph.setBufferStrategy();
+				}
 			}
 		});
 		btnNewButton_3.setBounds(10, 79, 371, 23);
@@ -522,14 +530,13 @@ public class Main {
 		messtimer = new Timer();
 		messtimer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
-				
+				anzahlMessungen++;
 				if( visualisierungsfenster.isVisible() ) {
 					float[] update = new float[13];
 					Random ran = new Random();
 					for(int i = 0; i < 13; i++) {
-						update[i] = ran.nextFloat() * 100f;
+						update[i] = 50.0f * (float)(Math.sin(0.05 * ( anzahlMessungen + i * 100 ))) + 50.0f;
 					}
-
 					visualisierungsfenster.motorsGraph.update(update);
 					messwertfensterfenster.setLabelText(update);
 				}

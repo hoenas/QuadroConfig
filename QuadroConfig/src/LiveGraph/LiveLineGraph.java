@@ -1,26 +1,30 @@
 package LiveGraph;
 
 import java.awt.BasicStroke;
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.List;
+import java.awt.Toolkit;
+import java.awt.image.BufferStrategy;
 import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-public class LiveLineGraph extends JPanel{
+public class LiveLineGraph extends Canvas{
 	private java.util.List<Dataset> graphlist = new ArrayList<Dataset>();
 	private Color backgroundColor;
 	private int max;
 	private boolean useRasterY;
 	private Color rasterYColor;
 	private int rasterLineCountY;
-
+	private BufferStrategy bufferstrategy;
+	
 	public boolean isUseRasterY() {
 		return useRasterY;
 	}
@@ -45,14 +49,14 @@ public class LiveLineGraph extends JPanel{
 		this.rasterLineCountY = rasterY;
 	}
 	
+	public void setBufferStrategy() {
+		this.createBufferStrategy(2);
+		bufferstrategy = this.getBufferStrategy();
+	}
+	
 	public LiveLineGraph( Color backgroundColor, int max ) {
 		this.backgroundColor = backgroundColor;
 		this.max = max;
-	}
-
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
 	}
 	
 	public void addGraph( Dataset dataset ) {
@@ -60,7 +64,7 @@ public class LiveLineGraph extends JPanel{
 	}
 	
 	public void update( float[] values ) {
-		Graphics2D g2 = (Graphics2D)this.getGraphics();
+		Graphics2D g2 = (Graphics2D) bufferstrategy.getDrawGraphics();
 		// neue Werte eintragen
 		for(int i = 0; i < graphlist.size(); i++) {
 			graphlist.get(i).addValue( values[i] );
@@ -77,6 +81,7 @@ public class LiveLineGraph extends JPanel{
 				g2.drawLine( 0, i * this.getHeight() / rasterLineCountY, this.getWidth(), i * this.getHeight() / rasterLineCountY);
 			}
 		}
+		
 		// Für jeden Graph Linien zeichnen
 		for( Dataset graph : graphlist ) {
 			// Farbe einstellen
@@ -92,5 +97,8 @@ public class LiveLineGraph extends JPanel{
 				g2.drawLine(x1 ,y1, x2, y2);
 			}
 		}
+		
+		bufferstrategy.show();
+		Toolkit.getDefaultToolkit().sync();
 	}
 }
