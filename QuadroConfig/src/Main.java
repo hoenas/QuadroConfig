@@ -41,7 +41,7 @@ public class Main {
 	private SerialPort port;
 	private JFrame frame;
 	private Timer messtimer;
-	private int messintervall = 100;
+	private int messintervall = 24;
 	private boolean messungAktiv = false;
 	// Befehle f�r Protokoll
 	private static int protocolStatus = 0;
@@ -82,9 +82,9 @@ public class Main {
 	public float[] messdaten = new float[MEASUREMENT_FRAME_LENGTH/4];
 	private static int CONFIGURATION_FRAME_LENGTH = 32;	
 	// Timeout in ms
-	private static long COMMUNICATION_TIMEOUT = 1000;
+	private static long COMMUNICATION_TIMEOUT = 100;
 	private long anzahlMessungen = 0;
-	private int historyLength = 100;
+	private int historyLength = 300;
 	// #########################################################
 	// Visualisierung:
 	// #########################################################
@@ -377,7 +377,7 @@ public class Main {
 					visualisierungsfenster.motorGraph.setBufferStrategy();
 					visualisierungsfenster.gyroGraph.setBufferStrategy();
 					visualisierungsfenster.accGraph.setBufferStrategy();
-					// visualisierungsfenster.horizon.setBufferStrategy();
+					//visualisierungsfenster.horizon.setBufferStrategy();
 				}
 			}
 		});
@@ -591,7 +591,7 @@ public class Main {
 		messtimer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
 				
-				if(messungAktiv && port.isOpened() ) {
+				if( messungAktiv && port.isOpened() ) {
 					
 					try {
 						// Daten anfordern
@@ -639,8 +639,10 @@ public class Main {
 								}
 								
 								anzahlMessungen++;
-								System.out.println(port.getInputBufferBytesCount());
 							}
+						} else {
+							// Dummy read
+							port.readBytes();
 						}
 					} catch( Exception e ) {
 						System.out.println( e.getMessage() );

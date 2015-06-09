@@ -18,7 +18,6 @@ public class LiveArtificialHorizon extends Canvas{
 	private Color rasterColor;
 	private BufferStrategy bufferstrategy;
 	private int rasterWidth;
-	private int angleWidth;
 	private BasicStroke stroke;
 	
 	public boolean isUseRaster() {
@@ -42,14 +41,13 @@ public class LiveArtificialHorizon extends Canvas{
 		bufferstrategy = this.getBufferStrategy();
 	}
 	
-	public LiveArtificialHorizon( Color backgroundColor, Color foregroundColor, Color rasterColor, boolean useRaster, int rasterWidth, int angleWidth) {
+	public LiveArtificialHorizon( Color backgroundColor, Color foregroundColor, Color rasterColor, boolean useRaster, int rasterWidth) {
 		this.backgroundColor = backgroundColor;
 		this.color = foregroundColor;
 		this.rasterColor = rasterColor;
 		this.useRaster = useRaster;
 		this.rasterWidth = rasterWidth;
-		stroke = new BasicStroke( rasterWidth );
-		this.angleWidth = angleWidth;		
+		stroke = new BasicStroke( rasterWidth );	
 	}
 	
 	public void addGraph( Dataset dataset ) {
@@ -64,7 +62,7 @@ public class LiveArtificialHorizon extends Canvas{
 		
 		// kuenstlichen Horizont zeichnen		
 		g2.setColor( color );		
-		g2.fillArc(0, 0, this.getWidth(), this.getHeight(), angle , 180);//angleWidth);
+		g2.fillArc(0, 0, this.getWidth(), this.getHeight(), angle + 180, 180);
 		
 		// Umrandung zeichnen
 		if( useRaster ) {
@@ -79,10 +77,6 @@ public class LiveArtificialHorizon extends Canvas{
 		
 		bufferstrategy.show();
 		Toolkit.getDefaultToolkit().sync();
-	}
-
-	public void setAngleWidth(int angleWidth) {
-		this.angleWidth = angleWidth;
 	}
 
 
