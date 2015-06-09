@@ -41,7 +41,7 @@ public class Main {
 	private SerialPort port;
 	private JFrame frame;
 	private Timer messtimer;
-	private int messintervall = 100;
+	private int messintervall = 50;
 	private boolean messungAktiv = false;
 	// Befehle f�r Protokoll
 	private static int protocolStatus = 0;
@@ -639,8 +639,11 @@ public class Main {
 								}
 								
 								anzahlMessungen++;
-								System.out.println(port.getInputBufferBytesCount());
+								
 							}
+						} else {
+							System.out.println(port.getInputBufferBytesCount());
+							byte[] dummy = port.readBytes();
 						}
 					} catch( Exception e ) {
 						System.out.println( e.getMessage() );

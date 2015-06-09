@@ -157,6 +157,7 @@ public class Messwertfenster extends JFrame {
 				+		"</td>"
 				+		"<td>"
 				+			roundedString( values[23], 2) + " °C<br>"
+				+			roundedString( values[27], 2) + " V<br>"
 				+			roundedString( values[31] * 100, 2) + " %<br>"
 				+		"</td>"
 				+	"</tr>"
