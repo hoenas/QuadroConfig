@@ -29,7 +29,7 @@ public class Messwertfenster extends JFrame {
 		value = Math.round(value);
 		value /= Math.pow(10, digits); 
 		
-		String tmp = String.valueOf(value);
+		String tmp = Float.toString(value);
 		
 		while (tmp.substring(tmp.lastIndexOf(".")).length() < digits + 1) {
 			tmp += "0";
@@ -152,10 +152,12 @@ public class Messwertfenster extends JFrame {
 				+		"<td>"
 				+			"<b>Temp: </b><br>"
 				+			"<b>Akku Voltage: </b><br>"
+				+			"<b>CPU Load: </b><br>"
 				+		"</td>"
 				+		"<td>"
 				+			roundedString( values[23], 2) + " °C<br>"
 				+			roundedString( values[27], 2) + " V<br>"
+				+			roundedString( values[31] * 100, 2) + " %<br>"
 				+		"</td>"
 				+	"</tr>"
 				+"</table>"

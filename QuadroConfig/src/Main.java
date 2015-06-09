@@ -15,6 +15,8 @@ import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
@@ -47,9 +49,9 @@ public class Main {
 	private int messintervall = 24;
 	private boolean messungAktiv = false;
 	
-	// Befehle f�r Protokoll
+	// Protokoll
 	private static int protocolStatus = 0;
-	/* Werte f�r protocolStatus:
+	/* Werte protocolStatus:
 	 * 0: idle
 	 * 1: receiveFrame
 	 * 2: receiveConfiguration
@@ -82,7 +84,7 @@ public class Main {
 	
 	
 	// TODO: richtige Werte
-	private static int MEASUREMENT_FRAME_LENGTH = 124;
+	private static int MEASUREMENT_FRAME_LENGTH = 128;
 	public float[] messdaten = new float[MEASUREMENT_FRAME_LENGTH/4];
 	private static int CONFIGURATION_FRAME_LENGTH = 32;	
 	// Timeout in ms
@@ -173,14 +175,6 @@ public class Main {
 		return byteArray;
 	}
 	
-	public float byteArrayToFloat( byte[] byteArray, int offset) {
-		int temp = (int)byteArray[0 + offset];
-		temp += (int)(byteArray[1 + offset] << 8);
-		temp += (int)(byteArray[2 + offset] << 16);
-		temp += (int)(byteArray[3 + offset] << 24);
-		
-		return Float.intBitsToFloat( temp );
-	}
 	
 
 	/**
@@ -315,8 +309,8 @@ public class Main {
 						comboBox_3.setEnabled(false);
 						comboBox_4.setEnabled(false);
 						comboBox_5.setEnabled(false);
-						statuslabel.setText("Port geoeffnet");
-						btnNewButton.setText("Port schliessen");
+						statuslabel.setText("Port geöffnet");
+						btnNewButton.setText("Port schließen");
 					}
 					else
 					{
@@ -563,7 +557,7 @@ public class Main {
 			}
 		});
 		btnWerteLaden.setBounds(5, 178, 155, 23);
-		tabKonfiguration.add(btnWerteLaden);
+		panel_2.add(btnWerteLaden);
 		
 		JButton button = new JButton("Werte speichern");
 		button.addActionListener(new ActionListener() {
@@ -604,7 +598,7 @@ public class Main {
 
 						port.writeBytes(outbuffer);					
 						protocolStatus = 0;
-						statuslabel.setText("Konfiguration übertragen");
+						statuslabel.setText("send Configuration");
 						
 					} catch (Exception ex) {
 						System.out.println(ex.getMessage());
@@ -621,7 +615,7 @@ public class Main {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Timer wurde ausgel�st
+				// Timer wurde ausgelöst
 				// Timer neu einstellen
 				messtimer.setDelay( (int)spinner.getValue() );
 				
@@ -636,7 +630,7 @@ public class Main {
 						LocalTime begin = LocalTime.now();
 						while( port.getInputBufferBytesCount() != MEASUREMENT_FRAME_LENGTH ) {
 							// warte bis alle Bytes da sind
-							// auf Timeout prüfen
+							// auf Timeout prÃ¼fen
 							if( LocalTime.now().isAfter( begin.plus(COMMUNICATION_TIMEOUT, ChronoUnit.MILLIS) ) ) {
 								timeout = true;
 								protocolStatus = 0;
@@ -651,7 +645,7 @@ public class Main {
 								byte[] temp = port.readBytes();
 								
 								for(int i = 0; i < messdaten.length; i++) {
-									messdaten[i] = byteArrayToFloat(temp, i * 4);
+									messdaten[i] = ByteBuffer.wrap(temp, i *4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 								}
 								messwertfensterfenster.setLabelText(messdaten);
 								
