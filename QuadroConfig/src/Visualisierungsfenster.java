@@ -16,41 +16,53 @@ import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 import javax.swing.BoxLayout;
 import javax.swing.SpringLayout;
+import javax.swing.JTabbedPane;
 
 public class Visualisierungsfenster extends JFrame {
-	public LiveLineGraph motorGraph;
-	public LiveLineGraph accGraph;
-	public LiveLineGraph gyroGraph;
 	/**
 	 * Create the frame.
 	 */
+	public LiveLineGraph motorGraph;
+	public LiveLineGraph accGraph;
+	public LiveLineGraph gyroGraph;
+	
 	public Visualisierungsfenster() {
 		setBounds(100, 100, 805, 584);
-		getContentPane().setLayout(null);
+		getContentPane().setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblMotoren = new JLabel("Motoren");
-		lblMotoren.setBounds(10, 11, 46, 14);
-		getContentPane().add(lblMotoren);
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
-		motorGraph = new LiveLineGraph( Color.lightGray, 101 , 1 );
+		JPanel panel = new JPanel();
+		tabbedPane.addTab("Lageregelung", null, panel, null);
+		panel.setLayout(null);
+		
+		JLabel label = new JLabel("Motoren");
+		label.setBounds(10, 11, 200, 14);
+		panel.add(label);
+		
+		motorGraph = new LiveLineGraph(Color.LIGHT_GRAY, 101, 1);
 		motorGraph.setBounds(10, 31, 769, 138);
-		getContentPane().add(motorGraph);
+		panel.add(motorGraph);
 		
-		accGraph = new LiveLineGraph( Color.lightGray, 20, 10);
+		JLabel label_1 = new JLabel("Accelerometer:");
+		label_1.setBounds(10, 175, 200, 14);
+		panel.add(label_1);
+		
+		accGraph = new LiveLineGraph(Color.LIGHT_GRAY, 20, 10);
 		accGraph.setBounds(10, 195, 769, 138);
-		getContentPane().add(accGraph);
+		panel.add(accGraph);
 		
-		JLabel label = new JLabel("Accelerometer:");
-		label.setBounds(10, 175, 82, 14);
-		getContentPane().add(label);
+		JLabel label_2 = new JLabel("Gyros:");
+		label_2.setBounds(10, 339, 200, 14);
+		panel.add(label_2);
 		
-		gyroGraph = new LiveLineGraph( Color.lightGray, 40, 20);
+		gyroGraph = new LiveLineGraph(Color.LIGHT_GRAY, 40, 20);
 		gyroGraph.setBounds(10, 359, 769, 138);
-		getContentPane().add(gyroGraph);
+		panel.add(gyroGraph);
 		
-		JLabel label_1 = new JLabel("Gyros:");
-		label_1.setBounds(10, 339, 82, 14);
-		getContentPane().add(label_1);
+		JPanel panel_1 = new JPanel();
+		tabbedPane.addTab("Sensoren", null, panel_1, null);
 
 	}
 }
