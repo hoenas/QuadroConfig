@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import javax.swing.text.StyledEditorKit.ForegroundAction;
 
-public class LiveArtificialHorizon extends Canvas{
+public class LiveAltimeter extends Canvas{
 	private java.util.List<Dataset> graphlist = new ArrayList<Dataset>();
 	private Color color;
 	private Color backgroundColor;
@@ -18,6 +18,8 @@ public class LiveArtificialHorizon extends Canvas{
 	private Color rasterColor;
 	private BufferStrategy bufferstrategy;
 	private int rasterWidth;
+	private int rasterCount;
+	private int max;
 	private BasicStroke stroke;
 	
 	public boolean isUseRaster() {
@@ -32,7 +34,7 @@ public class LiveArtificialHorizon extends Canvas{
 		return rasterColor;
 	}
 
-	public void setRastertColor(Color rasterColor) {
+	public void setRasterColor(Color rasterColor) {
 		this.rasterColor = rasterColor;
 	}
 	
@@ -41,37 +43,38 @@ public class LiveArtificialHorizon extends Canvas{
 		bufferstrategy = this.getBufferStrategy();
 	}
 	
-	public LiveArtificialHorizon( Color backgroundColor, Color foregroundColor, Color rasterColor, boolean useRaster, int rasterWidth) {
+	public LiveAltimeter( Color backgroundColor, Color foregroundColor, Color rasterColor, boolean useRaster, int rasterWidth, int rasterCount, int max) {
 		this.backgroundColor = backgroundColor;
 		this.color = foregroundColor;
 		this.rasterColor = rasterColor;
 		this.useRaster = useRaster;
 		this.rasterWidth = rasterWidth;
+		this.rasterCount = rasterCount;
 		stroke = new BasicStroke( rasterWidth );	
+		this.max = max;
 	}
 	
 	public void addGraph( Dataset dataset ) {
 		graphlist.add(dataset);
 	}
 	
-	public void update( int angle) {
+	public void update( int altitude) {
 		Graphics2D g2 = (Graphics2D) bufferstrategy.getDrawGraphics();
 		// Graph loeschen
 		g2.setColor( backgroundColor );
 		g2.fillRect(0, 0, this.getWidth(), this.getHeight());
 		
-		// kuenstlichen Horizont zeichnen		
+		// Hoehe zeichnen	
 		g2.setColor( color );		
-		g2.fillArc(0, 0, this.getWidth(), this.getHeight(), angle + 180, 180);
+		g2.fillRect(3, this.getHeight(), this.getWidth() - 6, -altitude * this.getHeight() / max );
 		
-		// Umrandung zeichnen
+		// Skala zeichnen
 		if( useRaster ) {
 			g2.setStroke( stroke );
 			g2.setColor( rasterColor );
-			g2.drawArc(0, 0, this.getWidth(), this.getHeight(), 0, 360);
-			g2.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
-			for(int i = 0; i < 30; i++) {
-				g2.drawArc(10, 10, this.getWidth() - 20, this.getHeight() - 20, 12*i - 1, 2);	
+			for(int i = 0; i < rasterCount; i++) {
+				g2.drawLine(0, i * (this.getHeight() / (rasterCount-1)), 3, i * (this.getHeight() / (rasterCount-1)) );
+				g2.drawLine(this.getWidth() - 3, i * (this.getHeight() / (rasterCount-1)), this.getWidth(), i * (this.getHeight() / (rasterCount-1)) );
 			}
 		}
 		

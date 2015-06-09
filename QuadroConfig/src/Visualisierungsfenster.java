@@ -25,7 +25,6 @@ public class Visualisierungsfenster extends JFrame {
 	 * Create the frame.
 	 */
 	public Visualisierungsfenster() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 805, 584);
 		getContentPane().setLayout(null);
 		

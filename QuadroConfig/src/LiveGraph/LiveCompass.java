@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import javax.swing.text.StyledEditorKit.ForegroundAction;
 
-public class LiveArtificialHorizon extends Canvas{
+public class LiveCompass extends Canvas{
 	private java.util.List<Dataset> graphlist = new ArrayList<Dataset>();
 	private Color color;
 	private Color backgroundColor;
@@ -41,7 +41,7 @@ public class LiveArtificialHorizon extends Canvas{
 		bufferstrategy = this.getBufferStrategy();
 	}
 	
-	public LiveArtificialHorizon( Color backgroundColor, Color foregroundColor, Color rasterColor, boolean useRaster, int rasterWidth) {
+	public LiveCompass( Color backgroundColor, Color foregroundColor, Color rasterColor, boolean useRaster, int rasterWidth) {
 		this.backgroundColor = backgroundColor;
 		this.color = foregroundColor;
 		this.rasterColor = rasterColor;
@@ -62,17 +62,22 @@ public class LiveArtificialHorizon extends Canvas{
 		
 		// kuenstlichen Horizont zeichnen		
 		g2.setColor( color );		
-		g2.fillArc(0, 0, this.getWidth(), this.getHeight(), angle + 180, 180);
+		g2.fillArc(0, 0, this.getWidth(), this.getHeight(), 88 - angle, 4);
 		
 		// Umrandung zeichnen
 		if( useRaster ) {
 			g2.setStroke( stroke );
 			g2.setColor( rasterColor );
 			g2.drawArc(0, 0, this.getWidth(), this.getHeight(), 0, 360);
-			g2.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
 			for(int i = 0; i < 30; i++) {
-				g2.drawArc(10, 10, this.getWidth() - 20, this.getHeight() - 20, 12*i - 1, 2);	
+				g2.drawArc(10, 10, this.getWidth() - 20, this.getHeight() - 20, 12*i , 1);
 			}
+			/*
+			g2.drawString("N", this.getWidth() / 2	, 10);
+			g2.drawString("O", this.getWidth() - 20	, this.getHeight() / 2);
+			g2.drawString("S", this.getWidth() / 2	, this.getHeight() - 20);
+			g2.drawString("W", 10					, this.getHeight() / 2);
+			*/
 		}
 		
 		bufferstrategy.show();
