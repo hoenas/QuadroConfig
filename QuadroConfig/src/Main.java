@@ -78,7 +78,7 @@ public class Main {
 	
 	
 	// TODO: richtige Werte
-	private static int MEASUREMENT_FRAME_LENGTH = 124;
+	private static int MEASUREMENT_FRAME_LENGTH = 128;
 	public float[] messdaten = new float[MEASUREMENT_FRAME_LENGTH/4];
 	private static int CONFIGURATION_FRAME_LENGTH = 32;	
 	// Timeout in ms
