@@ -15,6 +15,8 @@ import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
@@ -161,7 +163,7 @@ public class Main {
 	
 	public byte[] floatToByteArray( float f, byte[] byteArray, int offset) {
 		int integer = Float.floatToIntBits( f );
-		byteArray[0 + offset] = (byte)( integer & 0b00000000000000000000000011111111);
+		byteArray[0 + offset] = (byte)(  integer & 0b00000000000000000000000011111111);
 		byteArray[1 + offset] = (byte)(( integer & 0b00000000000000001111111100000000) >> 8);
 		byteArray[2 + offset] = (byte)(( integer & 0b00000000111111110000000000000000) >> 16);
 		byteArray[3 + offset] = (byte)(( integer & 0b11111111000000000000000000000000) >> 24);
@@ -170,10 +172,10 @@ public class Main {
 	}
 	
 	public float byteArrayToFloat( byte[] byteArray, int offset) {
-		int temp = (int)byteArray[0 + offset];
-		temp += (int)(byteArray[1 + offset] << 8);
-		temp += (int)(byteArray[2 + offset] << 16);
-		temp += (int)(byteArray[3 + offset] << 24);
+		int temp = byteArray[0 + offset];
+		temp += (byteArray[1 + offset] << 8);
+		temp += (byteArray[2 + offset] << 16);
+		temp += (byteArray[3 + offset] << 24);
 		
 		return Float.intBitsToFloat( temp );
 	}
@@ -617,8 +619,11 @@ public class Main {
 								byte[] temp = port.readBytes();
 								
 								for(int i = 0; i < messdaten.length; i++) {
-									messdaten[i] = byteArrayToFloat(temp, i * 4);
+									messdaten[i] = ByteBuffer.wrap(temp, i *4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+									//messdaten[i] = byteArrayToFloat(temp, i * 4);
+									
 								}
+								
 								messwertfensterfenster.setLabelText(messdaten);
 								
 								if( visualisierungsfenster.isVisible() ) {

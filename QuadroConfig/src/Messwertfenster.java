@@ -30,7 +30,7 @@ public class Messwertfenster extends JFrame {
 		value = Math.round(value);
 		value /= Math.pow(10, digits); 
 		
-		String tmp = String.valueOf(value);
+		String tmp = Float.toString(value);
 		
 		while (tmp.substring(tmp.lastIndexOf(".")).length() < digits + 1) {
 			tmp += "0";
