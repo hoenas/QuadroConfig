@@ -539,14 +539,14 @@ public class Main {
 						 * ...
 						 */
 						byte[] byteArray = port.readBytes( CONFIGURATION_FRAME_LENGTH );
-						spinner_pxy.setValue( byteArrayToFloat(byteArray, 0) );
-						spinner_ixy.setValue( byteArrayToFloat(byteArray, 4) );
-						spinner_dxy.setValue( byteArrayToFloat(byteArray, 8) );
-						spinner_pz.setValue( byteArrayToFloat(byteArray, 12) );
-						spinner_iz.setValue( byteArrayToFloat(byteArray, 16) );
-						spinner_dz.setValue( byteArrayToFloat(byteArray, 20) );
-//						spinner_cxy.setValue( byteArrayToFloat(byteArray, 24) );
-//						spinner_cz.setValue( byteArrayToFloat(byteArray, 28) );
+						spinner_pxy.setValue( ByteBuffer.wrap(byteArray, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
+						spinner_ixy.setValue( ByteBuffer.wrap(byteArray, 4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
+						spinner_dxy.setValue( ByteBuffer.wrap(byteArray, 8, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
+						spinner_pz.setValue( ByteBuffer.wrap(byteArray, 12, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
+						spinner_iz.setValue( ByteBuffer.wrap(byteArray, 16, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
+						spinner_dz.setValue( ByteBuffer.wrap(byteArray, 20, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
+//						spinner_cxy.setValue( ByteBuffer.wrap(byteArray, 24, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
+//						spinner_cz.setValue( ByteBuffer.wrap(byteArray, 28, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat());
 				
 						protocolStatus = 0;
 						statuslabel.setText("Konfiguration empfangen");
@@ -557,7 +557,7 @@ public class Main {
 			}
 		});
 		btnWerteLaden.setBounds(5, 178, 155, 23);
-		panel_2.add(btnWerteLaden);
+		tabKonfiguration.add(btnWerteLaden);
 		
 		JButton button = new JButton("Werte speichern");
 		button.addActionListener(new ActionListener() {
