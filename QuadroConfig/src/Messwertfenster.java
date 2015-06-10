@@ -22,9 +22,6 @@ public class Messwertfenster extends JFrame {
 		lblMessung.setVerticalAlignment(SwingConstants.TOP);
 		lblMessung.setHorizontalAlignment(SwingConstants.LEFT);
 		getContentPane().add(lblMessung, BorderLayout.CENTER);
-		
-		JScrollBar scrollBar = new JScrollBar();
-		getContentPane().add(scrollBar, BorderLayout.WEST);
 		setLabelText(zeros);
 	}
 	
