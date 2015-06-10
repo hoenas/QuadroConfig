@@ -45,7 +45,7 @@ public class Visualisierungsfenster extends JFrame {
 		
 		JPanel panel = new JPanel();
 		tabbedPane.addTab("Position Control", null, panel, null);
-		panel.setLayout(new MigLayout("", "[150.00][41.00,grow,fill]", "[15.00][150.00][][150.00][][150.00][][150.00][][150.00]"));
+		panel.setLayout(new MigLayout("", "[150.00][100px:41.00,grow,fill]", "[15.00][50:150][][50:150][][50:150.00][][50:150.00][][50:150.00]"));
 		
 		JLabel lblAngleX = new JLabel("Angle X-Axis");
 		panel.add(lblAngleX, "cell 0 0");
@@ -112,7 +112,7 @@ public class Visualisierungsfenster extends JFrame {
 		
 		JPanel panel_1 = new JPanel();
 		tabbedPane.addTab("Instruments", null, panel_1, null);
-		panel_1.setLayout(new MigLayout("", "[80.00][80.00][80.00][80]", "[14.00][250.00,grow]"));
+		panel_1.setLayout(new MigLayout("", "[80.00][80.00][80.00][80][]", "[14.00][100px:250.00,grow]"));
 		
 		JLabel lblCpuLoad = new JLabel("CPU Load");
 		panel_1.add(lblCpuLoad, "cell 0 0");
