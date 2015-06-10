@@ -108,7 +108,7 @@ public class Visualisierungsfenster extends JFrame {
 		
 		JPanel panel_1 = new JPanel();
 		tabbedPane.addTab("Instruments", null, panel_1, null);
-		panel_1.setLayout(new MigLayout("", "[80.00][80.00][80.00]", "[14.00][250.00,grow]"));
+		panel_1.setLayout(new MigLayout("", "[80.00][80.00][80.00][]", "[14.00][250.00,grow]"));
 		
 		JLabel lblCpuLoad = new JLabel("CPU Load");
 		panel_1.add(lblCpuLoad, "cell 0 0");

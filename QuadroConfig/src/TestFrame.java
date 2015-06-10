@@ -18,6 +18,7 @@ import LiveGraph.LiveLineGraph;
 import LiveGraph.LiveArtificialHorizon;
 
 import javax.swing.JTabbedPane;
+import javax.swing.Timer;
 
 import java.awt.BorderLayout;
 
@@ -36,6 +37,7 @@ public class TestFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 718, 413);
 		contentPane = new JPanel();
+		contentPane.setBackground(Color.DARK_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -46,7 +48,7 @@ public class TestFrame extends JFrame {
 	
 		
 		LiveLineGraph liveLineGraph = new LiveLineGraph(Color.BLACK, 100, 0);
-		liveLineGraph.setBounds(116, 10, 481, 100);
+		liveLineGraph.setBounds(116, 10, 438, 100);
 		contentPane.add(liveLineGraph);
 		
 		LiveArtificialHorizon liveArtificialHorizon = new LiveArtificialHorizon(Color.BLACK, Color.GREEN, Color.WHITE, true, 2);
@@ -87,9 +89,10 @@ public class TestFrame extends JFrame {
 		liveXYViewer.setBounds(560, 116, 100, 100);
 		contentPane.add(liveXYViewer);
 		
-		JButton btnNewButton = new JButton("refresh");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+		Timer timer = new Timer(1000, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
 				liveAltimeter.update( ran.nextInt(100) );
 				liveArtificialHorizon.update( ran.nextInt(180) );
 				float[] floatis = new float[2];
@@ -102,7 +105,21 @@ public class TestFrame extends JFrame {
 				liveXYViewer.update( ran.nextInt(100), ran.nextInt(100) );
 			}
 		});
-		btnNewButton.setBounds(603, 11, 89, 23);
+		
+		JButton btnNewButton = new JButton("Timer starten");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if( timer.isRunning() )
+				{
+					timer.stop();
+					btnNewButton.setText("Timer starten");
+				} else {
+					timer.start();
+					btnNewButton.setText("Timer stoppen");
+				}
+			}
+		});
+		btnNewButton.setBounds(560, 11, 132, 23);
 		contentPane.add(btnNewButton);
 	}
 }
