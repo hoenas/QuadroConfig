@@ -44,15 +44,11 @@ public class LiveLineGraph extends Canvas{
 		this.rasterLineCountY = rasterY;
 	}
 	
-	public void setBufferStrategy() {
-		this.createBufferStrategy(2);
-		bufferstrategy = this.getBufferStrategy();
-	}
-	
 	public LiveLineGraph( Color backgroundColor, int max, int offset ) {
 		this.backgroundColor = backgroundColor;
 		this.max = max;
 		this.offset = offset;
+		bufferstrategy = null;
 	}
 	
 	public void addGraph( Dataset dataset ) {
@@ -60,6 +56,12 @@ public class LiveLineGraph extends Canvas{
 	}
 	
 	public void update( float[] values ) {
+		
+		if( this.isVisible() && bufferstrategy == null ) {
+			this.createBufferStrategy(2);
+			bufferstrategy = this.getBufferStrategy();
+		}
+		
 		Graphics2D g2 = (Graphics2D) bufferstrategy.getDrawGraphics();
 		// neue Werte eintragen
 		for(int i = 0; i < graphlist.size(); i++) {

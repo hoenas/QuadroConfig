@@ -38,11 +38,6 @@ public class LiveAltimeter extends Canvas{
 		this.rasterColor = rasterColor;
 	}
 	
-	public void setBufferStrategy() {
-		this.createBufferStrategy(2);
-		bufferstrategy = this.getBufferStrategy();
-	}
-	
 	public LiveAltimeter( Color backgroundColor, Color foregroundColor, Color rasterColor, boolean useRaster, int rasterWidth, int rasterCount, int max) {
 		this.backgroundColor = backgroundColor;
 		this.color = foregroundColor;
@@ -54,11 +49,13 @@ public class LiveAltimeter extends Canvas{
 		this.max = max;
 	}
 	
-	public void addGraph( Dataset dataset ) {
-		graphlist.add(dataset);
-	}
-	
 	public void update( int altitude) {
+		
+		if( this.isVisible() && bufferstrategy == null ) {
+			this.createBufferStrategy(2);
+			bufferstrategy = this.getBufferStrategy();
+		}
+		
 		Graphics2D g2 = (Graphics2D) bufferstrategy.getDrawGraphics();
 		// Graph loeschen
 		g2.setColor( backgroundColor );

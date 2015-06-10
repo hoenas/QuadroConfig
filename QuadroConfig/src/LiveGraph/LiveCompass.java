@@ -36,11 +36,6 @@ public class LiveCompass extends Canvas{
 		this.rasterColor = rasterColor;
 	}
 	
-	public void setBufferStrategy() {
-		this.createBufferStrategy(2);
-		bufferstrategy = this.getBufferStrategy();
-	}
-	
 	public LiveCompass( Color backgroundColor, Color foregroundColor, Color rasterColor, boolean useRaster, int rasterWidth) {
 		this.backgroundColor = backgroundColor;
 		this.color = foregroundColor;
@@ -48,6 +43,7 @@ public class LiveCompass extends Canvas{
 		this.useRaster = useRaster;
 		this.rasterWidth = rasterWidth;
 		stroke = new BasicStroke( rasterWidth );	
+		bufferstrategy = null;
 	}
 	
 	public void addGraph( Dataset dataset ) {
@@ -55,6 +51,10 @@ public class LiveCompass extends Canvas{
 	}
 	
 	public void update( int angle) {
+		if( this.isVisible() && bufferstrategy == null ) {
+			this.createBufferStrategy(2);
+			bufferstrategy = this.getBufferStrategy();
+		}
 		Graphics2D g2 = (Graphics2D) bufferstrategy.getDrawGraphics();
 		// Graph loeschen
 		g2.setColor( backgroundColor );

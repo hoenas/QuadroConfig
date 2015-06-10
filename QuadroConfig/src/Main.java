@@ -1,6 +1,3 @@
-import java.awt.EventQueue;
-
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
@@ -32,10 +29,6 @@ import javax.swing.border.LineBorder;
 import LiveGraph.Dataset;
 
 import java.awt.Color;
-import java.awt.event.InputMethodListener;
-import java.awt.event.InputMethodEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 
 
 public class Main {
@@ -138,8 +131,6 @@ public class Main {
 	
 	/*akku Voltage */
 	private Dataset akkuVoltageDataset = new Dataset("Akku Voltage", Color.YELLOW, 1, historyLength);
-	
-	private boolean wasVisible = false;
     // #########################################################
 	
 	/**
@@ -188,16 +179,30 @@ public class Main {
 		frame.getContentPane().setLayout(null);
 		
 		// VISUALISIERUNG INITIALISIEREN
+		visualisierungsfenster.accGraph.addGraph( accXDataset );
+		visualisierungsfenster.accGraph.addGraph( accYDataset );
+		visualisierungsfenster.accGraph.addGraph( accZDataset );
+		visualisierungsfenster.gyroGraph.addGraph( rateXDataset );
+		visualisierungsfenster.gyroGraph.addGraph( rateYDataset );
+		visualisierungsfenster.gyroGraph.addGraph( rateZDataset );
+		visualisierungsfenster.motorGraph.addGraph( motor4Dataset );
 		visualisierungsfenster.motorGraph.setRasterLineCountY(5);
 		visualisierungsfenster.motorGraph.setRastertYColor(Color.black);
 		visualisierungsfenster.motorGraph.setUseRasterY(true);
 		visualisierungsfenster.motorGraph.addGraph( motor1Dataset );
 		visualisierungsfenster.motorGraph.addGraph( motor2Dataset );
 		visualisierungsfenster.motorGraph.addGraph( motor3Dataset );
-		visualisierungsfenster.motorGraph.addGraph( motor4Dataset );
-		visualisierungsfenster.gyroGraph.addGraph( rateXDataset );
-		visualisierungsfenster.gyroGraph.addGraph( rateYDataset );
-		visualisierungsfenster.gyroGraph.addGraph( rateZDataset );
+		visualisierungsfenster.pidGraph.addGraph(pidXOutDataset);
+		visualisierungsfenster.pidGraph.addGraph(pidYOutDataset);
+		visualisierungsfenster.pidGraph.addGraph(pidZOutDataset);
+		visualisierungsfenster.rcGraph.addGraph( rcSignalEnableDataset );
+		visualisierungsfenster.rcGraph.addGraph( rcSignalLinPotiDataset );
+		visualisierungsfenster.rcGraph.addGraph( rcSignalNickDataset );
+		visualisierungsfenster.rcGraph.addGraph( rcSignalRollDataset );
+		visualisierungsfenster.rcGraph.addGraph( rcSignalYawDataset );
+		visualisierungsfenster.rcGraph.addGraph( rcSignalSwitchDataset );
+		visualisierungsfenster.rcGraph.addGraph( rcSignalThrottleDataset );
+		
 		
 		JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
 		tabs.setBounds(10, 11, 396, 240);
@@ -383,15 +388,6 @@ public class Main {
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				visualisierungsfenster.setVisible( true );
-				if( !wasVisible )
-				{
-					wasVisible = true;
-					
-					visualisierungsfenster.motorGraph.setBufferStrategy();
-					visualisierungsfenster.gyroGraph.setBufferStrategy();
-					visualisierungsfenster.accGraph.setBufferStrategy();
-					//visualisierungsfenster.horizon.setBufferStrategy();
-				}
 			}
 		});
 		btnNewButton_3.setBounds(10, 79, 371, 23);
