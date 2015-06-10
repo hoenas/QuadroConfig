@@ -137,7 +137,7 @@ public class Main {
     // #########################################################
 	
 	
-	// Bildschirmauflösung
+	// Bildschirmauflï¿½sung
 	private Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	/**
 	 * Launch the application.
@@ -707,7 +707,6 @@ public class Main {
 									// Temperatur aktualisieren
 									visualisierungsfenster.tempAltimeter.update( (int)messdaten[23] );
 								}
-								
 								anzahlMessungen++;
 							}
 						} else {
@@ -717,6 +716,36 @@ public class Main {
 					} catch( Exception ex ) {
 						System.out.println( ex.getMessage() );
 					}
+					
+					try {
+						// get global flags
+						port.writeByte(USB_CMD_GLOBAL_FLAGS);
+						//Warten auf Daten
+						boolean timeout = false;
+						LocalTime begin = LocalTime.now();
+						while( port.getInputBufferBytesCount() != 4 ) {
+							// warte bis alle Bytes da sind
+							if( LocalTime.now().isAfter( begin.plus(COMMUNICATION_TIMEOUT, ChronoUnit.MILLIS) ) ) {
+								timeout = true;
+								protocolStatus = 0;
+								statuslabel.setText("Timout bei Kommunikation. Messwerte nicht erhalten.");
+								break;
+							}
+						}
+						
+						if(!timeout) {
+							// Daten auswerten
+								byte[] temp = port.readBytes();
+								flagsToolBar.update(temp);
+							
+						} else {
+							// Dummy read
+							port.readBytes();
+						}
+					} catch( Exception ex ) {
+						System.out.println( ex.getMessage() );
+					}
+					
 				}
 			}
 		});
