@@ -21,6 +21,7 @@ public class LiveAltimeter extends Canvas{
 	private int rasterCount;
 	private int max;
 	private BasicStroke stroke;
+	private String unit;
 	
 	public boolean isUseRaster() {
 		return useRaster;
@@ -38,7 +39,7 @@ public class LiveAltimeter extends Canvas{
 		this.rasterColor = rasterColor;
 	}
 	
-	public LiveAltimeter( Color backgroundColor, Color foregroundColor, Color rasterColor, boolean useRaster, int rasterWidth, int rasterCount, int max) {
+	public LiveAltimeter( Color backgroundColor, Color foregroundColor, Color rasterColor, boolean useRaster, int rasterWidth, int rasterCount, int max, String unit) {
 		this.backgroundColor = backgroundColor;
 		this.color = foregroundColor;
 		this.rasterColor = rasterColor;
@@ -47,6 +48,7 @@ public class LiveAltimeter extends Canvas{
 		this.rasterCount = rasterCount;
 		stroke = new BasicStroke( rasterWidth );	
 		this.max = max;
+		this.unit = unit;
 	}
 	
 	public void update( int altitude) {
@@ -65,10 +67,13 @@ public class LiveAltimeter extends Canvas{
 			g2.setColor( color );		
 			g2.fillRect(3, this.getHeight(), this.getWidth() - 6, -altitude * this.getHeight() / max );
 			
+			// Beschriftung zeichnen
+			g2.setColor( rasterColor );
+			g2.drawString(String.valueOf(altitude) + unit, 10, 20);
+			
 			// Skala zeichnen
 			if( useRaster ) {
 				g2.setStroke( stroke );
-				g2.setColor( rasterColor );
 				for(int i = 0; i < rasterCount; i++) {
 					g2.drawLine(0, i * (this.getHeight() / (rasterCount-1)), 3, i * (this.getHeight() / (rasterCount-1)) );
 					g2.drawLine(this.getWidth() - 3, i * (this.getHeight() / (rasterCount-1)), this.getWidth(), i * (this.getHeight() / (rasterCount-1)) );

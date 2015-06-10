@@ -119,13 +119,13 @@ public class Visualisierungsfenster extends JFrame {
 		JLabel lblBatteryVoltage = new JLabel("Battery Voltage");
 		panel_1.add(lblBatteryVoltage, "cell 2 0");
 		
-		cpuAltimeter = new LiveAltimeter(Color.BLACK, Color.GREEN, Color.WHITE, true, 1, 5, 100);
+		cpuAltimeter = new LiveAltimeter(Color.BLACK, Color.GREEN, Color.WHITE, true, 1, 5, 100, "%");
 		panel_1.add(cpuAltimeter, "cell 0 1");
 		
-		altAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 1, 100, 100);
+		altAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 1, 100, 100, "m");
 		panel_1.add(altAltimeter, "cell 1 1");
 		
-		voltAltimeter = new LiveAltimeter(Color.BLACK, Color.ORANGE, Color.WHITE, true, 1, 5, 15);
+		voltAltimeter = new LiveAltimeter(Color.BLACK, Color.ORANGE, Color.WHITE, true, 1, 5, 15, "V");
 		panel_1.add(voltAltimeter, "cell 2 1");
 
 	}

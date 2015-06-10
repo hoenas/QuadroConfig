@@ -355,7 +355,6 @@ public class Main {
 		});
 		btnAktualisieren.setBounds(213, 7, 168, 23);
 		tabPort.add(btnAktualisieren);
-		
 
 		
 		tabMessung = new JPanel();

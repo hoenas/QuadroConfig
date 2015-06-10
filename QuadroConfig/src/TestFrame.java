@@ -40,7 +40,7 @@ public class TestFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		LiveAltimeter liveAltimeter = new LiveAltimeter(Color.BLACK, Color.GREEN, Color.WHITE, true, 3, 5, 100);
+		LiveAltimeter liveAltimeter = new LiveAltimeter(Color.BLACK, Color.GREEN, Color.WHITE, true, 3, 5, 100, "m");
 		liveAltimeter.setBounds(10, 10, 100, 242);
 		contentPane.add(liveAltimeter);
 	
