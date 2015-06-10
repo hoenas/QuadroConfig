@@ -1,6 +1,3 @@
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -19,6 +16,8 @@ import LiveGraph.Dataset;
 import LiveGraph.LiveCompass;
 import LiveGraph.LiveLineGraph;
 import LiveGraph.LiveArtificialHorizon;
+import javax.swing.JTabbedPane;
+import java.awt.BorderLayout;
 
 
 public class TestFrame extends JFrame {
@@ -31,7 +30,7 @@ public class TestFrame extends JFrame {
 	 */
 	public TestFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 718, 300);
+		setBounds(100, 100, 718, 413);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -61,7 +60,26 @@ public class TestFrame extends JFrame {
 		liveCompass.setBounds(116, 116, 100, 100);
 		contentPane.add(liveCompass);
 		
-		JButton btnNewButton = new JButton("New button");
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(354, 116, 200, 200);
+		contentPane.add(tabbedPane);
+		
+		JPanel panel = new JPanel();
+		tabbedPane.addTab("New tab", null, panel, null);
+		panel.setLayout(new BorderLayout(0, 0));
+		
+		LiveArtificialHorizon liveArtificialHorizon_1 = new LiveArtificialHorizon(Color.BLACK, Color.GREEN, Color.WHITE, true, 1);
+		liveArtificialHorizon_1.setBackground(Color.BLACK);
+		panel.add(liveArtificialHorizon_1);
+		
+		JPanel panel_1 = new JPanel();
+		tabbedPane.addTab("New tab", null, panel_1, null);
+		panel_1.setLayout(new BorderLayout(0, 0));
+		
+		LiveArtificialHorizon liveArtificialHorizon_2 = new LiveArtificialHorizon(Color.BLACK, Color.GREEN, Color.WHITE, true, 3);
+		panel_1.add(liveArtificialHorizon_2, BorderLayout.CENTER);
+		
+		JButton btnNewButton = new JButton("refresh");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				liveAltimeter.update( ran.nextInt(100) );
@@ -71,6 +89,8 @@ public class TestFrame extends JFrame {
 				floatis[1] = ran.nextFloat() * 100;
 				liveLineGraph.update( floatis );
 				liveCompass.update( ran.nextInt( 360 ) );
+				liveArtificialHorizon_1.update( ran.nextInt(180) );
+				liveArtificialHorizon_2.update( ran.nextInt(180) );
 			}
 		});
 		btnNewButton.setBounds(603, 11, 89, 23);

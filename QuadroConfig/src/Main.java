@@ -22,9 +22,13 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.JSeparator;
 import javax.swing.Timer;
 
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 
 import javax.swing.border.LineBorder;
+
+import com.jgoodies.forms.layout.Size;
 
 import LiveGraph.Dataset;
 
@@ -76,7 +80,6 @@ public class Main {
 	private static byte USB_CMD_RESET = (byte)0xFF;	
 	
 	
-	// TODO: richtige Werte
 	private static int MEASUREMENT_FRAME_LENGTH = 128;
 	public float[] messdaten = new float[MEASUREMENT_FRAME_LENGTH/4];
 	private static int CONFIGURATION_FRAME_LENGTH = 32;	
@@ -87,7 +90,7 @@ public class Main {
 	// #########################################################
 	// Visualisierung:
 	// #########################################################
-	private Messwertfenster messwertfensterfenster = new Messwertfenster();
+	private Messwertfenster messwertfenster = new Messwertfenster();
 	private Visualisierungsfenster visualisierungsfenster = new Visualisierungsfenster();
 	// Motorendatensets
 	private Dataset motor1Dataset = new Dataset("Motor 1", Color.BLUE, 2, historyLength);
@@ -133,6 +136,9 @@ public class Main {
 	private Dataset akkuVoltageDataset = new Dataset("Akku Voltage", Color.YELLOW, 1, historyLength);
     // #########################################################
 	
+	
+	// Bildschirmauflösung
+	private Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	/**
 	 * Launch the application.
 	 */
@@ -142,6 +148,7 @@ public class Main {
 				try {
 					Main window = new Main();
 					window.frame.setVisible(true);
+					window.frame.setLocation(0, 0);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -378,7 +385,9 @@ public class Main {
 		JButton btnNewButton_1 = new JButton("Messwerte anzeigen");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				messwertfensterfenster.setVisible( true );
+				messwertfenster.setVisible(true);
+				messwertfenster.setLocation(0, frame.getHeight());
+				messwertfenster.setSize( messwertfenster.getSize().width, screen.height - frame.getHeight() - 40); 
 			}
 		});
 		btnNewButton_1.setBounds(10, 45, 371, 23);
@@ -387,7 +396,9 @@ public class Main {
 		JButton btnNewButton_3 = new JButton("Visualisierung anzeigen");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				visualisierungsfenster.setVisible( true );
+				visualisierungsfenster.setVisible(true);
+				visualisierungsfenster.setLocation( frame.getWidth(), 0);
+				visualisierungsfenster.setSize( screen.width - frame.getWidth(), screen.height - 40);
 			}
 		});
 		btnNewButton_3.setBounds(10, 79, 371, 23);
@@ -643,7 +654,7 @@ public class Main {
 								for(int i = 0; i < messdaten.length; i++) {
 									messdaten[i] = ByteBuffer.wrap(temp, i *4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 								}
-								messwertfensterfenster.setLabelText(messdaten);
+								messwertfenster.setLabelText(messdaten);
 								
 								if( visualisierungsfenster.isVisible() ) {
 									// Motorenwerte aktualisieren
@@ -674,6 +685,14 @@ public class Main {
 				}
 			}
 		});
+		
+		// GUI anzeigen
+		messwertfenster.setVisible(true);
+		messwertfenster.setLocation(0, frame.getHeight());
+		messwertfenster.setSize( messwertfenster.getSize().width, screen.height - frame.getHeight() - 40); 
+		visualisierungsfenster.setVisible(true);
+		visualisierungsfenster.setLocation( frame.getWidth(), 0);
+		visualisierungsfenster.setSize( screen.width - frame.getWidth(), screen.height - 40);
 	}
 }
 

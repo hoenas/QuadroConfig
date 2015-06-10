@@ -15,7 +15,7 @@ public class Messwertfenster extends JFrame {
 	JLabel lblMessung;
 	public Messwertfenster() {
 		setTitle("Messwerte");
-		setBounds(100, 100, 258, 331);
+		setBounds(100, 100, 433, 703);
 		float[] zeros = new float[128];
 		lblMessung = new JLabel(" ");
 		lblMessung.setVerticalAlignment(SwingConstants.TOP);

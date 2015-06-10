@@ -36,7 +36,7 @@ public class Visualisierungsfenster extends JFrame {
 	public LiveAltimeter voltAltimeter;
 	
 	public Visualisierungsfenster() {
-		setBounds(100, 100, 805, 696);
+		setBounds(100, 100, 805, 831);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -44,7 +44,7 @@ public class Visualisierungsfenster extends JFrame {
 		
 		JPanel panel = new JPanel();
 		tabbedPane.addTab("Position Control", null, panel, null);
-		panel.setLayout(new MigLayout("", "[100.00][41.00,grow,fill]", "[15.00][101.00][][100.00][][100.00][][100.00][][100.00]"));
+		panel.setLayout(new MigLayout("", "[100.00][41.00,grow,fill]", "[15.00][150.00][][150.00][][150.00][][150.00][][150.00]"));
 		
 		JLabel lblAngleX = new JLabel("Angle X-Axis");
 		panel.add(lblAngleX, "cell 0 0");
@@ -52,7 +52,7 @@ public class Visualisierungsfenster extends JFrame {
 		JLabel lblMotoren = new JLabel("Accelerometer");
 		panel.add(lblMotoren, "cell 1 0,growx");
 		
-		horizonX = new LiveArtificialHorizon(Color.BLACK, Color.GREEN, Color.WHITE, true, 2);
+		horizonX = new LiveArtificialHorizon(Color.BLACK, Color.GREEN, Color.WHITE, true, 1);
 		panel.add(horizonX, "cell 0 1");
 		
 		accGraph = new LiveLineGraph(Color.BLACK, 200, 100);
@@ -67,7 +67,7 @@ public class Visualisierungsfenster extends JFrame {
 		JLabel lblAccelerometer = new JLabel("Gyros");
 		panel.add(lblAccelerometer, "cell 1 2");
 		
-		horizonY = new LiveArtificialHorizon(Color.BLACK, Color.RED, Color.WHITE, true, 2);
+		horizonY = new LiveArtificialHorizon(Color.BLACK, Color.RED, Color.WHITE, true, 1);
 		panel.add(horizonY, "cell 0 3");
 		
 		gyroGraph = new LiveLineGraph(Color.BLACK, 200, 100);
@@ -82,7 +82,7 @@ public class Visualisierungsfenster extends JFrame {
 		JLabel lblGyro = new JLabel("PID-Output");
 		panel.add(lblGyro, "cell 1 4");
 		
-		horizonZ = new LiveArtificialHorizon(Color.BLACK, Color.BLUE, Color.WHITE, true, 3);
+		horizonZ = new LiveArtificialHorizon(Color.BLACK, Color.BLUE, Color.WHITE, true, 1);
 		panel.add(horizonZ, "cell 0 5");
 		
 		pidGraph = new LiveLineGraph(Color.BLACK, 4, 2);
@@ -119,13 +119,13 @@ public class Visualisierungsfenster extends JFrame {
 		JLabel lblBatteryVoltage = new JLabel("Battery Voltage");
 		panel_1.add(lblBatteryVoltage, "cell 2 0");
 		
-		cpuAltimeter = new LiveAltimeter(Color.BLACK, Color.GREEN, Color.WHITE, true, 3, 5, 100);
+		cpuAltimeter = new LiveAltimeter(Color.BLACK, Color.GREEN, Color.WHITE, true, 1, 5, 100);
 		panel_1.add(cpuAltimeter, "cell 0 1");
 		
-		altAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 3, 100, 100);
+		altAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 1, 100, 100);
 		panel_1.add(altAltimeter, "cell 1 1");
 		
-		voltAltimeter = new LiveAltimeter(Color.BLACK, Color.ORANGE, Color.WHITE, true, 3, 5, 15);
+		voltAltimeter = new LiveAltimeter(Color.BLACK, Color.ORANGE, Color.WHITE, true, 1, 5, 15);
 		panel_1.add(voltAltimeter, "cell 2 1");
 
 	}
