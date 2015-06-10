@@ -54,29 +54,30 @@ public class LiveAltimeter extends Canvas{
 		if( this.isVisible() && bufferstrategy == null ) {
 			this.createBufferStrategy(2);
 			bufferstrategy = this.getBufferStrategy();
-		}
+		} else {
 		
-		Graphics2D g2 = (Graphics2D) bufferstrategy.getDrawGraphics();
-		// Graph loeschen
-		g2.setColor( backgroundColor );
-		g2.fillRect(0, 0, this.getWidth(), this.getHeight());
-		
-		// Hoehe zeichnen	
-		g2.setColor( color );		
-		g2.fillRect(3, this.getHeight(), this.getWidth() - 6, -altitude * this.getHeight() / max );
-		
-		// Skala zeichnen
-		if( useRaster ) {
-			g2.setStroke( stroke );
-			g2.setColor( rasterColor );
-			for(int i = 0; i < rasterCount; i++) {
-				g2.drawLine(0, i * (this.getHeight() / (rasterCount-1)), 3, i * (this.getHeight() / (rasterCount-1)) );
-				g2.drawLine(this.getWidth() - 3, i * (this.getHeight() / (rasterCount-1)), this.getWidth(), i * (this.getHeight() / (rasterCount-1)) );
+			Graphics2D g2 = (Graphics2D) bufferstrategy.getDrawGraphics();
+			// Graph loeschen
+			g2.setColor( backgroundColor );
+			g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+			
+			// Hoehe zeichnen	
+			g2.setColor( color );		
+			g2.fillRect(3, this.getHeight(), this.getWidth() - 6, -altitude * this.getHeight() / max );
+			
+			// Skala zeichnen
+			if( useRaster ) {
+				g2.setStroke( stroke );
+				g2.setColor( rasterColor );
+				for(int i = 0; i < rasterCount; i++) {
+					g2.drawLine(0, i * (this.getHeight() / (rasterCount-1)), 3, i * (this.getHeight() / (rasterCount-1)) );
+					g2.drawLine(this.getWidth() - 3, i * (this.getHeight() / (rasterCount-1)), this.getWidth(), i * (this.getHeight() / (rasterCount-1)) );
+				}
 			}
+			
+			bufferstrategy.show();
+			Toolkit.getDefaultToolkit().sync();
 		}
-		
-		bufferstrategy.show();
-		Toolkit.getDefaultToolkit().sync();
 	}
 
 

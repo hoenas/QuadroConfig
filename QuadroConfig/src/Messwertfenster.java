@@ -9,6 +9,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import javax.swing.BoxLayout;
 import javax.swing.SwingConstants;
+import javax.swing.JScrollBar;
 
 
 public class Messwertfenster extends JFrame {
@@ -21,6 +22,9 @@ public class Messwertfenster extends JFrame {
 		lblMessung.setVerticalAlignment(SwingConstants.TOP);
 		lblMessung.setHorizontalAlignment(SwingConstants.LEFT);
 		getContentPane().add(lblMessung, BorderLayout.CENTER);
+		
+		JScrollBar scrollBar = new JScrollBar();
+		getContentPane().add(scrollBar, BorderLayout.WEST);
 		setLabelText(zeros);
 	}
 	

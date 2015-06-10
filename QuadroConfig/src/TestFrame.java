@@ -16,15 +16,19 @@ import LiveGraph.Dataset;
 import LiveGraph.LiveCompass;
 import LiveGraph.LiveLineGraph;
 import LiveGraph.LiveArtificialHorizon;
+
 import javax.swing.JTabbedPane;
+
 import java.awt.BorderLayout;
+
+import LiveGraph.LiveXYViewer;
 
 
 public class TestFrame extends JFrame {
 	
 	private Random ran = new Random();
 	private JPanel contentPane;
-	
+
 	/**
 	 * Create the frame.
 	 */
@@ -79,6 +83,10 @@ public class TestFrame extends JFrame {
 		LiveArtificialHorizon liveArtificialHorizon_2 = new LiveArtificialHorizon(Color.BLACK, Color.GREEN, Color.WHITE, true, 3);
 		panel_1.add(liveArtificialHorizon_2, BorderLayout.CENTER);
 		
+		LiveXYViewer liveXYViewer = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 100, 0, Color.WHITE, true, 1, 10);
+		liveXYViewer.setBounds(560, 116, 100, 100);
+		contentPane.add(liveXYViewer);
+		
 		JButton btnNewButton = new JButton("refresh");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -91,6 +99,7 @@ public class TestFrame extends JFrame {
 				liveCompass.update( ran.nextInt( 360 ) );
 				liveArtificialHorizon_1.update( ran.nextInt(180) );
 				liveArtificialHorizon_2.update( ran.nextInt(180) );
+				liveXYViewer.update( ran.nextInt(100), ran.nextInt(100) );
 			}
 		});
 		btnNewButton.setBounds(603, 11, 89, 23);
