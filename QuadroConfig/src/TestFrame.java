@@ -55,7 +55,7 @@ public class TestFrame extends JFrame {
 		liveArtificialHorizon.setBounds(222, 116, 100, 100);
 		contentPane.add(liveArtificialHorizon);
 		
-		Dataset dataset1 = new Dataset("LOL", Color.green, 1, 100);
+		Dataset dataset1 = new Dataset("LOL", Color.green, 1, 500);
 		Dataset dataset2 = new Dataset("ROFL", Color.blue, 1, 100);
 		
 		liveLineGraph.addGraph( dataset1 );
@@ -89,7 +89,7 @@ public class TestFrame extends JFrame {
 		liveXYViewer.setBounds(560, 116, 100, 100);
 		contentPane.add(liveXYViewer);
 		
-		Timer timer = new Timer(1000, new ActionListener() {
+		Timer timer = new Timer(100, new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {

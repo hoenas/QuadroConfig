@@ -149,6 +149,8 @@ public class Main {
 					Main window = new Main();
 					window.frame.setVisible(true);
 					window.frame.setLocation(0, 0);
+					TestFrame myFrame = new TestFrame();
+					myFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -181,7 +183,7 @@ public class Main {
 	private void initialize() {
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 433, 328);
+		frame.setBounds(100, 100, 433, 377);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -211,11 +213,11 @@ public class Main {
 		visualisierungsfenster.rcGraph.addGraph( rcSignalSwitchDataset );
 		
 		JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
-		tabs.setBounds(10, 11, 396, 240);
+		tabs.setBounds(10, 36, 396, 240);
 		frame.getContentPane().add(tabs);
 		
-		JLabel statuslabel = new JLabel("");
-		statuslabel.setBounds(10, 262, 397, 14);
+		JLabel statuslabel = new JLabel("idle");
+		statuslabel.setBounds(69, 11, 338, 14);
 		frame.getContentPane().add(statuslabel);
 		
 		tabPort = new JPanel();
@@ -613,6 +615,14 @@ public class Main {
 		});
 		button.setBounds(226, 178, 155, 23);
 		tabKonfiguration.add(button);
+		
+		FlagsToolBar flagsToolBar = new FlagsToolBar();
+		flagsToolBar.setBounds(10, 287, 396, 41);
+		frame.getContentPane().add(flagsToolBar);
+		
+		JLabel lblStatus = new JLabel("Status:");
+		lblStatus.setBounds(13, 11, 46, 14);
+		frame.getContentPane().add(lblStatus);
 	
 		
 		// Timerkonfiguration
