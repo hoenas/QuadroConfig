@@ -54,13 +54,13 @@ public class Visualisierungsfenster extends JFrame {
 		panel.add(lblMotoren, "cell 1 0,growx");
 		
 		horizonX = new LiveArtificialHorizon(Color.BLACK, Color.GREEN, Color.WHITE, true, 1);
-		panel.add(horizonX, "cell 0 1");
+		panel.add(horizonX, "cell 0 1,grow");
 		
 		accGraph = new LiveLineGraph(Color.BLACK, 200, 100);
 		accGraph.setRastertYColor(Color.WHITE);
 		accGraph.setUseRasterY(true);
 		accGraph.setRasterLineCountY(5);
-		panel.add(accGraph, "cell 1 1");
+		panel.add(accGraph, "cell 1 1,grow");
 		
 		JLabel lblAngleYaxis = new JLabel("Angle Y-Axis");
 		panel.add(lblAngleYaxis, "cell 0 2");
@@ -69,13 +69,13 @@ public class Visualisierungsfenster extends JFrame {
 		panel.add(lblAccelerometer, "cell 1 2");
 		
 		horizonY = new LiveArtificialHorizon(Color.BLACK, Color.RED, Color.WHITE, true, 1);
-		panel.add(horizonY, "cell 0 3");
+		panel.add(horizonY, "cell 0 3,grow");
 		
 		gyroGraph = new LiveLineGraph(Color.BLACK, 200, 100);
 		gyroGraph.setUseRasterY(true);
 		gyroGraph.setRastertYColor(Color.WHITE);
 		gyroGraph.setRasterLineCountY(5);
-		panel.add(gyroGraph, "cell 1 3");
+		panel.add(gyroGraph, "cell 1 3,grow");
 		
 		JLabel lblAngleZachsis = new JLabel("Angle Z-Achsis");
 		panel.add(lblAngleZachsis, "cell 0 4");
@@ -84,28 +84,31 @@ public class Visualisierungsfenster extends JFrame {
 		panel.add(lblGyro, "cell 1 4");
 		
 		horizonZ = new LiveArtificialHorizon(Color.BLACK, Color.BLUE, Color.WHITE, true, 1);
-		panel.add(horizonZ, "cell 0 5");
+		panel.add(horizonZ, "cell 0 5,grow");
 		
 		pidGraph = new LiveLineGraph(Color.BLACK, 4, 2);
 		pidGraph.setRastertYColor(Color.WHITE);
 		pidGraph.setRasterLineCountY(4);
 		pidGraph.setUseRasterY(true);
-		panel.add(pidGraph, "cell 1 5");
+		panel.add(pidGraph, "cell 1 5,grow");
 		
 		JLabel lblRegleroutput = new JLabel("Motors");
 		panel.add(lblRegleroutput, "cell 1 6");
 		
 		motorGraph = new LiveLineGraph(Color.BLACK, 100, 0);
-		motorGraph.setRasterLineCountY(5);
 		motorGraph.setUseRasterY(true);
+		motorGraph.setRasterLineCountY(5);
 		motorGraph.setRastertYColor(Color.WHITE);
-		panel.add(motorGraph, "cell 1 7");
+		panel.add(motorGraph, "cell 1 7,grow");
 		
 		JLabel label = new JLabel("RC Control Values");
 		panel.add(label, "cell 1 8");
 		
 		rcGraph = new LiveLineGraph(Color.BLACK, 100, 0);
-		panel.add(rcGraph, "cell 1 9");
+		rcGraph.setUseRasterY(true);
+		rcGraph.setRastertYColor(Color.WHITE);
+		rcGraph.setRasterLineCountY(5);
+		panel.add(rcGraph, "cell 1 9,grow");
 		
 		JPanel panel_1 = new JPanel();
 		tabbedPane.addTab("Instruments", null, panel_1, null);
@@ -124,16 +127,16 @@ public class Visualisierungsfenster extends JFrame {
 		panel_1.add(lblTemperature, "cell 3 0");
 		
 		cpuAltimeter = new LiveAltimeter(Color.BLACK, Color.GREEN, Color.WHITE, true, 1, 5, 100, "%");
-		panel_1.add(cpuAltimeter, "cell 0 1");
+		panel_1.add(cpuAltimeter, "cell 0 1,grow");
 		
 		altAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 1, 100, 100, "m");
-		panel_1.add(altAltimeter, "cell 1 1");
+		panel_1.add(altAltimeter, "cell 1 1,grow");
 		
 		voltAltimeter = new LiveAltimeter(Color.BLACK, Color.ORANGE, Color.WHITE, true, 1, 5, 15, "V");
-		panel_1.add(voltAltimeter, "cell 2 1");
+		panel_1.add(voltAltimeter, "cell 2 1,grow");
 		
 		tempAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 1, 5, 50, "\u00B0C");
-		panel_1.add(tempAltimeter, "cell 3 1");
+		panel_1.add(tempAltimeter, "cell 3 1,grow");
 
 	}
 }

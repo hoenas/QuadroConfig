@@ -149,8 +149,8 @@ public class Main {
 					Main window = new Main();
 					window.frame.setVisible(true);
 					window.frame.setLocation(0, 0);
-					TestFrame myFrame = new TestFrame();
-					myFrame.setVisible(true);
+					//TestFrame myFrame = new TestFrame();
+					//myFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -195,9 +195,6 @@ public class Main {
 		visualisierungsfenster.gyroGraph.addGraph( rateYDataset );
 		visualisierungsfenster.gyroGraph.addGraph( rateZDataset );
 		visualisierungsfenster.motorGraph.addGraph( motor4Dataset );
-		visualisierungsfenster.motorGraph.setRasterLineCountY(5);
-		visualisierungsfenster.motorGraph.setRastertYColor(Color.black);
-		visualisierungsfenster.motorGraph.setUseRasterY(true);
 		visualisierungsfenster.motorGraph.addGraph( motor1Dataset );
 		visualisierungsfenster.motorGraph.addGraph( motor2Dataset );
 		visualisierungsfenster.motorGraph.addGraph( motor3Dataset );
@@ -688,6 +685,12 @@ public class Main {
 									visualisierungsfenster.horizonX.update( (int)messdaten[9] );
 									visualisierungsfenster.horizonY.update( (int)messdaten[10] );
 									visualisierungsfenster.horizonZ.update( (int)messdaten[11] );
+									// PID-Outputs aktualisieren
+									float[] pid  = new float[3];
+									pid[0] = messdaten[28];
+									pid[1] = messdaten[29];
+									pid[2] = messdaten[30];
+									visualisierungsfenster.pidGraph.update( pid );
 									// Fernsteuerungswerte aktualisieren
 									float[] rcs = new float[7];
 									rcs[0] = messdaten[12];
@@ -699,7 +702,7 @@ public class Main {
 									rcs[6] = messdaten[18];
 									visualisierungsfenster.rcGraph.update( rcs );
 									// CPU-Load aktualisieren
-									visualisierungsfenster.cpuAltimeter.update( (int)messdaten[31] );
+									visualisierungsfenster.cpuAltimeter.update( (int)(messdaten[31] * 100));
 									// Hoehe aktualisieren
 									visualisierungsfenster.altAltimeter.update( (int)messdaten[25] );
 									// Spannung aktualisieren

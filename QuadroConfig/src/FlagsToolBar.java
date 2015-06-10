@@ -31,7 +31,6 @@ public class FlagsToolBar extends JToolBar {
 	JLabel flagBMP;
 	JLabel flagRC;
 	JLabel flagMPU;
-	JLabel flagNoSignal;
 	JLabel flagVoltage;
 	JLabel flagOverrun;
 	JLabel flagUSB;
@@ -64,11 +63,6 @@ public class FlagsToolBar extends JToolBar {
 		flagRC = new JLabel("<html> <font color='gray'>RC </font> </html>");
 		flagRC.setFont(new Font("Dialog", Font.BOLD, 10));
 		this.add(flagRC);
-
-		flagNoSignal = new JLabel(
-				"<html> <font color='gray'>Sig </font> </html>");
-		flagNoSignal.setFont(new Font("Dialog", Font.BOLD, 10));
-		this.add(flagNoSignal);
 
 		flagVoltage = new JLabel(
 				"<html> <font color='gray'>Voltage </font> </html>");
@@ -135,11 +129,6 @@ public class FlagsToolBar extends JToolBar {
 		} else {
 			flagOverrun.setText("<html> <font color='gray'>CPU </font> </html>");
 			
-		}
-		if ((flag_array[3] & NO_RC_SIGNAL_FLAG) == NO_RC_SIGNAL_FLAG) {
-			flagNoSignal.setText("<html> <font color='red'>SIG </font> </html>");
-		} else {
-			flagNoSignal.setText("<html> <font color='green'>SIG </font> </html>");
 		}
 		if ((flag_array[3] & LOW_VOLTAGE_FLAG) == LOW_VOLTAGE_FLAG) {
 			flagVoltage.setText("<html> <font color='red'>Voltage </font> </html>");
