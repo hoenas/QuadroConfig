@@ -34,6 +34,7 @@ public class Visualisierungsfenster extends JFrame {
 	public LiveAltimeter cpuAltimeter;
 	public LiveAltimeter altAltimeter;
 	public LiveAltimeter voltAltimeter;
+	public LiveAltimeter tempAltimeter;
 	
 	public Visualisierungsfenster() {
 		setBounds(100, 100, 805, 831);
@@ -108,16 +109,19 @@ public class Visualisierungsfenster extends JFrame {
 		
 		JPanel panel_1 = new JPanel();
 		tabbedPane.addTab("Instruments", null, panel_1, null);
-		panel_1.setLayout(new MigLayout("", "[80.00][80.00][80.00][]", "[14.00][250.00,grow]"));
+		panel_1.setLayout(new MigLayout("", "[80.00][80.00][80.00][80]", "[14.00][250.00,grow]"));
 		
 		JLabel lblCpuLoad = new JLabel("CPU Load");
 		panel_1.add(lblCpuLoad, "cell 0 0");
 		
-		JLabel lblAltitude = new JLabel("Altitude");
+		JLabel lblAltitude = new JLabel("Rel. Altitude");
 		panel_1.add(lblAltitude, "cell 1 0");
 		
 		JLabel lblBatteryVoltage = new JLabel("Battery Voltage");
 		panel_1.add(lblBatteryVoltage, "cell 2 0");
+		
+		JLabel lblTemperature = new JLabel("Temperature");
+		panel_1.add(lblTemperature, "cell 3 0");
 		
 		cpuAltimeter = new LiveAltimeter(Color.BLACK, Color.GREEN, Color.WHITE, true, 1, 5, 100, "%");
 		panel_1.add(cpuAltimeter, "cell 0 1");
@@ -127,6 +131,9 @@ public class Visualisierungsfenster extends JFrame {
 		
 		voltAltimeter = new LiveAltimeter(Color.BLACK, Color.ORANGE, Color.WHITE, true, 1, 5, 15, "V");
 		panel_1.add(voltAltimeter, "cell 2 1");
+		
+		tempAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 1, 5, 50, "\u00B0C");
+		panel_1.add(tempAltimeter, "cell 3 1");
 
 	}
 }

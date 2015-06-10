@@ -202,14 +202,13 @@ public class Main {
 		visualisierungsfenster.pidGraph.addGraph(pidXOutDataset);
 		visualisierungsfenster.pidGraph.addGraph(pidYOutDataset);
 		visualisierungsfenster.pidGraph.addGraph(pidZOutDataset);
+		visualisierungsfenster.rcGraph.addGraph( rcSignalRollDataset );
+		visualisierungsfenster.rcGraph.addGraph( rcSignalNickDataset );
+		visualisierungsfenster.rcGraph.addGraph( rcSignalYawDataset );
+		visualisierungsfenster.rcGraph.addGraph( rcSignalThrottleDataset );
 		visualisierungsfenster.rcGraph.addGraph( rcSignalEnableDataset );
 		visualisierungsfenster.rcGraph.addGraph( rcSignalLinPotiDataset );
-		visualisierungsfenster.rcGraph.addGraph( rcSignalNickDataset );
-		visualisierungsfenster.rcGraph.addGraph( rcSignalRollDataset );
-		visualisierungsfenster.rcGraph.addGraph( rcSignalYawDataset );
 		visualisierungsfenster.rcGraph.addGraph( rcSignalSwitchDataset );
-		visualisierungsfenster.rcGraph.addGraph( rcSignalThrottleDataset );
-		
 		
 		JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
 		tabs.setBounds(10, 11, 396, 240);
@@ -656,6 +655,18 @@ public class Main {
 								messwertfenster.setLabelText(messdaten);
 								
 								if( visualisierungsfenster.isVisible() ) {
+									// Accelerometerwerte aktualsierien
+									float[] accs = new float[3];
+									accs[0] = messdaten[0];
+									accs[1] = messdaten[1];
+									accs[2] = messdaten[2];
+									visualisierungsfenster.accGraph.update( accs );
+									// Gyrowerte aktualisieren
+									float[] gyros = new float[3];
+									gyros[0] = messdaten[3];
+									gyros[1] = messdaten[4];
+									gyros[2] = messdaten[5];
+									visualisierungsfenster.gyroGraph.update( gyros );
 									// Motorenwerte aktualisieren
 									float[] motoren = new float[4];
 									motoren[0] = messdaten[19];
@@ -663,13 +674,28 @@ public class Main {
 									motoren[2] = messdaten[21];
 									motoren[3] = messdaten[22];
 									visualisierungsfenster.motorGraph.update( motoren );
-									
-									// Gyrowerte aktualisieren
-									float[] gyros = new float[3];
-									gyros[0] = messdaten[3];
-									gyros[1] = messdaten[4];
-									gyros[2] = messdaten[5];
-									visualisierungsfenster.gyroGraph.update( gyros );
+									// Winkel aktualisieren
+									visualisierungsfenster.horizonX.update( (int)messdaten[9] );
+									visualisierungsfenster.horizonY.update( (int)messdaten[10] );
+									visualisierungsfenster.horizonZ.update( (int)messdaten[11] );
+									// Fernsteuerungswerte aktualisieren
+									float[] rcs = new float[7];
+									rcs[0] = messdaten[12];
+									rcs[1] = messdaten[13];
+									rcs[2] = messdaten[14];
+									rcs[3] = messdaten[15];
+									rcs[4] = messdaten[16];
+									rcs[5] = messdaten[17];
+									rcs[6] = messdaten[18];
+									visualisierungsfenster.rcGraph.update( rcs );
+									// CPU-Load aktualisieren
+									visualisierungsfenster.cpuAltimeter.update( (int)messdaten[31] );
+									// Hoehe aktualisieren
+									visualisierungsfenster.altAltimeter.update( (int)messdaten[25] );
+									// Spannung aktualisieren
+									visualisierungsfenster.voltAltimeter.update( (int)messdaten[27] );
+									// Temperatur aktualisieren
+									visualisierungsfenster.tempAltimeter.update( (int)messdaten[23] );
 								}
 								
 								anzahlMessungen++;
