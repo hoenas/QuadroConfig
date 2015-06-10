@@ -37,7 +37,7 @@ public class Visualisierungsfenster extends JFrame {
 	public LiveAltimeter tempAltimeter;
 	
 	public Visualisierungsfenster() {
-		setBounds(100, 100, 805, 831);
+		setBounds(100, 100, 805, 867);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -45,7 +45,7 @@ public class Visualisierungsfenster extends JFrame {
 		
 		JPanel panel = new JPanel();
 		tabbedPane.addTab("Position Control", null, panel, null);
-		panel.setLayout(new MigLayout("", "[150.00][100px:41.00,grow,fill]", "[15.00][50:150][][50:150][][50:150.00][][50:150.00][][50:150.00]"));
+		panel.setLayout(new MigLayout("", "[150.00][100px:41.00,grow,fill]", "[15.00][50:150][][50:150][][50:150.00][][50:150.00][][50:150.00][]"));
 		
 		JLabel lblAngleX = new JLabel("Angle X-Axis");
 		panel.add(lblAngleX, "cell 0 0");
@@ -56,7 +56,7 @@ public class Visualisierungsfenster extends JFrame {
 		horizonX = new LiveArtificialHorizon(Color.BLACK, Color.GREEN, Color.WHITE, true, 1);
 		panel.add(horizonX, "cell 0 1,grow");
 		
-		accGraph = new LiveLineGraph(Color.BLACK, 200, 100);
+		accGraph = new LiveLineGraph(Color.BLACK, 30, 15);
 		accGraph.setRastertYColor(Color.WHITE);
 		accGraph.setUseRasterY(true);
 		accGraph.setRasterLineCountY(5);
@@ -71,7 +71,7 @@ public class Visualisierungsfenster extends JFrame {
 		horizonY = new LiveArtificialHorizon(Color.BLACK, Color.RED, Color.WHITE, true, 1);
 		panel.add(horizonY, "cell 0 3,grow");
 		
-		gyroGraph = new LiveLineGraph(Color.BLACK, 200, 100);
+		gyroGraph = new LiveLineGraph(Color.BLACK, 30, 15);
 		gyroGraph.setUseRasterY(true);
 		gyroGraph.setRastertYColor(Color.WHITE);
 		gyroGraph.setRasterLineCountY(5);
@@ -112,7 +112,7 @@ public class Visualisierungsfenster extends JFrame {
 		
 		JPanel panel_1 = new JPanel();
 		tabbedPane.addTab("Instruments", null, panel_1, null);
-		panel_1.setLayout(new MigLayout("", "[80.00][80.00][80.00][80][]", "[14.00][100px:250.00,grow]"));
+		panel_1.setLayout(new MigLayout("", "[80.00][80.00][80.00][80][]", "[14.00][100px:500.00]"));
 		
 		JLabel lblCpuLoad = new JLabel("CPU Load");
 		panel_1.add(lblCpuLoad, "cell 0 0");

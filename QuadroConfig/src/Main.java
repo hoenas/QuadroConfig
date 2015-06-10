@@ -670,9 +670,9 @@ public class Main {
 									visualisierungsfenster.accGraph.update( accs );
 									// Gyrowerte aktualisieren
 									float[] gyros = new float[3];
-									gyros[0] = messdaten[3];
-									gyros[1] = messdaten[4];
-									gyros[2] = messdaten[5];
+									gyros[0] = messdaten[3] / 10;
+									gyros[1] = messdaten[4] / 10;
+									gyros[2] = messdaten[5] / 10;
 									visualisierungsfenster.gyroGraph.update( gyros );
 									// Motorenwerte aktualisieren
 									float[] motoren = new float[4];
