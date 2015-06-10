@@ -44,7 +44,7 @@ public class Visualisierungsfenster extends JFrame {
 		
 		JPanel panel = new JPanel();
 		tabbedPane.addTab("Position Control", null, panel, null);
-		panel.setLayout(new MigLayout("", "[100.00][41.00,grow,fill]", "[15.00][150.00][][150.00][][150.00][][150.00][][150.00]"));
+		panel.setLayout(new MigLayout("", "[150.00][41.00,grow,fill]", "[15.00][150.00][][150.00][][150.00][][150.00][][150.00]"));
 		
 		JLabel lblAngleX = new JLabel("Angle X-Axis");
 		panel.add(lblAngleX, "cell 0 0");
