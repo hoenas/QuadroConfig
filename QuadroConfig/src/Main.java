@@ -355,16 +355,6 @@ public class Main {
 		});
 		btnAktualisieren.setBounds(213, 7, 168, 23);
 		tabPort.add(btnAktualisieren);
-		
-		JButton btnChrisStinkt = new JButton("CHRIS STINKT");
-		btnChrisStinkt.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				TestFrame testFrame = new TestFrame();
-				testFrame.setVisible(true);
-			}
-		});
-		btnChrisStinkt.setBounds(213, 94, 157, 23);
-		tabPort.add(btnChrisStinkt);
 
 		
 		tabMessung = new JPanel();
