@@ -693,13 +693,13 @@ public class Main {
 									visualisierungsfenster.pidGraph.update( pid );
 									// Fernsteuerungswerte aktualisieren
 									float[] rcs = new float[7];
-									rcs[0] = messdaten[12];
-									rcs[1] = messdaten[13];
-									rcs[2] = messdaten[14];
-									rcs[3] = messdaten[15];
-									rcs[4] = messdaten[16];
-									rcs[5] = messdaten[17];
-									rcs[6] = messdaten[18];
+									rcs[0] = messdaten[12] * 100 + 50;
+									rcs[1] = messdaten[13] * 100 + 50;
+									rcs[2] = messdaten[14] * 100 + 50;
+									rcs[3] = messdaten[15] * 100;
+									rcs[4] = messdaten[16] * 100;
+									rcs[5] = messdaten[17] * 100;
+									rcs[6] = messdaten[18] * 100;
 									visualisierungsfenster.rcGraph.update( rcs );
 									// CPU-Load aktualisieren
 									visualisierungsfenster.cpuAltimeter.update( (int)(messdaten[31] * 100));

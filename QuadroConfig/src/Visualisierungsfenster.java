@@ -104,7 +104,7 @@ public class Visualisierungsfenster extends JFrame {
 		JLabel label = new JLabel("RC Control Values");
 		panel.add(label, "cell 1 8");
 		
-		rcGraph = new LiveLineGraph(Color.BLACK, 100, 0);
+		rcGraph = new LiveLineGraph(Color.BLACK, 101, 0);
 		rcGraph.setUseRasterY(true);
 		rcGraph.setRastertYColor(Color.WHITE);
 		rcGraph.setRasterLineCountY(5);
@@ -132,7 +132,7 @@ public class Visualisierungsfenster extends JFrame {
 		altAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 1, 100, 100, "m");
 		panel_1.add(altAltimeter, "cell 1 1,grow");
 		
-		voltAltimeter = new LiveAltimeter(Color.BLACK, Color.ORANGE, Color.WHITE, true, 1, 5, 1500, "mV");
+		voltAltimeter = new LiveAltimeter(Color.BLACK, Color.ORANGE, Color.WHITE, true, 1, 5, 15000, "mV");
 		panel_1.add(voltAltimeter, "cell 2 1,grow");
 		
 		tempAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 1, 5, 50, "\u00B0C");
