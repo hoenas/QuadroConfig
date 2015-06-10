@@ -589,7 +589,7 @@ public class Main {
 						 * ...
 						 */
 						byte[] outbuffer = new byte[CONFIGURATION_FRAME_LENGTH + 1];
-						outbuffer[1] = USB_CMD_UPDATE_CONFIG;
+						outbuffer[0] = USB_CMD_UPDATE_CONFIG;
 						outbuffer = floatToByteArray( (float)spinner_pxy.getValue(), outbuffer, 1 );
 						outbuffer = floatToByteArray( (float)spinner_ixy.getValue(), outbuffer, 5 );
 						outbuffer = floatToByteArray( (float)spinner_dxy.getValue(), outbuffer, 9 );
@@ -604,6 +604,11 @@ public class Main {
 						protocolStatus = 0;
 						statuslabel.setText("send Configuration");
 						
+						// dummy read
+						while (port.getInputBufferBytesCount() != 1) {
+							
+						}
+						byte[] dummy = port.readBytes();
 					} catch (Exception ex) {
 						System.out.println(ex.getMessage());
 					}
