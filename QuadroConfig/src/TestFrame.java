@@ -89,7 +89,7 @@ public class TestFrame extends JFrame {
 		liveXYViewer.setBounds(560, 116, 100, 100);
 		contentPane.add(liveXYViewer);
 		
-		Timer timer = new Timer(100, new ActionListener() {
+		Timer timer = new Timer(500, new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {

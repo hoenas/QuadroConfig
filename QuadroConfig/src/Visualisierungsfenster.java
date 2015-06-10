@@ -45,7 +45,7 @@ public class Visualisierungsfenster extends JFrame {
 		
 		JPanel panel = new JPanel();
 		tabbedPane.addTab("Position Control", null, panel, null);
-		panel.setLayout(new MigLayout("", "[150.00][100px:41.00,grow,fill]", "[15.00][50:150][][50:150][][50:150.00][][50:150.00][][50:150.00][]"));
+		panel.setLayout(new MigLayout("", "[150.00][100px:41.00,grow,fill]", "[15.00][10:150:150,grow 150,shrink 10,fill][][10:150:150,grow 150,shrink 10,fill][][10:150:150,grow 150,shrink 10,fill][][10:150.00:150,grow 150,shrink 10,fill][][10:150.00:150,grow 150,shrink 10,fill]"));
 		
 		JLabel lblAngleX = new JLabel("Angle X-Axis");
 		panel.add(lblAngleX, "cell 0 0");
@@ -112,7 +112,7 @@ public class Visualisierungsfenster extends JFrame {
 		
 		JPanel panel_1 = new JPanel();
 		tabbedPane.addTab("Instruments", null, panel_1, null);
-		panel_1.setLayout(new MigLayout("", "[80.00][80.00][80.00][80][]", "[14.00][100px:500.00]"));
+		panel_1.setLayout(new MigLayout("", "[100.00][100.00][100.00][100][]", "[14.00][100px:500.00,top]"));
 		
 		JLabel lblCpuLoad = new JLabel("CPU Load");
 		panel_1.add(lblCpuLoad, "cell 0 0");
@@ -132,7 +132,7 @@ public class Visualisierungsfenster extends JFrame {
 		altAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 1, 100, 100, "m");
 		panel_1.add(altAltimeter, "cell 1 1,grow");
 		
-		voltAltimeter = new LiveAltimeter(Color.BLACK, Color.ORANGE, Color.WHITE, true, 1, 5, 15, "V");
+		voltAltimeter = new LiveAltimeter(Color.BLACK, Color.ORANGE, Color.WHITE, true, 1, 5, 1500, "mV");
 		panel_1.add(voltAltimeter, "cell 2 1,grow");
 		
 		tempAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 1, 5, 50, "\u00B0C");

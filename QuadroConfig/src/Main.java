@@ -149,8 +149,8 @@ public class Main {
 					Main window = new Main();
 					window.frame.setVisible(true);
 					window.frame.setLocation(0, 0);
-					//TestFrame myFrame = new TestFrame();
-					//myFrame.setVisible(true);
+					TestFrame myFrame = new TestFrame();
+					myFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -706,7 +706,7 @@ public class Main {
 									// Hoehe aktualisieren
 									visualisierungsfenster.altAltimeter.update( (int)messdaten[25] );
 									// Spannung aktualisieren
-									visualisierungsfenster.voltAltimeter.update( (int)messdaten[27] );
+									visualisierungsfenster.voltAltimeter.update( (int)(messdaten[27]*1000) );
 									// Temperatur aktualisieren
 									visualisierungsfenster.tempAltimeter.update( (int)messdaten[23] );
 								}

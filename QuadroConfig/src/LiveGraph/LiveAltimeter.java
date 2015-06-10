@@ -64,8 +64,8 @@ public class LiveAltimeter extends Canvas{
 			g2.fillRect(0, 0, this.getWidth(), this.getHeight());
 			
 			// Hoehe zeichnen	
-			g2.setColor( color );		
-			g2.fillRect(3, this.getHeight(), this.getWidth() - 6, -altitude * this.getHeight() / max );
+			g2.setColor( color );
+			g2.fillRect(3, this.getHeight() - altitude * this.getHeight() / max, this.getWidth() - 6, altitude * this.getHeight() / max);
 			
 			// Beschriftung zeichnen
 			g2.setColor( rasterColor );
