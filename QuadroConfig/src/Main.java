@@ -28,6 +28,7 @@ import java.awt.Toolkit;
 
 import javax.swing.border.LineBorder;
 
+
 import LiveGraph.Dataset;
 
 import java.awt.Color;
@@ -165,13 +166,23 @@ public class Main {
 		initialize();
 	}
 	
+	public static byte [] float2ByteArray (float value)
+	{  
+	     return ByteBuffer.allocate(4).putFloat(value).array();
+	}
+	
 	public byte[] floatToByteArray( float f, byte[] byteArray, int offset) {
-		int integer = Float.floatToIntBits( f );
-		byteArray[0 + offset] = (byte)( integer & 0b00000000000000000000000011111111);
-		byteArray[1 + offset] = (byte)(( integer & 0b00000000000000001111111100000000) >> 8);
-		byteArray[2 + offset] = (byte)(( integer & 0b00000000111111110000000000000000) >> 16);
-		byteArray[3 + offset] = (byte)(( integer & 0b11111111000000000000000000000000) >> 24);
-		
+//		int integer = Float.floatToIntBits( f );
+//		byteArray[0 + offset] = (byte)(integer>>>24);
+//		byteArray[1 + offset] = (byte)(integer>>>16);
+//		byteArray[2 + offset] = (byte)(integer>>>8);
+//		byteArray[3 + offset] = (byte)(integer>>>0);
+
+		byte tmp[] = float2ByteArray(f);
+		byteArray[offset] = tmp[3];
+		byteArray[offset + 1] = tmp[2];
+		byteArray[offset + 2] = tmp[1];
+		byteArray[offset + 3] = tmp[0];
 		return byteArray;
 	}
 	
@@ -508,7 +519,7 @@ public class Main {
 		label_2.setBounds(10, 11, 159, 14);
 		panel_4.add(label_2);
 		
-		JButton btnWerteLaden = new JButton("Load Configuration");
+		JButton btnWerteLaden = new JButton("load");
 		btnWerteLaden.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Keine neuen Messungen anfordern
@@ -568,11 +579,48 @@ public class Main {
 				}
 			}
 		});
-		btnWerteLaden.setBounds(5, 178, 184, 23);
+		btnWerteLaden.setBounds(10, 178, 116, 23);
 		tabKonfiguration.add(btnWerteLaden);
 		
-		JButton button = new JButton("Save Configuration");
-		button.addActionListener(new ActionListener() {
+		JButton btnSave = new JButton("save");
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if( port != null && port.isOpened() ) {
+					// Keine neuen Messungen anfordern
+					messungAktiv = false;
+					// Falls Port offen ist Konfiguration senden
+					while( protocolStatus != 0 ) {
+						// Abwarten, bis Portzustand: idle
+					}
+					try {
+						//Protokollstatus: sendConfiguration
+						protocolStatus = 3;
+						
+						byte[] outbuffer = new byte[1];
+						outbuffer[0] = USB_CMD_SAVE_CONFIG;
+						port.writeBytes(outbuffer);					
+						statuslabel.setText("save Configuration -> reset");
+						
+						// dummy read
+						while (port.getInputBufferBytesCount() != 1) {
+							
+						}
+						byte[] dummy = port.readBytes();
+						
+						// Protokoll-Status zurücksetzen
+						protocolStatus = 0;
+						
+					} catch (Exception ex) {
+						System.out.println(ex.getMessage());
+					}
+				}
+			}
+		});
+		btnSave.setBounds(265, 178, 116, 23);
+		tabKonfiguration.add(btnSave);
+		
+		JButton btnUpdate = new JButton("update");
+		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if( port != null && port.isOpened() ) {
 					// Keine neuen Messungen anfordern
@@ -598,18 +646,18 @@ public class Main {
 						 */
 						byte[] outbuffer = new byte[CONFIGURATION_FRAME_LENGTH + 1];
 						outbuffer[0] = USB_CMD_UPDATE_CONFIG;
-						outbuffer = floatToByteArray( (float)spinner_pxy.getValue(), outbuffer, 1 );
-						outbuffer = floatToByteArray( (float)spinner_ixy.getValue(), outbuffer, 5 );
-						outbuffer = floatToByteArray( (float)spinner_dxy.getValue(), outbuffer, 9 );
-						outbuffer = floatToByteArray( (float)spinner_pz.getValue(), outbuffer, 13 );
-						outbuffer = floatToByteArray( (float)spinner_iz.getValue(), outbuffer, 17 );
-						outbuffer = floatToByteArray( (float)spinner_dz.getValue(), outbuffer, 21 );
-//						outbuffer = floatToByteArray( (float)spinner_cxy.getValue(), outbuffer, 25 );
-//						outbuffer = floatToByteArray( (float)spinner_cz.getValue(), outbuffer, 29 );
+						outbuffer = floatToByteArray( Float.parseFloat( spinner_pxy.getValue().toString()), outbuffer, 1 );
+						outbuffer = floatToByteArray(Float.parseFloat( spinner_ixy.getValue().toString()), outbuffer, 5 );
+						outbuffer = floatToByteArray( Float.parseFloat(spinner_dxy.getValue().toString()), outbuffer, 9 );
+						outbuffer = floatToByteArray( Float.parseFloat(spinner_pz.getValue().toString()), outbuffer, 13 );
+						outbuffer = floatToByteArray(Float.parseFloat( spinner_iz.getValue().toString()), outbuffer, 17 );
+						outbuffer = floatToByteArray(Float.parseFloat(spinner_dz.getValue().toString()), outbuffer, 21 );
+						outbuffer = floatToByteArray( 0.99f, outbuffer, 25 );
+						outbuffer = floatToByteArray( 0.99f, outbuffer, 29 );
 						// ...
 
 						port.writeBytes(outbuffer);					
-						statuslabel.setText("send Configuration");
+						statuslabel.setText("update Configuration");
 						
 						// dummy read
 						while (port.getInputBufferBytesCount() != 1) {
@@ -617,9 +665,7 @@ public class Main {
 						}
 						byte[] dummy = port.readBytes();
 						
-						// Quadrokopter reset
-						port.writeByte( USB_CMD_RESET );
-						
+		
 						// Protokoll-Status zurücksetzen
 						protocolStatus = 0;
 						
@@ -629,8 +675,8 @@ public class Main {
 				}
 			}
 		});
-		button.setBounds(199, 178, 182, 23);
-		tabKonfiguration.add(button);
+		btnUpdate.setBounds(138, 178, 116, 23);
+		tabKonfiguration.add(btnUpdate);
 		
 		FlagsToolBar flagsToolBar = new FlagsToolBar();
 		flagsToolBar.setBounds(10, 287, 396, 41);
@@ -706,9 +752,9 @@ public class Main {
 									visualisierungsfenster.horizonZ.update( (int)messdaten[11] );
 									// PID-Outputs aktualisieren
 									float[] pid  = new float[3];
-									pid[0] = messdaten[28];
-									pid[1] = messdaten[29];
-									pid[2] = messdaten[30];
+									pid[0] = messdaten[28] / 10;
+									pid[1] = messdaten[29] / 10;
+									pid[2] = messdaten[30] / 10;
 									visualisierungsfenster.pidGraph.update( pid );
 									// Fernsteuerungswerte aktualisieren
 									float[] rcs = new float[7];
@@ -721,13 +767,13 @@ public class Main {
 									rcs[6] = messdaten[18] * 100;
 									visualisierungsfenster.rcGraph.update( rcs );
 									// CPU-Load aktualisieren
-									visualisierungsfenster.cpuAltimeter.update( Math.round(messdaten[31] * 100) );
+									visualisierungsfenster.cpuAltimeter.update( (int)(messdaten[31] * 100));
 									// Hoehe aktualisieren
-									visualisierungsfenster.altAltimeter.update( Math.round(messdaten[25]) );
+									visualisierungsfenster.altAltimeter.update( (int)messdaten[25] );
 									// Spannung aktualisieren
-									visualisierungsfenster.voltAltimeter.update( Math.round(messdaten[27] * 1000) );
+									visualisierungsfenster.voltAltimeter.update( (int)(messdaten[27]*1000) );
 									// Temperatur aktualisieren
-									visualisierungsfenster.tempAltimeter.update( Math.round(messdaten[23]) );
+									visualisierungsfenster.tempAltimeter.update( (int)messdaten[23] );
 								}
 								anzahlMessungen++;
 							}
@@ -750,7 +796,7 @@ public class Main {
 							if( LocalTime.now().isAfter( begin.plus(COMMUNICATION_TIMEOUT, ChronoUnit.MILLIS) ) ) {
 								timeout = true;
 								protocolStatus = 0;
-								statuslabel.setText("Communication timeout...");
+								statuslabel.setText("Timout bei Kommunikation. Messwerte nicht erhalten.");
 								break;
 							}
 						}

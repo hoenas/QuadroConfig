@@ -87,7 +87,7 @@ public class Visualisierungsfenster extends JFrame {
 		horizonZ = new LiveArtificialHorizon(Color.BLACK, Color.BLUE, Color.WHITE, true, 1);
 		panel.add(horizonZ, "cell 0 5,grow");
 		
-		pidGraph = new LiveLineGraph(Color.BLACK, 4, 2);
+		pidGraph = new LiveLineGraph(Color.BLACK, 20, 10);
 		pidGraph.setRastertYColor(Color.WHITE);
 		pidGraph.setRasterLineCountY(4);
 		pidGraph.setUseRasterY(true);
