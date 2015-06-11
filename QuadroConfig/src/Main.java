@@ -712,13 +712,13 @@ public class Main {
 									rcs[6] = messdaten[18] * 100;
 									visualisierungsfenster.rcGraph.update( rcs );
 									// CPU-Load aktualisieren
-									visualisierungsfenster.cpuAltimeter.update( (int)(messdaten[31] * 100));
+									visualisierungsfenster.cpuAltimeter.update( Math.round(messdaten[31] * 100) );
 									// Hoehe aktualisieren
-									visualisierungsfenster.altAltimeter.update( (int)messdaten[25] );
+									visualisierungsfenster.altAltimeter.update( Math.round(messdaten[25]) );
 									// Spannung aktualisieren
-									visualisierungsfenster.voltAltimeter.update( (int)(messdaten[27]*1000) );
+									visualisierungsfenster.voltAltimeter.update( Math.round(messdaten[27] * 1000) );
 									// Temperatur aktualisieren
-									visualisierungsfenster.tempAltimeter.update( (int)messdaten[23] );
+									visualisierungsfenster.tempAltimeter.update( Math.round(messdaten[23]) );
 								}
 								anzahlMessungen++;
 							}
