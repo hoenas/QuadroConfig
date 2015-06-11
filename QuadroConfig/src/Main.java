@@ -41,6 +41,7 @@ public class Main {
 	private JPanel tabPort;
 	private JPanel tabMessung;
 	private JPanel tabKonfiguration;
+	private JButton btnMessungStarten;
 	private int messintervall = 24;
 	private boolean messungAktiv = false;
 	
@@ -312,7 +313,10 @@ public class Main {
 
 						port.openPort();	
 						port.setParams(Integer.valueOf(comboBox_1.getSelectedItem().toString()), Integer.valueOf(comboBox_3.getSelectedItem().toString()), Integer.valueOf(comboBox_4.getSelectedItem().toString()), parity);
-								
+						messungAktiv = true;
+						messtimer.start();
+						btnMessungStarten.setText( "Stop Monitoring" );
+						
 						comboBox.setEnabled(false);
 						comboBox_1.setEnabled(false);
 						comboBox_3.setEnabled(false);
@@ -320,10 +324,15 @@ public class Main {
 						comboBox_5.setEnabled(false);
 						statuslabel.setText("Port opened");
 						btnNewButton.setText("Close Port");
+						
+						
 					}
 					else
 					{
 						port.closePort();
+						messungAktiv = false;
+						messtimer.stop();
+						btnMessungStarten.setText( "Start Monitoring" );
 						comboBox.setEnabled(true);
 						comboBox_1.setEnabled(true);
 						comboBox_3.setEnabled(true);
@@ -359,7 +368,7 @@ public class Main {
 		tabs.setEnabledAt(1, true);
 		tabMessung.setLayout(null);
 		
-		JButton btnMessungStarten = new JButton("Start Monitoring");
+		btnMessungStarten = new JButton("Start Monitoring");
 		btnMessungStarten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if( !messungAktiv && port != null && port.isOpened() ) {
