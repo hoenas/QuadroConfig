@@ -15,7 +15,7 @@ import javax.swing.JScrollBar;
 public class Messwertfenster extends JFrame {
 	JLabel lblMessung;
 	public Messwertfenster() {
-		setTitle("Messwerte");
+		setTitle("Monitoring Values");
 		setBounds(100, 100, 433, 703);
 		float[] zeros = new float[128];
 		lblMessung = new JLabel(" ");
@@ -41,7 +41,7 @@ public class Messwertfenster extends JFrame {
 	
 	public void setLabelText( float[] values ) {
 		lblMessung.setText("<html>"
-				+ "<h2>Messung:</h2>"
+				+ "<h2>Monitoring Values:</h2>"
 				+	"<table>"
 				+	"<tr>"
 				+		"<td>"

@@ -28,8 +28,6 @@ import java.awt.Toolkit;
 
 import javax.swing.border.LineBorder;
 
-import com.jgoodies.forms.layout.Size;
-
 import LiveGraph.Dataset;
 
 import java.awt.Color;
@@ -149,8 +147,9 @@ public class Main {
 					Main window = new Main();
 					window.frame.setVisible(true);
 					window.frame.setLocation(0, 0);
-					TestFrame myFrame = new TestFrame();
-					myFrame.setVisible(true);
+					// Testframe um Komponenten zu testen
+					//TestFrame myFrame = new TestFrame();
+					//myFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -221,11 +220,11 @@ public class Main {
 		tabs.addTab("Port", null, tabPort, null);
 		tabPort.setLayout(null);
 		
-		JLabel lblPortname = new JLabel("Port-Name:");
+		JLabel lblPortname = new JLabel("Port Name:");
 		lblPortname.setBounds(10, 11, 74, 14);
 		tabPort.add(lblPortname);
 		
-		JLabel lblBaudrate = new JLabel("Baud-Rate:");
+		JLabel lblBaudrate = new JLabel("Baudrate:");
 		lblBaudrate.setBounds(10, 39, 74, 14);
 		tabPort.add(lblBaudrate);
 		
@@ -254,7 +253,7 @@ public class Main {
 		comboBox_1.setSelectedIndex(9);
 		tabPort.add(comboBox_1);
 		
-		JLabel lblParitt = new JLabel("Parit\u00E4t:");
+		JLabel lblParitt = new JLabel("Parity:");
 		lblParitt.setBounds(10, 126, 74, 14);
 		tabPort.add(lblParitt);
 		
@@ -270,11 +269,11 @@ public class Main {
 		comboBox_3.setSelectedIndex(3);
 		tabPort.add(comboBox_3);
 		
-		JLabel lblDatenbits = new JLabel("Datenbits:");
+		JLabel lblDatenbits = new JLabel("Databits:");
 		lblDatenbits.setBounds(10, 67, 74, 14);
 		tabPort.add(lblDatenbits);
 		
-		JLabel lblStoppbits = new JLabel("Stoppbits:");
+		JLabel lblStoppbits = new JLabel("Stopbits:");
 		lblStoppbits.setBounds(10, 98, 74, 14);
 		tabPort.add(lblStoppbits);
 		
@@ -288,13 +287,13 @@ public class Main {
 		
 		JComboBox comboBox_5 = new JComboBox();
 		comboBox_5.setBounds(94, 123, 109, 20);
-		comboBox_5.addItem("keine");
-		comboBox_5.addItem("gerade");
-		comboBox_5.addItem("ungerade");
+		comboBox_5.addItem("none");
+		comboBox_5.addItem("even");
+		comboBox_5.addItem("odd");
 		comboBox_5.setSelectedIndex(2);
 		tabPort.add(comboBox_5);
 		
-		JButton btnNewButton = new JButton("Port \u00F6ffnen");
+		JButton btnNewButton = new JButton("Open Port");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
@@ -303,9 +302,9 @@ public class Main {
 						int parity = 0;
 						String auswahl = comboBox_5.getSelectedItem().toString();
 						
-						if( auswahl == "gerade" ) {
+						if( auswahl == "even" ) {
 							parity = SerialPort.PARITY_EVEN;
-						} else if ( auswahl == "ungerade" ) {
+						} else if ( auswahl == "odd" ) {
 							parity = SerialPort.PARITY_ODD;
 						} else {
 							parity = SerialPort.PARITY_NONE;
@@ -319,8 +318,8 @@ public class Main {
 						comboBox_3.setEnabled(false);
 						comboBox_4.setEnabled(false);
 						comboBox_5.setEnabled(false);
-						statuslabel.setText("Port geöffnet");
-						btnNewButton.setText("Port schließen");
+						statuslabel.setText("Port opened");
+						btnNewButton.setText("Close Port");
 					}
 					else
 					{
@@ -330,8 +329,8 @@ public class Main {
 						comboBox_3.setEnabled(true);
 						comboBox_4.setEnabled(true);
 						comboBox_5.setEnabled(true);
-						statuslabel.setText("Port geschlossen");
-						btnNewButton.setText("Port oeffnen");
+						statuslabel.setText("Port closed");
+						btnNewButton.setText("Open Port");
 					}
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
@@ -341,7 +340,7 @@ public class Main {
 		btnNewButton.setBounds(10, 151, 193, 23);
 		tabPort.add(btnNewButton);
 		
-		JButton btnAktualisieren = new JButton("aktualisieren");
+		JButton btnAktualisieren = new JButton("refresh");
 		btnAktualisieren.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				comboBox.removeAllItems();
@@ -356,22 +355,22 @@ public class Main {
 
 		
 		tabMessung = new JPanel();
-		tabs.addTab("Messung", null, tabMessung, null);
+		tabs.addTab("Monitoring", null, tabMessung, null);
 		tabs.setEnabledAt(1, true);
 		tabMessung.setLayout(null);
 		
-		JButton btnMessungStarten = new JButton("Messung starten");
+		JButton btnMessungStarten = new JButton("Start Monitoring");
 		btnMessungStarten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if( !messungAktiv && port != null && port.isOpened() ) {
 					messtimer.start();
-					btnMessungStarten.setText("Messung pausieren");
-					statuslabel.setText("Messung fortgesetzt");
+					btnMessungStarten.setText("Stop Monitoring");
+					statuslabel.setText("Resumed monitoring...");
 					
 				} else {
 					messtimer.stop();
-					btnMessungStarten.setText("Messung starten");
-					statuslabel.setText("Messung pausiert");
+					btnMessungStarten.setText("Start Monitoring");
+					statuslabel.setText("Stopped monitoring.");
 				}
 				messungAktiv = !messungAktiv;
 			}	
@@ -379,7 +378,7 @@ public class Main {
 		btnMessungStarten.setBounds(10, 11, 178, 23);
 		tabMessung.add(btnMessungStarten);
 		
-		JButton btnNewButton_1 = new JButton("Messwerte anzeigen");
+		JButton btnNewButton_1 = new JButton("View Monitoring Values");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				messwertfenster.setVisible(true);
@@ -390,7 +389,7 @@ public class Main {
 		btnNewButton_1.setBounds(10, 45, 371, 23);
 		tabMessung.add(btnNewButton_1);
 		
-		JButton btnNewButton_3 = new JButton("Visualisierung anzeigen");
+		JButton btnNewButton_3 = new JButton("View Monitoring Visualisation");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				visualisierungsfenster.setVisible(true);
@@ -401,7 +400,7 @@ public class Main {
 		btnNewButton_3.setBounds(10, 79, 371, 23);
 		tabMessung.add(btnNewButton_3);		
 		
-		JLabel lblIntervallms = new JLabel("Intervall (ms):");
+		JLabel lblIntervallms = new JLabel("Interval (ms):");
 		lblIntervallms.setBounds(198, 15, 87, 14);
 		tabMessung.add(lblIntervallms);
 		
@@ -412,13 +411,13 @@ public class Main {
 		tabMessung.add(spinner);
 
 		tabKonfiguration = new JPanel();
-		tabs.addTab("Quadrokopter konfigurieren", null, tabKonfiguration, null);
+		tabs.addTab("Configurate Quadrocopter", null, tabKonfiguration, null);
 		tabs.setEnabledAt(2, true);
 		tabKonfiguration.setLayout(null);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_3.setBounds(10, 11, 179, 115);
+		panel_3.setBounds(10, 11, 137, 115);
 		tabKonfiguration.add(panel_3);
 		panel_3.setLayout(null);
 		
@@ -426,81 +425,81 @@ public class Main {
 		separator.setBounds(43, 11, 1, 2);
 		panel_3.add(separator);
 		
-		JLabel lblPanteil = new JLabel("P-Anteil:");
-		lblPanteil.setBounds(10, 37, 65, 14);
+		JLabel lblPanteil = new JLabel("P:");
+		lblPanteil.setBounds(10, 37, 24, 14);
 		panel_3.add(lblPanteil);
 		
-		JLabel label = new JLabel("I-Anteil:");
-		label.setBounds(10, 62, 65, 14);
+		JLabel label = new JLabel("I:");
+		label.setBounds(10, 62, 24, 14);
 		panel_3.add(label);
 		
 		JSpinner spinner_pxy = new JSpinner();
 		spinner_pxy.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(1)));
-		spinner_pxy.setBounds(85, 34, 84, 20);
+		spinner_pxy.setBounds(43, 34, 84, 20);
 		panel_3.add(spinner_pxy);
 		
 		JSpinner spinner_ixy = new JSpinner();
 		spinner_ixy.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(1)));
-		spinner_ixy.setBounds(85, 59, 84, 20);
+		spinner_ixy.setBounds(43, 59, 84, 20);
 		panel_3.add(spinner_ixy);
 		
-		JLabel label_1 = new JLabel("D-Anteil");
-		label_1.setBounds(10, 87, 65, 14);
+		JLabel label_1 = new JLabel("D:");
+		label_1.setBounds(10, 87, 24, 14);
 		panel_3.add(label_1);
 		
 		JSpinner spinner_dxy = new JSpinner();
 		spinner_dxy.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(1)));
-		spinner_dxy.setBounds(85, 84, 84, 20);
+		spinner_dxy.setBounds(43, 84, 84, 20);
 		panel_3.add(spinner_dxy);
 		
-		JLabel lblPidreglerXy = new JLabel("PID-Regler XY:");
+		JLabel lblPidreglerXy = new JLabel("PID Controller XY:");
 		lblPidreglerXy.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblPidreglerXy.setBounds(10, 11, 84, 14);
+		lblPidreglerXy.setBounds(10, 11, 159, 14);
 		panel_3.add(lblPidreglerXy);
 		
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel_4.setLayout(null);
-		panel_4.setBounds(199, 11, 179, 115);
+		panel_4.setBounds(157, 11, 137, 115);
 		tabKonfiguration.add(panel_4);
 		
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBounds(43, 11, 1, 2);
 		panel_4.add(separator_1);
 		
-		JLabel label_3 = new JLabel("P-Anteil:");
-		label_3.setBounds(10, 37, 65, 14);
+		JLabel label_3 = new JLabel("P:");
+		label_3.setBounds(10, 37, 24, 14);
 		panel_4.add(label_3);
 		
-		JLabel label_4 = new JLabel("I-Anteil:");
-		label_4.setBounds(10, 62, 65, 14);
+		JLabel label_4 = new JLabel("I:");
+		label_4.setBounds(10, 62, 24, 14);
 		panel_4.add(label_4);
 		
 		JSpinner spinner_pz = new JSpinner();
 		spinner_pz.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(1)));
-		spinner_pz.setBounds(85, 34, 84, 20);
+		spinner_pz.setBounds(43, 34, 84, 20);
 		panel_4.add(spinner_pz);
 		
 		JSpinner spinner_iz = new JSpinner();
 		spinner_iz.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(1)));
-		spinner_iz.setBounds(85, 59, 84, 20);
+		spinner_iz.setBounds(43, 59, 84, 20);
 		panel_4.add(spinner_iz);
 		
-		JLabel label_5 = new JLabel("D-Anteil");
-		label_5.setBounds(10, 87, 65, 14);
+		JLabel label_5 = new JLabel("D:");
+		label_5.setBounds(10, 87, 24, 14);
 		panel_4.add(label_5);
 		
 		JSpinner spinner_dz = new JSpinner();
 		spinner_dz.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(1)));
-		spinner_dz.setBounds(85, 84, 84, 20);
+		spinner_dz.setBounds(43, 84, 84, 20);
 		panel_4.add(spinner_dz);
 		
-		JLabel label_2 = new JLabel("PID-Regler Z:");
+		JLabel label_2 = new JLabel("PID Controller Z:");
 		label_2.setFont(new Font("Tahoma", Font.BOLD, 11));
-		label_2.setBounds(10, 11, 84, 14);
+		label_2.setBounds(10, 11, 159, 14);
 		panel_4.add(label_2);
 		
-		JButton btnWerteLaden = new JButton("Werte laden");
+		JButton btnWerteLaden = new JButton("Load Configuration");
 		btnWerteLaden.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Keine neuen Messungen anfordern
@@ -560,10 +559,10 @@ public class Main {
 				}
 			}
 		});
-		btnWerteLaden.setBounds(5, 178, 155, 23);
+		btnWerteLaden.setBounds(5, 178, 184, 23);
 		tabKonfiguration.add(btnWerteLaden);
 		
-		JButton button = new JButton("Werte speichern");
+		JButton button = new JButton("Save Configuration");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if( port != null && port.isOpened() ) {
@@ -601,7 +600,6 @@ public class Main {
 						// ...
 
 						port.writeBytes(outbuffer);					
-						protocolStatus = 0;
 						statuslabel.setText("send Configuration");
 						
 						// dummy read
@@ -609,13 +607,20 @@ public class Main {
 							
 						}
 						byte[] dummy = port.readBytes();
+						
+						// Quadrokopter reset
+						port.writeByte( USB_CMD_RESET );
+						
+						// Protokoll-Status zurücksetzen
+						protocolStatus = 0;
+						
 					} catch (Exception ex) {
 						System.out.println(ex.getMessage());
 					}
 				}
 			}
 		});
-		button.setBounds(226, 178, 155, 23);
+		button.setBounds(199, 178, 182, 23);
 		tabKonfiguration.add(button);
 		
 		FlagsToolBar flagsToolBar = new FlagsToolBar();
@@ -651,7 +656,7 @@ public class Main {
 							if( LocalTime.now().isAfter( begin.plus(COMMUNICATION_TIMEOUT, ChronoUnit.MILLIS) ) ) {
 								timeout = true;
 								protocolStatus = 0;
-								statuslabel.setText("Timout bei Kommunikation. Messwerte nicht erhalten.");
+								statuslabel.setText("Communication timeout...");
 								break;
 							}
 						}
@@ -736,7 +741,7 @@ public class Main {
 							if( LocalTime.now().isAfter( begin.plus(COMMUNICATION_TIMEOUT, ChronoUnit.MILLIS) ) ) {
 								timeout = true;
 								protocolStatus = 0;
-								statuslabel.setText("Timout bei Kommunikation. Messwerte nicht erhalten.");
+								statuslabel.setText("Communication timeout...");
 								break;
 							}
 						}

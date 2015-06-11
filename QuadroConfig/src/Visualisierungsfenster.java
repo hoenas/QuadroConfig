@@ -37,7 +37,8 @@ public class Visualisierungsfenster extends JFrame {
 	public LiveAltimeter tempAltimeter;
 	
 	public Visualisierungsfenster() {
-		setBounds(100, 100, 805, 867);
+		setTitle("Monitoring Visualisation");
+		setBounds(100, 100, 805, 584);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -45,7 +46,7 @@ public class Visualisierungsfenster extends JFrame {
 		
 		JPanel panel = new JPanel();
 		tabbedPane.addTab("Position Control", null, panel, null);
-		panel.setLayout(new MigLayout("", "[150.00][100px:41.00,grow,fill]", "[15.00][10:150:150,grow 150,shrink 10,fill][][10:150:150,grow 150,shrink 10,fill][][10:150:150,grow 150,shrink 10,fill][][10:150.00:150,grow 150,shrink 10,fill][][10:150.00:150,grow 150,shrink 10,fill]"));
+		panel.setLayout(new MigLayout("", "[75][100px:41.00,grow,fill]", "[15.00][10:75:75,grow 150,shrink 10,fill][][10:75:75,grow 150,shrink 10,fill][][10:75:75,grow 150,shrink 10,fill][][10:75:75,grow 150,shrink 10,fill][][10:75:75,grow 150,shrink 10,fill]"));
 		
 		JLabel lblAngleX = new JLabel("Angle X-Axis");
 		panel.add(lblAngleX, "cell 0 0");
@@ -77,7 +78,7 @@ public class Visualisierungsfenster extends JFrame {
 		gyroGraph.setRasterLineCountY(5);
 		panel.add(gyroGraph, "cell 1 3,grow");
 		
-		JLabel lblAngleZachsis = new JLabel("Angle Z-Achsis");
+		JLabel lblAngleZachsis = new JLabel("Angle Z-Axis");
 		panel.add(lblAngleZachsis, "cell 0 4");
 		
 		JLabel lblGyro = new JLabel("PID-Output");
