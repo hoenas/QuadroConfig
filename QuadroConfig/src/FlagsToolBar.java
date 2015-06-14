@@ -5,6 +5,7 @@ import javax.swing.JToolBar;
 
 public class FlagsToolBar extends JToolBar {
 
+	public boolean isConfigMode;
 	/* byte 4 */
 	private static int FLIGHT_MODE_FLAG =  0x01;
 	private static int CONFIG_MODE_FLAG =  0x02;
@@ -108,9 +109,11 @@ public class FlagsToolBar extends JToolBar {
 		if ((flag_array[3 ]& CONFIG_MODE_FLAG) == CONFIG_MODE_FLAG) {
 			flagConfigMode
 					.setText("<html> <font color='green'>Config </font> </html>");
+			isConfigMode = true;
 		} else {
 			flagConfigMode
 					.setText("<html> <font color='gray'>Config </font> </html>");
+			isConfigMode = false;
 		}
 		if ((flag_array[3]  & ERROR_FLAG)  == ERROR_FLAG) {
 			flagError.setText("<html> <font color='red'>Error </font> </html>");

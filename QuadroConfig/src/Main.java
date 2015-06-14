@@ -12,6 +12,12 @@ import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.time.LocalTime;
@@ -28,7 +34,6 @@ import java.awt.Toolkit;
 
 import javax.swing.border.LineBorder;
 
-
 import LiveGraph.Dataset;
 
 import java.awt.Color;
@@ -43,9 +48,10 @@ public class Main {
 	private JPanel tabMessung;
 	private JPanel tabKonfiguration;
 	private JButton btnMessungStarten;
+	private JButton btnOpenCfg;
 	private int messintervall = 24;
 	private boolean messungAktiv = false;
-	
+	FlagsToolBar flagsToolBar;
 	// Protokoll
 	private static int protocolStatus = 0;
 	/* Werte protocolStatus:
@@ -56,28 +62,28 @@ public class Main {
 	 */
 	
 	/* get status and global flags*/
-	private static byte USB_CMD_SEND_STATUS_FLOAT = (byte)0x03;
-	private static byte USB_CMD_GLOBAL_FLAGS = (byte)0x04;
+	public static byte USB_CMD_SEND_STATUS_FLOAT = (byte)0x03;
+	public static byte USB_CMD_GLOBAL_FLAGS = (byte)0x04;
 	
 	/* configuration*/
-	private static byte USB_CMD_CONFIG_MODE = (byte)0xC0;
+	public static byte USB_CMD_CONFIG_MODE = (byte)0xC0;
 	
-	private static byte USB_CMD_GET_CONFIG = (byte)0xC1;
-	private static byte USB_CMD_UPDATE_CONFIG = (byte)0xC2;
-	private static byte USB_CMD_SAVE_CONFIG = (byte)0xCE;
-	private static byte USB_CMD_RESTORE_CONFIG = (byte)0xCF;
+	public static byte USB_CMD_GET_CONFIG = (byte)0xC1;
+	public static byte USB_CMD_UPDATE_CONFIG = (byte)0xC2;
+	public static byte USB_CMD_SAVE_CONFIG = (byte)0xCE;
+	public static byte USB_CMD_RESTORE_CONFIG = (byte)0xCF;
 
 	/* eeprom acces */
-	private static byte USB_CMD_READ_BYTE = (byte)0xC3;
-	private static byte USB_CMD_READ_2BYTES = (byte)0xC4;
-	private static byte USB_CMD_READ_4BYTES = (byte)0xC5;
+	public static byte USB_CMD_READ_BYTE = (byte)0xC3;
+	public static byte USB_CMD_READ_2BYTES = (byte)0xC4;
+	public static byte USB_CMD_READ_4BYTES = (byte)0xC5;
 
-	private static byte USB_CMD_WRITE_BYTE = (byte)0xC6;
-	private static byte USB_CMD_WRITE_2BYTES = (byte)0xC7;
-	private static byte USB_CMD_WRITE_4BYTES = (byte)0xC8;	
+	public static byte USB_CMD_WRITE_BYTE = (byte)0xC6;
+	public static byte USB_CMD_WRITE_2BYTES = (byte)0xC7;
+	public static byte USB_CMD_WRITE_4BYTES = (byte)0xC8;	
 	
 	/* reset */
-	private static byte USB_CMD_RESET = (byte)0xFF;	
+	public static byte USB_CMD_RESET = (byte)0xFF;	
 	
 	
 	private static int MEASUREMENT_FRAME_LENGTH = 128;
@@ -92,6 +98,9 @@ public class Main {
 	// #########################################################
 	private Messwertfenster messwertfenster = new Messwertfenster();
 	private Visualisierungsfenster visualisierungsfenster = new Visualisierungsfenster();
+	private ConfigWindow cfgWindow = new ConfigWindow();
+
+	
 	// Motorendatensets
 	private Dataset motor1Dataset = new Dataset("Motor 1", Color.BLUE, 2, historyLength);
 	private Dataset motor2Dataset = new Dataset("Motor 2", Color.GREEN, 2, historyLength);
@@ -335,7 +344,7 @@ public class Main {
 						comboBox_5.setEnabled(false);
 						statuslabel.setText("Port opened");
 						btnNewButton.setText("Close Port");
-						
+						btnOpenCfg.setEnabled(true);
 						
 					}
 					else
@@ -351,6 +360,7 @@ public class Main {
 						comboBox_5.setEnabled(true);
 						statuslabel.setText("Port closed");
 						btnNewButton.setText("Open Port");
+						btnOpenCfg.setEnabled(false);
 					}
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
@@ -372,7 +382,77 @@ public class Main {
 		});
 		btnAktualisieren.setBounds(213, 7, 168, 23);
 		tabPort.add(btnAktualisieren);
+		
+		btnOpenCfg = new JButton("open cfg");
+		btnOpenCfg.setEnabled(false);
+		btnOpenCfg.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				if( port != null && port.isOpened() ) {
+					// Keine neuen Messungen anfordern
+					messungAktiv = false;
+					// Falls Port offen ist Konfiguration senden
+					while( protocolStatus != 0 ) {
+						// Abwarten, bis Portzustand: idle
+					}
+				
+					cfgWindow.openConfigWindow(port,statuslabel,flagsToolBar.isConfigMode);
+				
+					
+				}
+				
+			}
+		});
+		btnOpenCfg.setBounds(264, 150, 117, 25);
+		tabPort.add(btnOpenCfg);
 
+				cfgWindow.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				messungAktiv = true;
+				
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+		
+				
+			}
+
+			@Override
+			public void windowActivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+	
+		});
+			
+		
 		
 		tabMessung = new JPanel();
 		tabs.addTab("Monitoring", null, tabMessung, null);
@@ -678,7 +758,7 @@ public class Main {
 		btnUpdate.setBounds(138, 178, 116, 23);
 		tabKonfiguration.add(btnUpdate);
 		
-		FlagsToolBar flagsToolBar = new FlagsToolBar();
+		flagsToolBar = new FlagsToolBar();
 		flagsToolBar.setBounds(10, 287, 396, 41);
 		frame.getContentPane().add(flagsToolBar);
 		
@@ -725,7 +805,7 @@ public class Main {
 									messdaten[i] = ByteBuffer.wrap(temp, i *4, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 								}
 								messwertfenster.setLabelText(messdaten);
-								
+								statuslabel.setText("monitoring...");
 								if( visualisierungsfenster.isVisible() ) {
 									// Accelerometerwerte aktualsierien
 									float[] accs = new float[3];
@@ -805,7 +885,7 @@ public class Main {
 							// Daten auswerten
 								byte[] temp = port.readBytes();
 								flagsToolBar.update(temp);
-							
+								statuslabel.setText("monitoring...");
 						} else {
 							// Dummy read
 							port.readBytes();
