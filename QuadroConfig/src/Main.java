@@ -741,10 +741,10 @@ public class Main {
 									visualisierungsfenster.gyroGraph.update( gyros );
 									// Motorenwerte aktualisieren
 									float[] motoren = new float[4];
-									motoren[0] = messdaten[19];
-									motoren[1] = messdaten[20];
-									motoren[2] = messdaten[21];
-									motoren[3] = messdaten[22];
+									motoren[0] = messdaten[19] * 100;
+									motoren[1] = messdaten[20] * 100;
+									motoren[2] = messdaten[21] * 100;
+									motoren[3] = messdaten[22] * 100;
 									visualisierungsfenster.motorGraph.update( motoren );
 									// Winkel aktualisieren
 									visualisierungsfenster.horizonX.update( (int)messdaten[9] );
@@ -752,9 +752,9 @@ public class Main {
 									visualisierungsfenster.horizonZ.update( (int)messdaten[11] );
 									// PID-Outputs aktualisieren
 									float[] pid  = new float[3];
-									pid[0] = messdaten[28] / 10;
-									pid[1] = messdaten[29] / 10;
-									pid[2] = messdaten[30] / 10;
+									pid[0] = messdaten[28]*1000;
+									pid[1] = messdaten[29]*1000;
+									pid[2] = messdaten[30]*1000;
 									visualisierungsfenster.pidGraph.update( pid );
 									// Fernsteuerungswerte aktualisieren
 									float[] rcs = new float[7];

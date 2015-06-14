@@ -61,7 +61,7 @@ public class Visualisierungsfenster extends JFrame {
 		accGraph.setRastertYColor(Color.WHITE);
 		accGraph.setUseRasterY(true);
 		accGraph.setRasterLineCountY(5);
-		panel.add(accGraph, "cell 1 1,grow");
+		panel.add(accGraph, "cell 1 1,alignx left,growy");
 		
 		JLabel lblAngleYaxis = new JLabel("Angle Y-Axis");
 		panel.add(lblAngleYaxis, "cell 0 2");
