@@ -89,17 +89,7 @@ public class ConfigWindow extends JDialog {
 		this.setLocation(433, 50);
 		this.setSize(this.getSize().width, this.getSize().height);
 		this.isConfigMode = isConfigMode;
-		if (isConfigMode) {
-			btnEnterConfigMode.setText("leave config mode");
-			btnRead.setEnabled(true);
-			btnWrite.setEnabled(true);
-			btnReloadEeprom.setEnabled(true);
-		} else {
-			btnEnterConfigMode.setText("enter config mode");
-			btnRead.setEnabled(false);
-			btnWrite.setEnabled(false);
-			btnReloadEeprom.setEnabled(false);
-		}
+		setConfigModeButtons();
 	}
 
 	private float byte2float(byte[] byteArray, int offset) {
@@ -250,12 +240,15 @@ public class ConfigWindow extends JDialog {
 			outbuffer[0] = USB_CMD_SAVE_CONFIG;
 			port.writeBytes(outbuffer);
 			statuslabel.setText("save Configuration -> reset");
-
+			
 			// dummy read
 			while (port.getInputBufferBytesCount() != 1)
 				;
 			byte[] dummy = port.readBytes();
 
+			isConfigMode = false;
+			setConfigModeButtons();
+			
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
@@ -443,21 +436,22 @@ public class ConfigWindow extends JDialog {
 
 	}
 
-	private void toggleConfigMode() {
+	private void setConfigModeButtons(){
 		if (isConfigMode) {
-			isConfigMode = false;
-			btnEnterConfigMode.setText("enter config mode");
-			btnRead.setEnabled(false);
-			btnWrite.setEnabled(false);
-			btnReloadEeprom.setEnabled(false);
-		} else {
-			isConfigMode = true;
 			btnEnterConfigMode.setText("leave config mode");
 			btnRead.setEnabled(true);
 			btnWrite.setEnabled(true);
 			btnReloadEeprom.setEnabled(true);
+		} else {
+			btnEnterConfigMode.setText("enter config mode");
+			btnRead.setEnabled(false);
+			btnWrite.setEnabled(false);
+			btnReloadEeprom.setEnabled(false);
 		}
-
+	}
+	
+	private void toggleConfigMode() {
+	
 		try {
 			byte[] outbuffer = new byte[1];
 			outbuffer[0] = USB_CMD_CONFIG_MODE;
@@ -467,7 +461,8 @@ public class ConfigWindow extends JDialog {
 			while (port.getInputBufferBytesCount() != 1)
 				;
 			byte[] dummy = port.readBytes();
-
+			isConfigMode = !isConfigMode;
+			setConfigModeButtons();
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
