@@ -46,7 +46,6 @@ public class Main {
 	private Timer messtimer;
 	private JPanel tabPort;
 	private JPanel tabMessung;
-	private JPanel tabKonfiguration;
 	private JButton btnMessungStarten;
 	private JButton btnOpenCfg;
 	private int messintervall = 24;

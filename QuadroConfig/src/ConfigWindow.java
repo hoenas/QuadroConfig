@@ -1,20 +1,16 @@
-import java.awt.BorderLayout;
-
 import javax.swing.JFrame;
 
 import jssc.SerialPort;
 
 import javax.swing.JPanel;
 
-import java.awt.GridLayout;
 
-import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
-import javax.swing.JSeparator;
+
 import javax.swing.SpinnerNumberModel;
-import javax.swing.border.BevelBorder;
+
 import javax.swing.border.LineBorder;
 
 import java.awt.Color;
@@ -32,6 +28,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFormattedTextField;
 
+
 public class ConfigWindow extends JDialog {
 
 	private SerialPort port;
@@ -40,7 +37,7 @@ public class ConfigWindow extends JDialog {
 	private JLabel statuslabel;
 	JButton btnEnterConfigMode;
 	private boolean isConfigMode;
-	public boolean isOpen;
+
 
 	JSpinner gain_ang_z_spinner = new JSpinner();
 	JSpinner compFilterXY_Spinner = new JSpinner();
@@ -54,6 +51,14 @@ public class ConfigWindow extends JDialog {
 	JSpinner d_ang_xy_spinner = new JSpinner();
 	JSpinner i_ang_xy_spinner = new JSpinner();
 	JSpinner p_ang_xy_spinner = new JSpinner();
+
+	JLabel errorlabel = new JLabel("");
+	JComboBox format_comboBox = new JComboBox();
+	JComboBox nrBytes_comboBox = new JComboBox();
+
+	JButton btnWrite = new JButton("write");
+	JButton btnRead = new JButton("read");
+	JButton btnReloadEeprom = new JButton("reload from eeprom");
 
 	/* configuration */
 	private static byte USB_CMD_CONFIG_MODE = (byte) 0xC0;
@@ -71,6 +76,8 @@ public class ConfigWindow extends JDialog {
 	private static byte USB_CMD_WRITE_BYTE = (byte) 0xC6;
 	private static byte USB_CMD_WRITE_2BYTES = (byte) 0xC7;
 	private static byte USB_CMD_WRITE_4BYTES = (byte) 0xC8;
+	
+	private static byte USB_CMD_RELOAD_EEPROM = (byte) 0xC9;
 
 	private static int CONFIGURATION_FRAME_LENGTH = 48;
 
@@ -84,8 +91,14 @@ public class ConfigWindow extends JDialog {
 		this.isConfigMode = isConfigMode;
 		if (isConfigMode) {
 			btnEnterConfigMode.setText("leave config mode");
+			btnRead.setEnabled(true);
+			btnWrite.setEnabled(true);
+			btnReloadEeprom.setEnabled(true);
 		} else {
 			btnEnterConfigMode.setText("enter config mode");
+			btnRead.setEnabled(false);
+			btnWrite.setEnabled(false);
+			btnReloadEeprom.setEnabled(false);
 		}
 	}
 
@@ -152,6 +165,24 @@ public class ConfigWindow extends JDialog {
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
+	}
+	
+	private void reloadEEPROM(){
+		try {
+			byte[] outbuffer = new byte[1];
+			outbuffer[0] = USB_CMD_RELOAD_EEPROM;
+			port.writeBytes(outbuffer);
+			statuslabel.setText("Reloading EEPROM");
+
+			// dummy read
+			while (port.getInputBufferBytesCount() != 1)
+				;
+			byte[] dummy = port.readBytes();
+
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+		
 	}
 
 	private void sendConfig() {
@@ -231,24 +262,200 @@ public class ConfigWindow extends JDialog {
 
 	}
 
-	private void readEEPROM() {
+	private boolean parseAddress(byte[] outbuffer, int offset) {
+		String temp = adr_textField.getText();
+		if (temp.length() != 4) {
+			errorlabel.setText("wrong address");
+			return false;
+		}
+		try {
+			outbuffer[offset] = (byte) Integer.parseUnsignedInt(
+					temp.substring(0, 2), 16);
+			outbuffer[offset + 1] = (byte) Integer.parseUnsignedInt(
+					temp.substring(2), 16);
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+			errorlabel.setText("wrong address");
+			return false;
+		}
+		errorlabel.setText("");
+		return true;
+	}
 
-		// TODO readEEPROM()
+	private boolean parseData(byte[] outbuffer, int numOfBytes) {
+		String tmp = data_textField.getText();
+		byte ByteTmp[] = new byte[4];
+
+		if (format_comboBox.getSelectedIndex() == 0) {
+			/* hex */
+			ByteTmp= ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(Integer.valueOf(tmp, 16)).array();
+			for (int i = 0 ; i< numOfBytes;i++) {
+				outbuffer[3+i] = ByteTmp[i];
+			}
+		} else if (format_comboBox.getSelectedIndex() == 1) {
+			/* dec */
+			ByteTmp= ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt((Integer.valueOf(tmp, 10))).array();
+			for (int i = 0 ; i< numOfBytes;i++) {
+				outbuffer[3+i] = ByteTmp[i];
+			}
+
+		} else if (format_comboBox.getSelectedIndex() == 2) {
+			/* float */
+			if (numOfBytes == 4) {
+				ByteTmp = ByteBuffer.allocate(4).putFloat(Float.parseFloat(tmp)).array();
+				outbuffer[3] = ByteTmp[0];
+				outbuffer[4] = ByteTmp[1];
+				outbuffer[5] = ByteTmp[2];
+				outbuffer[6] = ByteTmp[3];
+				
+				//outbuffer = float2byte() , outbuffer, 3);
+			} else {
+				errorlabel.setText("wrong data format");
+				return false;
+			}
+
+		} else {
+			errorlabel.setText("not implemented");
+			return false;
+		}
+	
+		errorlabel.setText("");		
+		return true;
+
+	}
+
+	private void interpretInbuffer(byte[] inbuffer, int numOfBytes) {
+		String tmp = "";
+
+		if (format_comboBox.getSelectedIndex() == 0) {
+			/* hex */
+			byte[] bytebuffer = new byte[4];
+			for (int i = 0; i < numOfBytes; i++) {
+				bytebuffer[i] = inbuffer[i];
+			}
+			for (int i = numOfBytes; i < 4; i++) {
+				bytebuffer[i] = 0;
+			}
+			tmp = Integer.toHexString(
+					ByteBuffer.wrap(bytebuffer, 0, 4)
+							.order(ByteOrder.LITTLE_ENDIAN).getInt());
+		} else if (format_comboBox.getSelectedIndex() == 1) {
+			/* dec */
+			byte[] bytebuffer = new byte[4];
+			for (int i = 0; i < numOfBytes; i++) {
+				bytebuffer[i] = inbuffer[i];
+			}
+			tmp = Integer.toUnsignedString(ByteBuffer.wrap(bytebuffer, 0, 4)
+					.order(ByteOrder.LITTLE_ENDIAN).getInt());
+		} else if (format_comboBox.getSelectedIndex() == 2) {
+			/* float */
+			if (numOfBytes == 4) {
+				tmp = Float.toString(ByteBuffer.wrap(inbuffer, 0, 4)
+						.order(ByteOrder.BIG_ENDIAN).getFloat());
+			} else {
+				errorlabel.setText("wrong data format");
+				return;
+			}
+
+		} else {
+			errorlabel.setText("not implemented");
+			return;
+		}
+		data_textField.setText(tmp);
+		errorlabel.setText("");
+	}
+
+	private void readEEPROM() {
+		int numberOfBytes;
+		byte tmp;
+
+		if (nrBytes_comboBox.getSelectedIndex() == 0) {
+			tmp = USB_CMD_READ_BYTE;
+			numberOfBytes = 1;
+		} else if (nrBytes_comboBox.getSelectedIndex() == 1) {
+			tmp = USB_CMD_READ_2BYTES;
+			numberOfBytes = 2;
+		} else {
+			tmp = USB_CMD_READ_4BYTES;
+			numberOfBytes = 4;
+		}
+		byte[] outbuffer = new byte[3];
+		outbuffer[0] = tmp;
+
+		if (parseAddress(outbuffer, 1)) {
+			try {
+				port.writeBytes(outbuffer);
+
+				statuslabel.setText("reading eeprom");
+
+				while (port.getInputBufferBytesCount() < numberOfBytes)
+					;
+				byte[] inbuffer = port.readBytes();
+
+				interpretInbuffer(inbuffer, numberOfBytes);
+
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
+			}
+		}
 
 	}
 
 	private void writeEEPROM() {
-		// TODO writeEEPROM()
+		int numberOfBytes;
+		byte tmp;
+
+		if (nrBytes_comboBox.getSelectedIndex() == 0) {
+			tmp = USB_CMD_WRITE_BYTE;
+			numberOfBytes = 1;
+		} else if (nrBytes_comboBox.getSelectedIndex() == 1) {
+			tmp = USB_CMD_WRITE_2BYTES;
+			numberOfBytes = 2;
+		} else {
+			tmp = USB_CMD_WRITE_4BYTES;
+			numberOfBytes = 4;
+		}
+		byte[] outbuffer = new byte[3 + numberOfBytes];
+		outbuffer[0] = tmp;
+
+		if (parseAddress(outbuffer, 1)) {
+			if (parseData(outbuffer, numberOfBytes)) {
+
+				try {
+					port.writeBytes(outbuffer);
+
+					statuslabel.setText("writing eeprom");
+
+					// dummy read
+					while (port.getInputBufferBytesCount() != 1)
+						;
+					byte[] dummy = port.readBytes();
+
+					
+
+				} catch (Exception ex) {
+					System.out.println(ex.getMessage());
+				}
+			} else {
+				errorlabel.setText("wrong data format");
+			}
+		}
+
 	}
 
 	private void toggleConfigMode() {
 		if (isConfigMode) {
 			isConfigMode = false;
 			btnEnterConfigMode.setText("enter config mode");
-
+			btnRead.setEnabled(false);
+			btnWrite.setEnabled(false);
+			btnReloadEeprom.setEnabled(false);
 		} else {
 			isConfigMode = true;
 			btnEnterConfigMode.setText("leave config mode");
+			btnRead.setEnabled(true);
+			btnWrite.setEnabled(true);
+			btnReloadEeprom.setEnabled(true);
 		}
 
 		try {
@@ -412,7 +619,7 @@ public class ConfigWindow extends JDialog {
 
 		JPanel eeprom_access_panel = new JPanel();
 		eeprom_access_panel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		eeprom_access_panel.setBounds(12, 397, 328, 147);
+		eeprom_access_panel.setBounds(12, 397, 383, 147);
 		getContentPane().add(eeprom_access_panel);
 		eeprom_access_panel.setLayout(null);
 
@@ -420,59 +627,54 @@ public class ConfigWindow extends JDialog {
 		lblDirectEepromAccess.setBounds(12, 12, 180, 15);
 		eeprom_access_panel.add(lblDirectEepromAccess);
 
-		JButton btnRead = new JButton("read");
-		// TODO
-		btnRead.setEnabled(false);
 		btnRead.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				readEEPROM();
 			}
 		});
-		btnRead.setBounds(22, 92, 125, 25);
+		btnRead.setBounds(22, 110, 125, 25);
 		eeprom_access_panel.add(btnRead);
 
-		JButton btnWrite = new JButton("write");
-		// TODO
-		btnWrite.setEnabled(false);
 		btnWrite.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				writeEEPROM();
 			}
 		});
-		btnWrite.setBounds(185, 92, 125, 25);
+		btnWrite.setBounds(245, 110, 125, 25);
 		eeprom_access_panel.add(btnWrite);
 
-		JComboBox nrBytes_comboBox = new JComboBox();
-		nrBytes_comboBox.setBounds(240, 36, 70, 20);
+		nrBytes_comboBox.setBounds(300, 30, 70, 20);
 		nrBytes_comboBox.addItem("1");
 		nrBytes_comboBox.addItem("2");
 		nrBytes_comboBox.addItem("4");
+		nrBytes_comboBox.setSelectedIndex(2);
 		eeprom_access_panel.add(nrBytes_comboBox);
 
-		JComboBox format_comboBox = new JComboBox();
-		format_comboBox.setBounds(240, 60, 70, 20);
+		format_comboBox.setBounds(300, 60, 70, 20);
 		format_comboBox.addItem("hex");
 		format_comboBox.addItem("dec");
 		format_comboBox.addItem("float");
 		format_comboBox.addItem("ascii");
+		format_comboBox.setSelectedIndex(2);
+		
 		eeprom_access_panel.add(format_comboBox);
 
 		adr_textField = new JTextField();
-		adr_textField.setBounds(100, 36, 70, 20);
+		adr_textField.setBounds(170, 30, 70, 20);
 		eeprom_access_panel.add(adr_textField);
 		adr_textField.setColumns(4);
 
 		data_textField = new JTextField();
-		data_textField.setBounds(100, 60, 70, 20);
+		data_textField.setBounds(110, 60, 130, 20);
 		eeprom_access_panel.add(data_textField);
 		data_textField.setColumns(10);
 
 		JLabel lblbytes = new JLabel("bytes");
-		lblbytes.setBounds(190, 36, 60, 20);
+		lblbytes.setBounds(250, 30, 60, 20);
 		eeprom_access_panel.add(lblbytes);
 
-		JLabel lblAddress = new JLabel("address");
-		lblAddress.setBounds(22, 36, 70, 15);
+		JLabel lblAddress = new JLabel("address (16Bit hex)");
+		lblAddress.setBounds(22, 30, 148, 15);
 		eeprom_access_panel.add(lblAddress);
 
 		JLabel lblData = new JLabel("data");
@@ -480,12 +682,15 @@ public class ConfigWindow extends JDialog {
 		eeprom_access_panel.add(lblData);
 
 		JLabel lblFormat = new JLabel("format");
-		lblFormat.setBounds(190, 60, 60, 20);
+		lblFormat.setBounds(250, 60, 60, 20);
 		eeprom_access_panel.add(lblFormat);
+
+		errorlabel.setBounds(22, 90, 270, 15);
+		eeprom_access_panel.add(errorlabel);
 
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel.setBounds(434, 317, 254, 227);
+		panel.setBounds(434, 299, 254, 245);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -522,7 +727,7 @@ public class ConfigWindow extends JDialog {
 				toggleConfigMode();
 			}
 		});
-		btnEnterConfigMode.setBounds(12, 152, 230, 25);
+		btnEnterConfigMode.setBounds(12, 172, 230, 25);
 		panel.add(btnEnterConfigMode);
 
 		JButton btnRestore = new JButton("restore hardcoded settings");
@@ -535,8 +740,17 @@ public class ConfigWindow extends JDialog {
 		panel.add(btnRestore);
 
 		JButton btnEndConfig = new JButton("End Configuration");
-		btnEndConfig.setBounds(12, 192, 230, 25);
+		btnEndConfig.setBounds(12, 212, 230, 25);
 		panel.add(btnEndConfig);
+		
+		
+		btnReloadEeprom.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				reloadEEPROM();
+			}
+		});
+		btnReloadEeprom.setBounds(12, 132, 230, 25);
+		panel.add(btnReloadEeprom);
 		btnEndConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				setVisible(false);
