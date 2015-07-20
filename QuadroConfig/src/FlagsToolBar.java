@@ -7,26 +7,26 @@ public class FlagsToolBar extends JToolBar {
 
 	public boolean isConfigMode;
 	/* byte 4 */
-	private static int FLIGHT_MODE_FLAG =  0x01;
-	private static int CONFIG_MODE_FLAG =  0x02;
-	private static int ERROR_FLAG =  0x04;
-	private static int USB_ERROR_FLAG =  0x08;
+	private static int FLIGHT_MODE_FLAG = 0x01;
+	private static int CONFIG_MODE_FLAG = 0x02;
+	private static int ERROR_FLAG = 0x04;
+	private static int USB_ERROR_FLAG = 0x08;
 
-	private static int CPU_OVERLOAD_FLAG =  0x10;
-	private static int NO_RC_SIGNAL_FLAG =  0x20;
-	private static int LOW_VOLTAGE_FLAG =  0x40;
-//	private static int FREE_FLAG3 =  0x80;
+	private static int CPU_OVERLOAD_FLAG = 0x10;
+	private static int NO_RC_SIGNAL_FLAG = 0x20;
+	private static int LOW_VOLTAGE_FLAG = 0x40;
+	// private static int FREE_FLAG3 = 0x80;
 
 	/* byte 3 */
-	private static int MPU9150_OK_FLAG =  0x01;
-	private static int RC_RECEIVER_OK_FLAG =  0x02;
-	private static int BMP180_OK_FLAG =  0x04;
-	private static int EEPROM_OK_FLAG =  0x08;
+	private static int MPU9150_OK_FLAG = 0x01;
+	private static int RC_RECEIVER_OK_FLAG = 0x02;
+	private static int BMP180_OK_FLAG = 0x04;
+	private static int EEPROM_OK_FLAG = 0x08;
 
 	/* byte 2 */
 
 	/* byte 1 */
-	private static int EMERGENCY_FLAG =  0x80;
+	private static int EMERGENCY_FLAG = 0x80;
 
 	JLabel flagEEPROM;
 	JLabel flagBMP;
@@ -106,7 +106,7 @@ public class FlagsToolBar extends JToolBar {
 					.setText("<html> <font color='gray'>Flight </font> </html>");
 		}
 
-		if ((flag_array[3 ]& CONFIG_MODE_FLAG) == CONFIG_MODE_FLAG) {
+		if ((flag_array[3] & CONFIG_MODE_FLAG) == CONFIG_MODE_FLAG) {
 			flagConfigMode
 					.setText("<html> <font color='green'>Config </font> </html>");
 			isConfigMode = true;
@@ -115,13 +115,13 @@ public class FlagsToolBar extends JToolBar {
 					.setText("<html> <font color='gray'>Config </font> </html>");
 			isConfigMode = false;
 		}
-		if ((flag_array[3]  & ERROR_FLAG)  == ERROR_FLAG) {
+		if ((flag_array[3] & ERROR_FLAG) == ERROR_FLAG) {
 			flagError.setText("<html> <font color='red'>Error </font> </html>");
 		} else {
 			flagError
 					.setText("<html> <font color='gray'>Error </font> </html>");
 		}
-		if ((flag_array[3 ]& USB_ERROR_FLAG) == USB_ERROR_FLAG) {
+		if ((flag_array[3] & USB_ERROR_FLAG) == USB_ERROR_FLAG) {
 			flagUSB.setText("<html> <font color='red'>USB </font> </html>");
 		} else {
 			flagUSB.setText("<html> <font color='green'>USB </font> </html>");
@@ -130,13 +130,16 @@ public class FlagsToolBar extends JToolBar {
 		if ((flag_array[3] & CPU_OVERLOAD_FLAG) == CPU_OVERLOAD_FLAG) {
 			flagOverrun.setText("<html> <font color='red'>CPU </font> </html>");
 		} else {
-			flagOverrun.setText("<html> <font color='gray'>CPU </font> </html>");
-			
+			flagOverrun
+					.setText("<html> <font color='gray'>CPU </font> </html>");
+
 		}
 		if ((flag_array[3] & LOW_VOLTAGE_FLAG) == LOW_VOLTAGE_FLAG) {
-			flagVoltage.setText("<html> <font color='red'>Voltage </font> </html>");
+			flagVoltage
+					.setText("<html> <font color='red'>Voltage </font> </html>");
 		} else {
-			flagVoltage.setText("<html> <font color='green'>Voltage </font> </html>");
+			flagVoltage
+					.setText("<html> <font color='green'>Voltage </font> </html>");
 		}
 
 		// if ((flag_array[3] & LOW_VOLTAGE_FLAG) == 1) {
@@ -159,9 +162,11 @@ public class FlagsToolBar extends JToolBar {
 			flagBMP.setText("<html> <font color='red'>BMP </font> </html>");
 		}
 		if ((flag_array[2] & EEPROM_OK_FLAG) == EEPROM_OK_FLAG) {
-			flagEEPROM.setText("<html> <font color='green'>EEPROM </font> </html>");
+			flagEEPROM
+					.setText("<html> <font color='green'>EEPROM </font> </html>");
 		} else {
-			flagEEPROM.setText("<html> <font color='red'>EEPROM </font> </html>");
+			flagEEPROM
+					.setText("<html> <font color='red'>EEPROM </font> </html>");
 		}
 
 		/* byte 2 */

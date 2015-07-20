@@ -32,7 +32,7 @@ public class Visualisierungsfenster extends JFrame {
 	public LiveArtificialHorizon horizonZ;
 	// Tab: Instruments
 	public LiveAltimeter cpuAltimeter;
-	public LiveAltimeter altAltimeter;
+	public LiveAltimeter relAltAltimeter;
 	public LiveAltimeter voltAltimeter;
 	public LiveAltimeter tempAltimeter;
 	
@@ -130,8 +130,8 @@ public class Visualisierungsfenster extends JFrame {
 		cpuAltimeter = new LiveAltimeter(Color.BLACK, Color.GREEN, Color.WHITE, true, 1, 5, 100, "%");
 		panel_1.add(cpuAltimeter, "cell 0 1,grow");
 		
-		altAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 1, 100, 100, "m");
-		panel_1.add(altAltimeter, "cell 1 1,grow");
+		relAltAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 1, 100, 100, "m");
+		panel_1.add(relAltAltimeter, "cell 1 1,grow");
 		
 		voltAltimeter = new LiveAltimeter(Color.BLACK, Color.ORANGE, Color.WHITE, true, 1, 5, 15000, "mV");
 		panel_1.add(voltAltimeter, "cell 2 1,grow");

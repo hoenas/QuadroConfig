@@ -23,6 +23,7 @@ import javax.swing.Timer;
 import java.awt.BorderLayout;
 
 import LiveGraph.LiveXYViewer;
+import LiveGraph.LiveGauge;
 
 
 public class TestFrame extends JFrame {
@@ -89,6 +90,12 @@ public class TestFrame extends JFrame {
 		liveXYViewer.setBounds(560, 116, 100, 100);
 		contentPane.add(liveXYViewer);
 		
+		LiveGauge liveGauge = new LiveGauge((Color) null, (Color) null, (Color) null, false, 0, 0, 0, (String) null);
+		liveGauge.setForeground(Color.GREEN);
+		liveGauge.setRasterColor(Color.WHITE);
+		liveGauge.setBounds(560, 222, 132, 94);
+		contentPane.add(liveGauge);
+		
 		Timer timer = new Timer(500, new ActionListener() {
 			
 			@Override
@@ -103,6 +110,8 @@ public class TestFrame extends JFrame {
 				liveArtificialHorizon_1.update( ran.nextInt(180) );
 				liveArtificialHorizon_2.update( ran.nextInt(180) );
 				liveXYViewer.update( ran.nextInt(100), ran.nextInt(100) );
+				liveGauge.update( ran.nextInt(100) );
+				
 			}
 		});
 		

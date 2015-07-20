@@ -12,27 +12,15 @@ import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.JSeparator;
 import javax.swing.Timer;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Toolkit;
-
-import javax.swing.border.LineBorder;
 
 import LiveGraph.Dataset;
 
@@ -41,8 +29,10 @@ import java.awt.Color;
 public class Main {
 
 	private SerialPort port;
+	private QuadrocopterCommunicator quadrocopter;
 	private JFrame frame;
 	private Timer messtimer;
+	private JLabel statuslabel;
 	private JPanel tabPort;
 	private JPanel tabMessung;
 	private JButton btnMessungStarten;
@@ -198,28 +188,10 @@ public class Main {
 		initialize();
 	}
 
-	public static byte[] float2ByteArray(float value) {
-		return ByteBuffer.allocate(4).putFloat(value).array();
-	}
-
-	public byte[] floatToByteArray(float f, byte[] byteArray, int offset) {
-		// int integer = Float.floatToIntBits( f );
-		// byteArray[0 + offset] = (byte)(integer>>>24);
-		// byteArray[1 + offset] = (byte)(integer>>>16);
-		// byteArray[2 + offset] = (byte)(integer>>>8);
-		// byteArray[3 + offset] = (byte)(integer>>>0);
-
-		byte tmp[] = float2ByteArray(f);
-		byteArray[offset] = tmp[3];
-		byteArray[offset + 1] = tmp[2];
-		byteArray[offset + 2] = tmp[1];
-		byteArray[offset + 3] = tmp[0];
-		return byteArray;
-	}
-
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	
 	private void initialize() {
 
 		frame = new JFrame();
@@ -253,7 +225,7 @@ public class Main {
 		tabs.setBounds(10, 36, 396, 240);
 		frame.getContentPane().add(tabs);
 
-		JLabel statuslabel = new JLabel("idle");
+		statuslabel = new JLabel("idle");
 		statuslabel.setBounds(69, 11, 338, 14);
 		frame.getContentPane().add(statuslabel);
 
@@ -359,6 +331,7 @@ public class Main {
 										.toString()), Integer
 								.valueOf(comboBox_4.getSelectedItem()
 										.toString()), parity);
+						quadrocopter = new QuadrocopterCommunicator(port);
 						messungAktiv = true;
 						messtimer.start();
 						btnMessungStarten.setText("Stop Monitoring");
@@ -374,6 +347,7 @@ public class Main {
 
 					} else {
 						port.closePort();
+						quadrocopter = null;
 						messungAktiv = false;
 						messtimer.stop();
 						btnMessungStarten.setText("Start Monitoring");
@@ -580,141 +554,8 @@ public class Main {
 				messtimer.setDelay((int) spinner.getValue());
 
 				if (messungAktiv && port.isOpened()) {
-
-					try {
-						// Daten anfordern
-						port.writeByte(USB_CMD_SEND_STATUS_FLOAT);
-
-						// Warten auf Daten
-						boolean timeout = false;
-						LocalTime begin = LocalTime.now();
-						while (port.getInputBufferBytesCount() != MEASUREMENT_FRAME_LENGTH) {
-							// warte bis alle Bytes da sind
-							// auf Timeout prÃ¼fen
-							if (LocalTime.now().isAfter(
-									begin.plus(COMMUNICATION_TIMEOUT,
-											ChronoUnit.MILLIS))) {
-								timeout = true;
-								protocolStatus = 0;
-								statuslabel.setText("Communication timeout...");
-								break;
-							}
-						}
-
-						if (!timeout) {
-							// Daten auswerten
-							if (port.getInputBufferBytesCount() == MEASUREMENT_FRAME_LENGTH) {
-								byte[] temp = port.readBytes();
-
-								for (int i = 0; i < messdaten.length; i++) {
-									messdaten[i] = ByteBuffer
-											.wrap(temp, i * 4, 4)
-											.order(ByteOrder.LITTLE_ENDIAN)
-											.getFloat();
-								}
-								messwertfenster.setLabelText(messdaten);
-								statuslabel.setText("monitoring...");
-								if (visualisierungsfenster.isVisible()) {
-									// Accelerometerwerte aktualsierien
-									float[] accs = new float[3];
-									accs[0] = messdaten[0];
-									accs[1] = messdaten[1];
-									accs[2] = messdaten[2];
-									visualisierungsfenster.accGraph
-											.update(accs);
-									// Gyrowerte aktualisieren
-									float[] gyros = new float[3];
-									gyros[0] = messdaten[3] / 10;
-									gyros[1] = messdaten[4] / 10;
-									gyros[2] = messdaten[5] / 10;
-									visualisierungsfenster.gyroGraph
-											.update(gyros);
-									// Motorenwerte aktualisieren
-									float[] motoren = new float[4];
-									motoren[0] = messdaten[19] * 100;
-									motoren[1] = messdaten[20] * 100;
-									motoren[2] = messdaten[21] * 100;
-									motoren[3] = messdaten[22] * 100;
-									visualisierungsfenster.motorGraph
-											.update(motoren);
-									// Winkel aktualisieren
-									visualisierungsfenster.horizonX
-											.update((int) messdaten[9]);
-									visualisierungsfenster.horizonY
-											.update((int) messdaten[10]);
-									visualisierungsfenster.horizonZ
-											.update((int) messdaten[11]);
-									// PID-Outputs aktualisieren
-									float[] pid = new float[3];
-									pid[0] = messdaten[28] * 100;
-									pid[1] = messdaten[29] * 100;
-									pid[2] = messdaten[30] * 100;
-									visualisierungsfenster.pidGraph.update(pid);
-									// Fernsteuerungswerte aktualisieren
-									float[] rcs = new float[7];
-									rcs[0] = messdaten[12] * 100 + 50;
-									rcs[1] = messdaten[13] * 100 + 50;
-									rcs[2] = messdaten[14] * 100 + 50;
-									rcs[3] = messdaten[15] * 100;
-									rcs[4] = messdaten[16] * 100;
-									rcs[5] = messdaten[17] * 100;
-									rcs[6] = messdaten[18] * 100;
-									visualisierungsfenster.rcGraph.update(rcs);
-									// CPU-Load aktualisieren
-									visualisierungsfenster.cpuAltimeter
-											.update((int) (messdaten[31] * 100));
-									// Hoehe aktualisieren
-									visualisierungsfenster.altAltimeter
-											.update((int) messdaten[25]);
-									// Spannung aktualisieren
-									visualisierungsfenster.voltAltimeter
-											.update((int) (messdaten[27] * 1000));
-									// Temperatur aktualisieren
-									visualisierungsfenster.tempAltimeter
-											.update((int) messdaten[23]);
-								}
-								anzahlMessungen++;
-							}
-						} else {
-							// Dummy read
-							port.readBytes();
-						}
-					} catch (Exception ex) {
-						System.out.println(ex.getMessage());
-					}
-
-					try {
-						// get global flags
-						port.writeByte(USB_CMD_GLOBAL_FLAGS);
-						// Warten auf Daten
-						boolean timeout = false;
-						LocalTime begin = LocalTime.now();
-						while (port.getInputBufferBytesCount() != 4) {
-							// warte bis alle Bytes da sind
-							if (LocalTime.now().isAfter(
-									begin.plus(COMMUNICATION_TIMEOUT,
-											ChronoUnit.MILLIS))) {
-								timeout = true;
-								protocolStatus = 0;
-								statuslabel
-										.setText("Timout bei Kommunikation. Messwerte nicht erhalten.");
-								break;
-							}
-						}
-
-						if (!timeout) {
-							// Daten auswerten
-							byte[] temp = port.readBytes();
-							flagsToolBar.update(temp);
-							statuslabel.setText("monitoring...");
-						} else {
-							// Dummy read
-							port.readBytes();
-						}
-					} catch (Exception ex) {
-						System.out.println(ex.getMessage());
-					}
-
+					updateSensorGraphs();
+					
 				}
 			}
 		});
@@ -728,5 +569,42 @@ public class Main {
 		visualisierungsfenster.setLocation(frame.getWidth(), 0);
 		visualisierungsfenster.setSize(screen.width - frame.getWidth(),
 				screen.height - 40);
+	}
+	
+	public void updateSensorGraphs() {
+		byte[] data = quadrocopter.getSensorData();
+		if( data[data.length - 1] == 1) {
+			// Daten aus array auslesen
+			// Accelerometerwerte
+			float[] values = new float[7];
+			values[0] = quadrocopter.byteArrayToFloat(data, 0) ;
+			values[1] = quadrocopter.byteArrayToFloat(data, 4);
+			values[2] = quadrocopter.byteArrayToFloat(data, 8);
+			visualisierungsfenster.accGraph.update(values);
+			// Gyrowerte
+			values[0] = quadrocopter.byteArrayToFloat(data, 12) / 10;
+			values[1] = quadrocopter.byteArrayToFloat(data, 16) / 10;
+			values[2] = quadrocopter.byteArrayToFloat(data, 20) / 10;
+			visualisierungsfenster.gyroGraph.update(values);
+			// Magnetfeldsensorwerte
+			// TODO: ANZEIGE FÜR KOMPASS
+			// Temperatur
+			visualisierungsfenster.tempAltimeter.update((int)quadrocopter.byteArrayToFloat(data, 36));
+			// TODO: dataset für Hoehe
+			// rel Hoehe
+			visualisierungsfenster.relAltAltimeter.update((int)quadrocopter.byteArrayToFloat(data, 44));
+			// TODO: dataset für delta H
+			// Fernsteuerungswerte
+			values[0] = quadrocopter.byteArrayToFloat(data, 52) * 100 + 50;
+			values[1] = quadrocopter.byteArrayToFloat(data, 56) * 100 + 50;
+			values[2] = quadrocopter.byteArrayToFloat(data, 60) * 100 + 50;
+			values[3] = quadrocopter.byteArrayToFloat(data, 64) * 100;
+			values[4] = quadrocopter.byteArrayToFloat(data, 68) * 100;
+			values[5] = quadrocopter.byteArrayToFloat(data, 72) * 100;
+			values[6] = quadrocopter.byteArrayToFloat(data, 76) * 100;
+			visualisierungsfenster.rcGraph.update(values);
+		} else {
+			statuslabel.setText("FEHLER BEI SENSORMESSWERTEN!");
+		}
 	}
 }
