@@ -331,7 +331,7 @@ public class Main {
 										.toString()), Integer
 								.valueOf(comboBox_4.getSelectedItem()
 										.toString()), parity);
-						quadrocopter = new QuadrocopterCommunicator(port);
+						quadrocopter = new QuadrocopterCommunicator(port, 128);
 						messungAktiv = true;
 						messtimer.start();
 						btnMessungStarten.setText("Stop Monitoring");
