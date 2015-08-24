@@ -159,7 +159,7 @@ public class QuadrocopterCommunicator {
 	private boolean portIsBusy;
 	private int frameBufferSize;
 
-	public QuadrocopterCommunicator(SerialPort port, int frameBufferSize) {
+	public QuadrocopterCommunicator(int frameBufferSize) {
 		this.port = port;
 		portIsBusy = false;
 		this.frameBufferSize = frameBufferSize;
@@ -174,6 +174,10 @@ public class QuadrocopterCommunicator {
 		}
 	}
 
+	public void setPort( SerialPort port ) {
+		this.port = port;
+	}
+	
 	private byte[] getReturnData(boolean communicationSuccessful, byte[] data) {
 		byte[] tmp = new byte[data.length + 1];
 		tmp = data;
