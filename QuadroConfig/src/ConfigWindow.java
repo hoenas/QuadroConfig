@@ -4,7 +4,6 @@ import jssc.SerialPort;
 
 import javax.swing.JPanel;
 
-
 import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
@@ -27,7 +26,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFormattedTextField;
-
+import javax.swing.JCheckBox;
 
 public class ConfigWindow extends JDialog {
 
@@ -37,7 +36,6 @@ public class ConfigWindow extends JDialog {
 	private JLabel statuslabel;
 	JButton btnEnterConfigMode;
 	private boolean isConfigMode;
-
 
 	JSpinner gain_ang_z_spinner = new JSpinner();
 	JSpinner compFilterXY_Spinner = new JSpinner();
@@ -51,6 +49,23 @@ public class ConfigWindow extends JDialog {
 	JSpinner d_ang_xy_spinner = new JSpinner();
 	JSpinner i_ang_xy_spinner = new JSpinner();
 	JSpinner p_ang_xy_spinner = new JSpinner();
+
+	JCheckBox chckbxLowVoltageWarning = new JCheckBox("Low Volt Warning");
+	JCheckBox chckbxNoRcWarning = new JCheckBox("No RC Warning");
+	JCheckBox chckbxFlightled = new JCheckBox("Flightled");
+	JCheckBox chckbxMotor = new JCheckBox("Motor");
+
+	JSpinner p_accel_spinner = new JSpinner();
+	JSpinner i_accel_spinner = new JSpinner();
+	JSpinner d_accel_spinner = new JSpinner();
+	JSpinner scale_accel_spinner = new JSpinner();
+	JSpinner gain_accel_spinner = new JSpinner();
+
+	JSpinner p_vel_spinner = new JSpinner();
+	JSpinner i_vel_spinner = new JSpinner();
+	JSpinner d_vel_spinner = new JSpinner();
+	JSpinner scale_vel_spinner = new JSpinner();
+	JSpinner gain_vel_spinner = new JSpinner();
 
 	JLabel errorlabel = new JLabel("");
 	JComboBox format_comboBox = new JComboBox();
@@ -76,13 +91,12 @@ public class ConfigWindow extends JDialog {
 	private static byte USB_CMD_WRITE_BYTE = (byte) 0xC6;
 	private static byte USB_CMD_WRITE_2BYTES = (byte) 0xC7;
 	private static byte USB_CMD_WRITE_4BYTES = (byte) 0xC8;
-	
+
 	private static byte USB_CMD_RELOAD_EEPROM = (byte) 0xC9;
 
-	private static int CONFIGURATION_FRAME_LENGTH = 48;
+	private static int CONFIGURATION_FRAME_LENGTH = 92;
 
-	public void openConfigWindow(SerialPort port, JLabel statuslabel,
-			boolean isConfigMode) {
+	public void openConfigWindow(SerialPort port, JLabel statuslabel, boolean isConfigMode) {
 		this.statuslabel = statuslabel;
 		this.port = port;
 		this.setVisible(true);
@@ -90,11 +104,19 @@ public class ConfigWindow extends JDialog {
 		this.setSize(this.getSize().width, this.getSize().height);
 		this.isConfigMode = isConfigMode;
 		setConfigModeButtons();
+		loadConfig();
 	}
 
 	private float byte2float(byte[] byteArray, int offset) {
-		return ByteBuffer.wrap(byteArray, offset, 4)
-				.order(ByteOrder.LITTLE_ENDIAN).getFloat();
+		return ByteBuffer.wrap(byteArray, offset, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+	}
+
+	private boolean byte2bool(byte input) {
+		if (input != 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private byte[] float2byte(float f, byte[] byteArray, int offset) {
@@ -105,6 +127,13 @@ public class ConfigWindow extends JDialog {
 		byteArray[offset + 2] = tmp[1];
 		byteArray[offset + 3] = tmp[0];
 		return byteArray;
+	}
+
+	private byte bool2byte(boolean in) {
+		if (in) {
+			return 0x01;
+		}
+		return 0x00;
 	}
 
 	private void loadConfig() {
@@ -133,6 +162,23 @@ public class ConfigWindow extends JDialog {
 			compFilterXY_Spinner.setValue(byte2float(inbuffer, 40));
 			compFilterZ_Spinner.setValue(byte2float(inbuffer, 44));
 
+			p_accel_spinner.setValue(byte2float(inbuffer, 48));
+			i_accel_spinner.setValue(byte2float(inbuffer, 52));
+			d_accel_spinner.setValue(byte2float(inbuffer, 56));
+			gain_accel_spinner.setValue(byte2float(inbuffer, 60));
+			scale_accel_spinner.setValue(byte2float(inbuffer, 64));
+
+			p_vel_spinner.setValue(byte2float(inbuffer, 68));
+			i_vel_spinner.setValue(byte2float(inbuffer, 72));
+			d_vel_spinner.setValue(byte2float(inbuffer, 76));
+			gain_vel_spinner.setValue(byte2float(inbuffer, 80));
+			scale_vel_spinner.setValue(byte2float(inbuffer, 84));
+
+			chckbxLowVoltageWarning.setSelected(byte2bool(inbuffer[88]));
+			chckbxNoRcWarning.setSelected(byte2bool(inbuffer[89]));
+			chckbxFlightled.setSelected(byte2bool(inbuffer[90]));
+			chckbxMotor.setSelected(byte2bool(inbuffer[91]));
+
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
@@ -156,8 +202,8 @@ public class ConfigWindow extends JDialog {
 			System.out.println(ex.getMessage());
 		}
 	}
-	
-	private void reloadEEPROM(){
+
+	private void reloadEEPROM() {
 		try {
 			byte[] outbuffer = new byte[1];
 			outbuffer[0] = USB_CMD_RELOAD_EEPROM;
@@ -172,7 +218,7 @@ public class ConfigWindow extends JDialog {
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
-		
+
 	}
 
 	private void sendConfig() {
@@ -181,42 +227,37 @@ public class ConfigWindow extends JDialog {
 
 			byte[] outbuffer = new byte[CONFIGURATION_FRAME_LENGTH + 1];
 			outbuffer[0] = USB_CMD_UPDATE_CONFIG;
-			outbuffer = float2byte(
-					Float.parseFloat(p_ang_xy_spinner.getValue().toString()),
-					outbuffer, 1);
-			outbuffer = float2byte(
-					Float.parseFloat(i_ang_xy_spinner.getValue().toString()),
-					outbuffer, 5);
-			outbuffer = float2byte(
-					Float.parseFloat(d_ang_xy_spinner.getValue().toString()),
-					outbuffer, 9);
-			outbuffer = float2byte(
-					Float.parseFloat(gain_ang_xy_spinner.getValue().toString()),
-					outbuffer, 13);
-			outbuffer = float2byte(Float.parseFloat(scale_ang_xy_spinner
-					.getValue().toString()), outbuffer, 17);
+			outbuffer = float2byte(Float.parseFloat(p_ang_xy_spinner.getValue().toString()), outbuffer, 1);
+			outbuffer = float2byte(Float.parseFloat(i_ang_xy_spinner.getValue().toString()), outbuffer, 5);
+			outbuffer = float2byte(Float.parseFloat(d_ang_xy_spinner.getValue().toString()), outbuffer, 9);
+			outbuffer = float2byte(Float.parseFloat(gain_ang_xy_spinner.getValue().toString()), outbuffer, 13);
+			outbuffer = float2byte(Float.parseFloat(scale_ang_xy_spinner.getValue().toString()), outbuffer, 17);
 
-			outbuffer = float2byte(
-					Float.parseFloat(p_ang_z_spinner.getValue().toString()),
-					outbuffer, 21);
-			outbuffer = float2byte(
-					Float.parseFloat(i_ang_z_spinner.getValue().toString()),
-					outbuffer, 25);
-			outbuffer = float2byte(
-					Float.parseFloat(d_ang_z_spinner.getValue().toString()),
-					outbuffer, 29);
-			outbuffer = float2byte(
-					Float.parseFloat(gain_ang_z_spinner.getValue().toString()),
-					outbuffer, 33);
-			outbuffer = float2byte(
-					Float.parseFloat(scale_ang_z_spinner.getValue().toString()),
-					outbuffer, 37);
+			outbuffer = float2byte(Float.parseFloat(p_ang_z_spinner.getValue().toString()), outbuffer, 21);
+			outbuffer = float2byte(Float.parseFloat(i_ang_z_spinner.getValue().toString()), outbuffer, 25);
+			outbuffer = float2byte(Float.parseFloat(d_ang_z_spinner.getValue().toString()), outbuffer, 29);
+			outbuffer = float2byte(Float.parseFloat(gain_ang_z_spinner.getValue().toString()), outbuffer, 33);
+			outbuffer = float2byte(Float.parseFloat(scale_ang_z_spinner.getValue().toString()), outbuffer, 37);
 
-			outbuffer = float2byte(Float.parseFloat(compFilterXY_Spinner
-					.getValue().toString()), outbuffer, 41);
-			outbuffer = float2byte(
-					Float.parseFloat(compFilterZ_Spinner.getValue().toString()),
-					outbuffer, 45);
+			outbuffer = float2byte(Float.parseFloat(compFilterXY_Spinner.getValue().toString()), outbuffer, 41);
+			outbuffer = float2byte(Float.parseFloat(compFilterZ_Spinner.getValue().toString()), outbuffer, 45);
+
+			outbuffer = float2byte(Float.parseFloat(p_accel_spinner.getValue().toString()), outbuffer, 49);
+			outbuffer = float2byte(Float.parseFloat(i_accel_spinner.getValue().toString()), outbuffer, 53);
+			outbuffer = float2byte(Float.parseFloat(d_accel_spinner.getValue().toString()), outbuffer, 57);
+			outbuffer = float2byte(Float.parseFloat(gain_accel_spinner.getValue().toString()), outbuffer, 61);
+			outbuffer = float2byte(Float.parseFloat(scale_accel_spinner.getValue().toString()), outbuffer, 65);
+
+			outbuffer = float2byte(Float.parseFloat(p_vel_spinner.getValue().toString()), outbuffer, 69);
+			outbuffer = float2byte(Float.parseFloat(i_vel_spinner.getValue().toString()), outbuffer, 73);
+			outbuffer = float2byte(Float.parseFloat(d_vel_spinner.getValue().toString()), outbuffer, 77);
+			outbuffer = float2byte(Float.parseFloat(gain_vel_spinner.getValue().toString()), outbuffer, 81);
+			outbuffer = float2byte(Float.parseFloat(scale_vel_spinner.getValue().toString()), outbuffer, 85);
+
+			outbuffer[89] = bool2byte(chckbxLowVoltageWarning.isSelected());
+			outbuffer[90] = bool2byte(chckbxNoRcWarning.isSelected());
+			outbuffer[91] = bool2byte(chckbxFlightled.isSelected());
+			outbuffer[92] = bool2byte(chckbxMotor.isSelected());
 
 			port.writeBytes(outbuffer);
 			statuslabel.setText("update Configuration");
@@ -240,7 +281,7 @@ public class ConfigWindow extends JDialog {
 			outbuffer[0] = USB_CMD_SAVE_CONFIG;
 			port.writeBytes(outbuffer);
 			statuslabel.setText("save Configuration -> reset");
-			
+
 			// dummy read
 			while (port.getInputBufferBytesCount() != 1)
 				;
@@ -248,7 +289,7 @@ public class ConfigWindow extends JDialog {
 
 			isConfigMode = false;
 			setConfigModeButtons();
-			
+
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
@@ -262,10 +303,8 @@ public class ConfigWindow extends JDialog {
 			return false;
 		}
 		try {
-			outbuffer[offset] = (byte) Integer.parseUnsignedInt(
-					temp.substring(0, 2), 16);
-			outbuffer[offset + 1] = (byte) Integer.parseUnsignedInt(
-					temp.substring(2), 16);
+			outbuffer[offset] = (byte) Integer.parseUnsignedInt(temp.substring(0, 2), 16);
+			outbuffer[offset + 1] = (byte) Integer.parseUnsignedInt(temp.substring(2), 16);
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 			errorlabel.setText("wrong address");
@@ -281,15 +320,15 @@ public class ConfigWindow extends JDialog {
 
 		if (format_comboBox.getSelectedIndex() == 0) {
 			/* hex */
-			ByteTmp= ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(Integer.valueOf(tmp, 16)).array();
-			for (int i = 0 ; i< numOfBytes;i++) {
-				outbuffer[3+i] = ByteTmp[i];
+			ByteTmp = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(Integer.valueOf(tmp, 16)).array();
+			for (int i = 0; i < numOfBytes; i++) {
+				outbuffer[3 + i] = ByteTmp[i];
 			}
 		} else if (format_comboBox.getSelectedIndex() == 1) {
 			/* dec */
-			ByteTmp= ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt((Integer.valueOf(tmp, 10))).array();
-			for (int i = 0 ; i< numOfBytes;i++) {
-				outbuffer[3+i] = ByteTmp[i];
+			ByteTmp = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt((Integer.valueOf(tmp, 10))).array();
+			for (int i = 0; i < numOfBytes; i++) {
+				outbuffer[3 + i] = ByteTmp[i];
 			}
 
 		} else if (format_comboBox.getSelectedIndex() == 2) {
@@ -300,8 +339,8 @@ public class ConfigWindow extends JDialog {
 				outbuffer[4] = ByteTmp[1];
 				outbuffer[5] = ByteTmp[2];
 				outbuffer[6] = ByteTmp[3];
-				
-				//outbuffer = float2byte() , outbuffer, 3);
+
+				// outbuffer = float2byte() , outbuffer, 3);
 			} else {
 				errorlabel.setText("wrong data format");
 				return false;
@@ -311,8 +350,8 @@ public class ConfigWindow extends JDialog {
 			errorlabel.setText("not implemented");
 			return false;
 		}
-	
-		errorlabel.setText("");		
+
+		errorlabel.setText("");
 		return true;
 
 	}
@@ -329,22 +368,18 @@ public class ConfigWindow extends JDialog {
 			for (int i = numOfBytes; i < 4; i++) {
 				bytebuffer[i] = 0;
 			}
-			tmp = Integer.toHexString(
-					ByteBuffer.wrap(bytebuffer, 0, 4)
-							.order(ByteOrder.LITTLE_ENDIAN).getInt());
+			tmp = Integer.toHexString(ByteBuffer.wrap(bytebuffer, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getInt());
 		} else if (format_comboBox.getSelectedIndex() == 1) {
 			/* dec */
 			byte[] bytebuffer = new byte[4];
 			for (int i = 0; i < numOfBytes; i++) {
 				bytebuffer[i] = inbuffer[i];
 			}
-			tmp = Integer.toUnsignedString(ByteBuffer.wrap(bytebuffer, 0, 4)
-					.order(ByteOrder.LITTLE_ENDIAN).getInt());
+			tmp = Integer.toUnsignedString(ByteBuffer.wrap(bytebuffer, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getInt());
 		} else if (format_comboBox.getSelectedIndex() == 2) {
 			/* float */
 			if (numOfBytes == 4) {
-				tmp = Float.toString(ByteBuffer.wrap(inbuffer, 0, 4)
-						.order(ByteOrder.BIG_ENDIAN).getFloat());
+				tmp = Float.toString(ByteBuffer.wrap(inbuffer, 0, 4).order(ByteOrder.BIG_ENDIAN).getFloat());
 			} else {
 				errorlabel.setText("wrong data format");
 				return;
@@ -424,8 +459,6 @@ public class ConfigWindow extends JDialog {
 						;
 					byte[] dummy = port.readBytes();
 
-					
-
 				} catch (Exception ex) {
 					System.out.println(ex.getMessage());
 				}
@@ -436,7 +469,7 @@ public class ConfigWindow extends JDialog {
 
 	}
 
-	private void setConfigModeButtons(){
+	private void setConfigModeButtons() {
 		if (isConfigMode) {
 			btnEnterConfigMode.setText("leave config mode");
 			btnRead.setEnabled(true);
@@ -449,9 +482,9 @@ public class ConfigWindow extends JDialog {
 			btnReloadEeprom.setEnabled(false);
 		}
 	}
-	
+
 	private void toggleConfigMode() {
-	
+
 		try {
 			byte[] outbuffer = new byte[1];
 			outbuffer[0] = USB_CMD_CONFIG_MODE;
@@ -480,28 +513,23 @@ public class ConfigWindow extends JDialog {
 		getContentPane().add(PID_angle_XY_panel);
 		PID_angle_XY_panel.setLayout(null);
 
-		p_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		p_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		p_ang_xy_spinner.setBounds(77, 36, 60, 20);
 		PID_angle_XY_panel.add(p_ang_xy_spinner);
 
-		i_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		i_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		i_ang_xy_spinner.setBounds(77, 60, 60, 20);
 		PID_angle_XY_panel.add(i_ang_xy_spinner);
 
-		d_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		d_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		d_ang_xy_spinner.setBounds(77, 84, 60, 20);
 		PID_angle_XY_panel.add(d_ang_xy_spinner);
 
-		scale_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1),
-				null, null, new Float(0.1)));
+		scale_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		scale_ang_xy_spinner.setBounds(77, 132, 60, 20);
 		PID_angle_XY_panel.add(scale_ang_xy_spinner);
 
-		gain_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		gain_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		gain_ang_xy_spinner.setBounds(77, 108, 60, 20);
 		PID_angle_XY_panel.add(gain_ang_xy_spinner);
 
@@ -535,28 +563,23 @@ public class ConfigWindow extends JDialog {
 		PID_angle_Z_panel.setBounds(184, 12, 166, 169);
 		getContentPane().add(PID_angle_Z_panel);
 
-		p_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		p_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		p_ang_z_spinner.setBounds(77, 36, 60, 20);
 		PID_angle_Z_panel.add(p_ang_z_spinner);
 
-		i_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		i_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		i_ang_z_spinner.setBounds(77, 60, 60, 20);
 		PID_angle_Z_panel.add(i_ang_z_spinner);
 
-		d_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		d_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		d_ang_z_spinner.setBounds(77, 84, 60, 20);
 		PID_angle_Z_panel.add(d_ang_z_spinner);
 
-		scale_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		scale_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		scale_ang_z_spinner.setBounds(77, 132, 60, 20);
 		PID_angle_Z_panel.add(scale_ang_z_spinner);
 
-		gain_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		gain_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		gain_ang_z_spinner.setBounds(77, 108, 60, 20);
 		PID_angle_Z_panel.add(gain_ang_z_spinner);
 
@@ -602,13 +625,11 @@ public class ConfigWindow extends JDialog {
 		lblZ.setBounds(22, 58, 50, 15);
 		compfilter_panel.add(lblZ);
 
-		compFilterXY_Spinner.setModel(new SpinnerNumberModel(new Float(1),
-				null, null, new Float(0.1)));
+		compFilterXY_Spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		compFilterXY_Spinner.setBounds(65, 34, 60, 20);
 		compfilter_panel.add(compFilterXY_Spinner);
 
-		compFilterZ_Spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		compFilterZ_Spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		compFilterZ_Spinner.setBounds(65, 58, 60, 20);
 		compfilter_panel.add(compFilterZ_Spinner);
 
@@ -651,7 +672,7 @@ public class ConfigWindow extends JDialog {
 		format_comboBox.addItem("float");
 		format_comboBox.addItem("ascii");
 		format_comboBox.setSelectedIndex(2);
-		
+
 		eeprom_access_panel.add(format_comboBox);
 
 		adr_textField = new JTextField();
@@ -737,8 +758,7 @@ public class ConfigWindow extends JDialog {
 		JButton btnEndConfig = new JButton("End Configuration");
 		btnEndConfig.setBounds(12, 212, 230, 25);
 		panel.add(btnEndConfig);
-		
-		
+
 		btnReloadEeprom.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				reloadEEPROM();
@@ -746,6 +766,114 @@ public class ConfigWindow extends JDialog {
 		});
 		btnReloadEeprom.setBounds(12, 132, 230, 25);
 		panel.add(btnReloadEeprom);
+
+		JPanel qc_setting_panel = new JPanel();
+		qc_setting_panel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		qc_setting_panel.setBounds(12, 285, 185, 104);
+		getContentPane().add(qc_setting_panel);
+		qc_setting_panel.setLayout(null);
+
+		chckbxLowVoltageWarning.setBounds(8, 8, 175, 20);
+		qc_setting_panel.add(chckbxLowVoltageWarning);
+
+		chckbxNoRcWarning.setBounds(8, 28, 175, 20);
+		qc_setting_panel.add(chckbxNoRcWarning);
+
+		chckbxFlightled.setBounds(8, 49, 169, 20);
+		qc_setting_panel.add(chckbxFlightled);
+
+		chckbxMotor.setBounds(8, 70, 91, 20);
+		qc_setting_panel.add(chckbxMotor);
+
+		JPanel pid_accel_panel = new JPanel();
+		pid_accel_panel.setLayout(null);
+		pid_accel_panel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		pid_accel_panel.setBounds(356, 12, 166, 169);
+		getContentPane().add(pid_accel_panel);
+
+		p_accel_spinner.setBounds(77, 36, 60, 20);
+		pid_accel_panel.add(p_accel_spinner);
+
+		i_accel_spinner.setBounds(77, 60, 60, 20);
+		pid_accel_panel.add(i_accel_spinner);
+
+		d_accel_spinner.setBounds(77, 84, 60, 20);
+		pid_accel_panel.add(d_accel_spinner);
+
+		scale_accel_spinner.setBounds(77, 132, 60, 20);
+		pid_accel_panel.add(scale_accel_spinner);
+
+		gain_accel_spinner.setBounds(77, 108, 60, 20);
+		pid_accel_panel.add(gain_accel_spinner);
+
+		JLabel lblPidAcceleration = new JLabel("PID Acceleration");
+		lblPidAcceleration.setBounds(27, 12, 127, 20);
+		pid_accel_panel.add(lblPidAcceleration);
+
+		JLabel label_7 = new JLabel("P");
+		label_7.setBounds(12, 37, 50, 16);
+		pid_accel_panel.add(label_7);
+
+		JLabel label_8 = new JLabel("I");
+		label_8.setBounds(12, 59, 50, 16);
+		pid_accel_panel.add(label_8);
+
+		JLabel label_9 = new JLabel("D");
+		label_9.setBounds(12, 85, 50, 16);
+		pid_accel_panel.add(label_9);
+
+		JLabel label_10 = new JLabel("Gain");
+		label_10.setBounds(12, 109, 50, 16);
+		pid_accel_panel.add(label_10);
+
+		JLabel label_11 = new JLabel("SP scale");
+		label_11.setBounds(12, 133, 60, 16);
+		pid_accel_panel.add(label_11);
+
+		JPanel pid_vel_pannel = new JPanel();
+		pid_vel_pannel.setBounds(528, 12, 166, 169);
+		getContentPane().add(pid_vel_pannel);
+		pid_vel_pannel.setLayout(null);
+		pid_vel_pannel.setBorder(new LineBorder(new Color(0, 0, 0)));
+
+		p_vel_spinner.setBounds(77, 36, 60, 20);
+		pid_vel_pannel.add(p_vel_spinner);
+
+		i_vel_spinner.setBounds(77, 60, 60, 20);
+		pid_vel_pannel.add(i_vel_spinner);
+
+		d_vel_spinner.setBounds(77, 84, 60, 20);
+		pid_vel_pannel.add(d_vel_spinner);
+
+		gain_vel_spinner.setBounds(77, 132, 60, 20);
+		pid_vel_pannel.add(gain_vel_spinner);
+
+		scale_vel_spinner.setBounds(77, 108, 60, 20);
+		pid_vel_pannel.add(scale_vel_spinner);
+
+		JLabel lblPidVelocity = new JLabel("PID Velocity");
+		lblPidVelocity.setBounds(27, 12, 110, 20);
+		pid_vel_pannel.add(lblPidVelocity);
+
+		JLabel label_12 = new JLabel("P");
+		label_12.setBounds(12, 37, 50, 16);
+		pid_vel_pannel.add(label_12);
+
+		JLabel label_13 = new JLabel("I");
+		label_13.setBounds(12, 59, 50, 16);
+		pid_vel_pannel.add(label_13);
+
+		JLabel label_14 = new JLabel("D");
+		label_14.setBounds(12, 85, 50, 16);
+		pid_vel_pannel.add(label_14);
+
+		JLabel label_15 = new JLabel("Gain");
+		label_15.setBounds(12, 109, 50, 16);
+		pid_vel_pannel.add(label_15);
+
+		JLabel label_16 = new JLabel("SP scale");
+		label_16.setBounds(12, 133, 60, 16);
+		pid_vel_pannel.add(label_16);
 		btnEndConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				setVisible(false);
