@@ -130,10 +130,72 @@ public class QuadrocopterCommunicator {
 	public static int USB_CMD_SEND_CUSTOM_FRAME = 0x15;
 	public static int USB_CMD_SEND_CUSTOM_FRAME_EOF = 0x00;
 
+	
+	/* public sensor values **/
+	/* Accelerometer */
+	public float accelX;
+	public float accelY;
+	public float accelZ;
+	/* Gyro */
+	public float gyroX;
+	public float gyroY;
+	public float gyroZ;
+	/* magnetometer */
+	public float magnX;
+	public float magnY;
+	public float magnZ;
+	/* angles */
+	public float angleX;
+	public float angleY;
+	public float angleZ;
+	/* angle sp */
+	public float angleSPX;
+	public float angleSPY;
+	public float angleSPZ;
+	/* velocity */
+	public float velocityX;
+	public float velocityY;
+	public float velocityZ;
+	/* velocity sp */
+	public float velocitySPX;
+	public float velocitySPY;
+	public float velocitySPZ;
+	/* height */
+	public float height;
+	public float heightRel;
+	public float heightDelta;
+	/* rc values */
+	public float rcNick;
+	public float rcRoll;
+	public float rcYaw;
+	public float rcThrottle;
+	public float rcLinPoti;
+	public boolean rcEnableMotors;
+	public boolean rcSwitch;
+	/* motor values */
+	public float motor1;
+	public float motor2;
+	public float motor3;
+	public float motor4;
+	/* motor sp */
+	public float motor1SP;
+	public float motor2SP;
+	public float motor3SP;
+	public float motor4SP;
+	/* cpu */
+	public float cpuLoad;
+	/* battery */
+	public float batteryVoltage;
+	/* temperature */
+	public float temperature;
+	
+	
+	
 	public enum CUSTOM_FRAME_IDENTIFIERS {
+		// wenn hier was geändert wird dann bitte auch unten in der switch case #scheissjava
 		GYRO(0x01, 12), ACCEL(0x02, 12), MAGNETOMETER(
 				0x03, 12), ANGLE(0x04, 12), ANGLE_SP(0x05, 12), VELOCITY(
-				0x06, 12), VELOCITY_SP(0x07, 12), HEIGTH(0x08,
+				0x06, 12), VELOCITY_SP(0x07, 12), HEIGHT(0x08,
 				12), RC(0x09, 22), MOTOR(0x0A, 16), MOTOR_SP(
 				0x0B, 12), CPU(0x0C, 4), AKKU(0x0D, 4), TEMP(
 				0x0E, 4), BUFFER_OVERRUN(0xFF, 1);
@@ -447,19 +509,14 @@ public class QuadrocopterCommunicator {
 		}
 	}
 
-	public byte[] getCustomFrame(CUSTOM_FRAME_IDENTIFIERS[] frameContent) {
+	public void getCustomFrame(CUSTOM_FRAME_IDENTIFIERS[] frameContent) {
 		if (!portIsBusy) {
 			// Daten anfordern
 			portIsBusy = true;
-
-			int responseLength = 0;
 			
-			for (int i = 0; i < frameContent.length; i++) {
-				responseLength += frameContent[i].getResponseLength();
-			}
-			// Arraylist fuer einkommende Daten
-			ArrayList<byte[]> inputBuffer = new ArrayList<byte[]>();
-			responseLength = 0;
+			int responseLength = 0;
+			// Index des letzten Elementes des letzten Custom Frames
+			int lastFrameIndex = 0;
 			
 			for (int i = 0; i < frameContent.length; i++) {
 				responseLength += frameContent[i].getResponseLength();
@@ -468,17 +525,24 @@ public class QuadrocopterCommunicator {
 				 * 3 Faelle:
 				 *  - 1: Frame noch nicht voll, i noch nicht maximal ==> weiter iterieren
 				 *  - 2: Frame noch nicht voll, aber i maximal ==> Frame anfordern
-				 *  - 3: Frame wuerde in naechster iteration ueberlaufen, aber i noch nicht maximal ==> Frame anfordern
+				 *  - 3: Frame wuerde in naechster Iteration ueberlaufen, aber i noch nicht maximal ==> Frame anfordern
 				 */
-				if( ((i+1 < frameContent.length) && ((responseLength+frameContent[i+1].getResponseLength()) <= frameBufferSize)) || (i == frameContent.length-1) ) {
+				if( ((i+1 < frameContent.length) && ((responseLength+frameContent[i+1].getResponseLength()) > frameBufferSize)) || (i == frameContent.length-1) ) {
 					// Frame anfordern
 					
 					// Outputbuffer anlegen
-					byte[] outputbuffer = new byte[responseLength + 2];
+					// Laenge: i + 1 - lastFrameIndex + 2
+					// i + 1 				^= aktueller Index
+					// lastFrameIndex	^= letzter Index, der noch im letzten Custom Frame war
+					// +2				^= vorne und hinten muessen noch Anfangs- und Endwort angehaengt werden
+					byte[] outputbuffer = new byte[i + 1 - lastFrameIndex + 2];
 					outputbuffer[0] = (byte)USB_CMD_SEND_CUSTOM_FRAME;
 					// Frame fuellen
-					for(int k = 1; k <= i+1; k++) {
-						outputbuffer[k] = (byte)frameContent[i].getIdentifier();
+					// bei 1 beginnen, da Stelle 0 USB_CMD_SEND_CUSTOM_FRAME ist
+					// bis i + 1 - lastFrameIndex gehen, damit nicht zuviele Identifier in das array geladen werden
+					for(int k = 1; k <= i + 1 - lastFrameIndex; k++) {
+						// lastFrameIndex + k -1: nur die Identifier anhaengen, die nach dem letzten angeforderten Identifier stehen anfordern
+						outputbuffer[k] = (byte)frameContent[lastFrameIndex + k - 1].getIdentifier();
 					}
 					outputbuffer[outputbuffer.length-1] = (byte)USB_CMD_SEND_CUSTOM_FRAME_EOF;
 					
@@ -488,41 +552,177 @@ public class QuadrocopterCommunicator {
 
 						// Warten auf Daten
 						LocalTime begin = LocalTime.now();
-						while (port.getInputBufferBytesCount() != responseLength) {
+						while (port.getInputBufferBytesCount() < responseLength) {
 							// warte bis alle bytes da sind
 							// auf Timeout prÃ¼fen
 							if (checkTimeout(begin, COMMUNICATION_TIMEOUT)) {
 								portIsBusy = false;
-								return null;
+								return;
 							}							
 						}
 						
 						// Daten auslesen
-						inputBuffer.add(port.readBytes());
+						//inputBuffer.add(port.readBytes());
+						byte[] data = new byte[responseLength];
+						data = port.readBytes();
+						int offset = 0;
+						for(int k = lastFrameIndex; k < i + 1; k++) {
+							switch ( frameContent[k].getIdentifier() ) {
+								/* Gyro */
+								case 0x01:
+									this.gyroX = byteArrayToFloat(data, offset) ;
+									offset += 4;
+									this.gyroY = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.gyroZ = byteArrayToFloat(data, offset);
+									offset += 4;
+									break;
+								/* Accelerometer */
+								case 0x02:
+									this.accelX = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.accelY = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.accelZ = byteArrayToFloat(data, offset);
+									offset += 4;
+									break;
+								/* Magnetometer */
+								case 0x03:
+									this.magnX = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.magnY = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.magnZ = byteArrayToFloat(data, offset);
+									offset += 4;
+									break;
+								/* angles */
+								case 0x04:
+									this.angleX = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.angleY = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.angleZ = byteArrayToFloat(data, offset);
+									offset += 4;
+									break;
+								/* angle sp */
+								case 0x05:
+									this.angleSPX = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.angleSPY = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.angleSPZ = byteArrayToFloat(data, offset);
+									offset += 4;
+									break;
+								/* velocity */
+								case 0x06:
+									this.velocityX = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.velocityY = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.velocityZ = byteArrayToFloat(data, offset);
+									offset += 4;
+									break;
+								/* velocity sp */
+								case 0x07:
+									this.velocitySPX = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.velocitySPY = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.velocitySPZ = byteArrayToFloat(data, offset);
+									offset += 4;
+									break;
+								/* height */
+								case 0x08:
+									this.height = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.heightRel = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.heightDelta = byteArrayToFloat(data, offset);
+									offset += 4;
+									break;
+								/* rc values */
+								case 0x09:
+									this.rcNick = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.rcRoll = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.rcYaw = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.rcThrottle = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.rcLinPoti = byteArrayToFloat(data, offset);
+									offset += 4;
+									
+									if(data[offset] == 0) {
+										this.rcEnableMotors = false;
+									} else {
+										this.rcEnableMotors = true;
+									}
+									offset += 1;
+									
+									if(data[offset] == 0) {
+										this.rcSwitch = false;
+									} else {
+										this.rcSwitch = true;
+									}
+									offset += 1;
+									
+									break;
+								/* motor values */
+								case 0x0A:
+									this.motor1 = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.motor2 = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.motor3 = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.motor4 = byteArrayToFloat(data, offset);
+									offset += 4;
+									break;
+								/* motor sp */
+								case 0x0B:
+									this.motor1SP = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.motor2SP = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.motor3SP = byteArrayToFloat(data, offset);
+									offset += 4;
+									this.motor4SP = byteArrayToFloat(data, offset);
+									offset += 4;
+									break;
+								/* cpu */
+								case 0x0C:
+									this.cpuLoad = byteArrayToFloat(data, offset);
+									offset += 4;
+									break;
+								/* battery */
+								case 0x0D:
+									this.batteryVoltage = byteArrayToFloat(data, offset);
+									offset += 4;
+									break;
+								/* temperature */
+								case 0x0E:
+									this.temperature = byteArrayToFloat(data, offset);
+									offset += 4;
+									break;
+//								default:
+//									System.out.println("Unknown identifier!");
+//									break;
+							}
+						}
 						
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
 						portIsBusy = false;
-						return null;
+						return;
 					}
 					// responseLength zuruecksetzen
 					responseLength = 0;
-				}
-			}
-			
-			// Input als ein Array ausgeben
-			byte[] tmp = new byte[inputBuffer.size()];
-			int counter = 0;
-			
-			for(int i = 0; i < inputBuffer.size(); i++) {
-				for(int k = 0; k < inputBuffer.get(i).length; k++) {
-					tmp[counter++] = inputBuffer.get(i)[k];
+					// lastFrameIndex 
+					lastFrameIndex = i + 1;
 				}
 			}
 			portIsBusy = false;
-			return tmp;
-		} else {
-			return null;
 		}
 	}
 }

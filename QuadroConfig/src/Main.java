@@ -20,6 +20,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.Timer;
 
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Toolkit;
 
 import LiveGraph.Dataset;
@@ -102,6 +103,13 @@ public class Main {
 			historyLength);
 	private Dataset winkelZDataset = new Dataset("Winkel Z", Color.YELLOW, 2,
 			historyLength);
+	// Winkelsetpointsdatensets
+	private Dataset winkelSPXDataset = new Dataset("Winkel SP X", Color.GREEN, 2,
+			historyLength);
+	private Dataset winkelSPYDataset = new Dataset("Winkel SP Y", Color.RED, 2,
+			historyLength);
+	private Dataset winkelSPZDataset = new Dataset("Winkel SP Z", Color.YELLOW, 2,
+			historyLength);
 	// Beschl. Datensets
 	private Dataset accXDataset = new Dataset("Accelerometer X", Color.GREEN,
 			1, historyLength);
@@ -148,6 +156,11 @@ public class Main {
 			historyLength);
 	private Dataset pidZOutDataset = new Dataset("PID Z", Color.YELLOW, 1,
 			historyLength);
+	
+	/* magnetometer */
+	private Dataset magnetometerXDataset = new Dataset("Magnetometer X", Color.GREEN, 1, historyLength);
+	private Dataset magnetometerYDataset = new Dataset("Magnetometer X", Color.GREEN, 1, historyLength);
+	private Dataset magnetometerZDataset = new Dataset("Magnetometer X", Color.GREEN, 1, historyLength);
 
 	/* temp */
 	private Dataset tempDataset = new Dataset("Temperature", Color.YELLOW, 1,
@@ -156,6 +169,10 @@ public class Main {
 	/* akku Voltage */
 	private Dataset akkuVoltageDataset = new Dataset("Akku Voltage",
 			Color.YELLOW, 1, historyLength);
+	
+	private Dataset cpuDataset = new Dataset("CPU Load",
+			Color.GREEN, 1, historyLength);
+	
 	// #########################################################
 
 	// Bildschirmaufl�sung
@@ -331,7 +348,7 @@ public class Main {
 										.toString()), Integer
 								.valueOf(comboBox_4.getSelectedItem()
 										.toString()), parity);
-						quadrocopter = new QuadrocopterCommunicator(128);
+						quadrocopter = new QuadrocopterCommunicator(60);
 						quadrocopter.setPort(port);
 						messungAktiv = true;
 						messtimer.start();
@@ -345,6 +362,8 @@ public class Main {
 						statuslabel.setText("Port opened");
 						btnNewButton.setText("Close Port");
 						btnConfigurateQuadrocopter.setEnabled(true);
+						
+						frame.setState(Frame.ICONIFIED);
 
 					} else {
 						port.closePort();
@@ -553,23 +572,178 @@ public class Main {
 				// Timer wurde ausgelöst
 				// Timer neu einstellen
 				messtimer.setDelay((int) spinner.getValue());
-
+				
 				if (messungAktiv && port.isOpened()) {
-					updateSensorGraphs();
-					
+					// updateSensorGraphs();
+					getFrame();					
 				}
 			}
 		});
 
 		// GUI anzeigen
 		messwertfenster.setVisible(true);
-		messwertfenster.setLocation(0, frame.getHeight());
-		messwertfenster.setSize(messwertfenster.getSize().width, screen.height
-				- frame.getHeight() - 40);
+		messwertfenster.setLocation(0, 0);
+		messwertfenster.setSize(frame.getWidth(), screen.height);
+		//messwertfenster.setState(Frame.MAXIMIZED_VERT);
 		visualisierungsfenster.setVisible(true);
 		visualisierungsfenster.setLocation(frame.getWidth(), 0);
-		visualisierungsfenster.setSize(screen.width - frame.getWidth(),
-				screen.height - 40);
+		visualisierungsfenster.setSize(screen.width - frame.getWidth(), screen.height);
+	}
+	
+	public void getFrame() {
+		int i = 0;
+		
+		if( messwertfenster.chckbxAccelerometer.isSelected() ) {
+			i++;
+		}
+		
+		if( messwertfenster.chckbxGyro.isSelected() ) {
+			i++;
+		}
+		
+		if( messwertfenster.chckBxMagnetometer.isSelected() ) {
+			i++;
+		}
+		
+		if( messwertfenster.chckBxAngle.isSelected() ) {
+			i++;
+		}
+		
+		if( messwertfenster.chckBxMotors.isSelected() ) {
+			i++;
+		}
+		
+		if( messwertfenster.chckBxRC.isSelected() ) {
+			i++;
+		}
+		
+//		if( messwertfenster.chckBxPID.isSelected() ) {
+//			i++;
+//		}
+		
+		if( messwertfenster.chckBxHeight.isSelected() ) {
+			i++;
+		}
+		
+		if( messwertfenster.chckBxTemp.isSelected() ) {
+			i++;
+		}
+		
+		if( messwertfenster.chckBxBatt.isSelected() ) {
+			i++;
+		}
+		
+		if( messwertfenster.chckBxCPU.isSelected() ) {
+			i++;
+		}
+		
+		QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS[] customFrame = new QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS[i];
+		
+		i = 0;
+		int responseLength = 0;
+		
+		if( messwertfenster.chckbxAccelerometer.isSelected() ) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.ACCEL;
+			i++;
+		}
+		
+		if( messwertfenster.chckbxGyro.isSelected() ) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.GYRO;
+			i++;
+		}
+		
+		if( messwertfenster.chckBxMagnetometer.isSelected() ) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.MAGNETOMETER;
+			i++;
+		}
+		
+		if( messwertfenster.chckBxAngle.isSelected() ) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.ANGLE;
+			i++;
+		}
+		
+		if( messwertfenster.chckBxMotors.isSelected() ) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.MOTOR;
+			i++;
+		}
+		
+		if( messwertfenster.chckBxRC.isSelected() ) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.RC;
+			i++;
+		}
+		
+//		if( messwertfenster.chckBxPID.isSelected() ) {
+//			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.;
+//			i++;
+//		}
+		
+		if( messwertfenster.chckBxHeight.isSelected() ) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.HEIGHT;
+			i++;
+		}
+		
+		if( messwertfenster.chckBxTemp.isSelected() ) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.TEMP;
+			i++;
+		}
+		
+		if( messwertfenster.chckBxBatt.isSelected() ) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.AKKU;
+			i++;
+		}
+		
+		if( messwertfenster.chckBxCPU.isSelected() ) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.CPU;
+			i++;
+		}
+		
+		// receive custom frame from quadrocopter
+		quadrocopter.getCustomFrame(customFrame);
+		
+		// push new values in datasets
+		
+		// Accelerometer
+		accXDataset.addValue( quadrocopter.accelX );
+		accYDataset.addValue( quadrocopter.accelY );
+		accZDataset.addValue( quadrocopter.accelZ );
+		// Gyro
+		rateXDataset.addValue( quadrocopter.gyroX );
+		rateYDataset.addValue( quadrocopter.gyroY );
+		rateZDataset.addValue( quadrocopter.gyroZ );
+		// Magnetometer
+		magnetometerXDataset.addValue( quadrocopter.magnX );
+		magnetometerYDataset.addValue( quadrocopter.magnY );
+		magnetometerZDataset.addValue( quadrocopter.magnZ );
+		// Angles
+		winkelXDataset.addValue( quadrocopter.angleX );
+		winkelYDataset.addValue( quadrocopter.angleY );
+		winkelZDataset.addValue( quadrocopter.angleZ );
+		// AnglesSP
+		winkelSPXDataset.addValue( quadrocopter.angleSPX );
+		winkelSPYDataset.addValue( quadrocopter.angleSPY );
+		winkelSPZDataset.addValue( quadrocopter.angleSPZ );
+		// Height
+		heightDataset.addValue( quadrocopter.height );
+		dHDataset.addValue( quadrocopter.heightDelta );
+		relHeightDataset.addValue( quadrocopter.heightRel );
+		// RC
+		rcSignalNickDataset.addValue( quadrocopter.rcNick );
+		rcSignalRollDataset.addValue( quadrocopter.rcRoll );
+		rcSignalYawDataset.addValue( quadrocopter.rcYaw );
+		rcSignalThrottleDataset.addValue( quadrocopter.rcThrottle );
+		rcSignalLinPotiDataset.addValue( quadrocopter.rcLinPoti );
+		if( quadrocopter.rcEnableMotors ) {
+			rcSignalEnableDataset.addValue(1.0f);
+		} else {
+			rcSignalEnableDataset.addValue(0.0f);
+		}
+		if( quadrocopter.rcSwitch ) {
+			rcSignalSwitchDataset.addValue(1.0f);
+		} else {
+			rcSignalSwitchDataset.addValue(0.0f);
+		}
+		
+		// Visualisierungen aktualisieren
 	}
 	
 	public void updateSensorGraphs() {
