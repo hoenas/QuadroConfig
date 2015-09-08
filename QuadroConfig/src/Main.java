@@ -84,95 +84,75 @@ public class Main {
 	private Messwertfenster messwertfenster = new Messwertfenster();
 	private Visualisierungsfenster visualisierungsfenster = new Visualisierungsfenster();
 	private ConfigWindow cfgWindow = new ConfigWindow();
-	private JButton btnConfigurateQuadrocopter = new JButton(
-			"Configurate Quadrocopter");
+	private JButton btnConfigurateQuadrocopter = new JButton("Configurate Quadrocopter");
 
 	// Motorendatensets
-	private Dataset motor1Dataset = new Dataset("Motor 1", Color.BLUE, 2,
-			historyLength);
-	private Dataset motor2Dataset = new Dataset("Motor 2", Color.GREEN, 2,
-			historyLength);
-	private Dataset motor3Dataset = new Dataset("Motor 3", Color.RED, 2,
-			historyLength);
-	private Dataset motor4Dataset = new Dataset("Motor 4", Color.YELLOW, 2,
-			historyLength);
+	private Dataset motor1Dataset = new Dataset("Motor 1", Color.BLUE, 2, historyLength);
+	private Dataset motor2Dataset = new Dataset("Motor 2", Color.GREEN, 2, historyLength);
+	private Dataset motor3Dataset = new Dataset("Motor 3", Color.RED, 2, historyLength);
+	private Dataset motor4Dataset = new Dataset("Motor 4", Color.YELLOW, 2, historyLength);
 	// Winkeldatensets
-	private Dataset winkelXDataset = new Dataset("Winkel X", Color.GREEN, 2,
-			historyLength);
-	private Dataset winkelYDataset = new Dataset("Winkel Y", Color.RED, 2,
-			historyLength);
-	private Dataset winkelZDataset = new Dataset("Winkel Z", Color.YELLOW, 2,
-			historyLength);
+	private Dataset winkelXDataset = new Dataset("Winkel X", Color.GREEN, 2, historyLength);
+	private Dataset winkelYDataset = new Dataset("Winkel Y", Color.RED, 2, historyLength);
+	private Dataset winkelZDataset = new Dataset("Winkel Z", Color.YELLOW, 2, historyLength);
 	// Winkelsetpointsdatensets
-	private Dataset winkelSPXDataset = new Dataset("Winkel SP X", Color.GREEN, 2,
-			historyLength);
-	private Dataset winkelSPYDataset = new Dataset("Winkel SP Y", Color.RED, 2,
-			historyLength);
-	private Dataset winkelSPZDataset = new Dataset("Winkel SP Z", Color.YELLOW, 2,
-			historyLength);
+	private Dataset winkelSPXDataset = new Dataset("Winkel SP X", Color.GREEN, 2, historyLength);
+	private Dataset winkelSPYDataset = new Dataset("Winkel SP Y", Color.RED, 2, historyLength);
+	private Dataset winkelSPZDataset = new Dataset("Winkel SP Z", Color.YELLOW, 2, historyLength);
 	// Beschl. Datensets
-	private Dataset accXDataset = new Dataset("Accelerometer X", Color.GREEN,
-			1, historyLength);
-	private Dataset accYDataset = new Dataset("Accelerometer Y", Color.RED, 1,
-			historyLength);
-	private Dataset accZDataset = new Dataset("Accelerometer Z", Color.YELLOW,
-			1, historyLength);
+	private Dataset accXDataset = new Dataset("Accelerometer X", Color.GREEN, 1, historyLength);
+	private Dataset accYDataset = new Dataset("Accelerometer Y", Color.RED, 1, historyLength);
+	private Dataset accZDataset = new Dataset("Accelerometer Z", Color.YELLOW, 1, historyLength);
 	// Gierraten Datensets
-	private Dataset rateXDataset = new Dataset("Rate Pitch", Color.GREEN, 1,
-			historyLength);
-	private Dataset rateYDataset = new Dataset("Rate Roll", Color.RED, 1,
-			historyLength);
-	private Dataset rateZDataset = new Dataset("Rate Yaw", Color.YELLOW, 1,
-			historyLength);
+	private Dataset rateXDataset = new Dataset("Rate Pitch", Color.GREEN, 1, historyLength);
+	private Dataset rateYDataset = new Dataset("Rate Roll", Color.RED, 1, historyLength);
+	private Dataset rateZDataset = new Dataset("Rate Yaw", Color.YELLOW, 1, historyLength);
+
+	/* vel datasets */
+	private Dataset velXDataset = new Dataset("v X", Color.GREEN, 1, historyLength);
+	private Dataset velYDataset = new Dataset("v Y", Color.RED, 1, historyLength);
+	private Dataset velZDataset = new Dataset("v Z", Color.YELLOW, 1, historyLength);
+	/* vel sp datasets */
+	private Dataset velSPXDataset = new Dataset("v SP X", Color.GREEN, 1, historyLength);
+	private Dataset velSPYDataset = new Dataset("v SP Y", Color.RED, 1, historyLength);
+	private Dataset velSPZDataset = new Dataset("v SP Z", Color.YELLOW, 1, historyLength);
+	/* motor sp datasets */
+	private Dataset motorSPXDataset = new Dataset("Motor SP X", Color.GREEN, 1, historyLength);
+	private Dataset motorSPYDataset = new Dataset("Motor SP Y", Color.RED, 1, historyLength);
+	private Dataset motorSPZDataset = new Dataset("Motor SP Z", Color.YELLOW, 1, historyLength);
 
 	/* RC Receiver */
-	private Dataset rcSignalRollDataset = new Dataset("RC: Roll", Color.GREEN,
-			1, historyLength);
-	private Dataset rcSignalNickDataset = new Dataset("RC: Nick", Color.RED, 1,
-			historyLength);
-	private Dataset rcSignalYawDataset = new Dataset("RC: Yaw", Color.YELLOW,
-			1, historyLength);
-	private Dataset rcSignalThrottleDataset = new Dataset("RC: Throttle",
-			Color.GREEN, 1, historyLength);
-	private Dataset rcSignalLinPotiDataset = new Dataset("RC: Lin Poti",
-			Color.RED, 1, historyLength);
-	private Dataset rcSignalSwitchDataset = new Dataset("RC: Switch",
-			Color.YELLOW, 1, historyLength);
-	private Dataset rcSignalEnableDataset = new Dataset("RC: Motor enable",
-			Color.YELLOW, 1, historyLength);
+	private Dataset rcSignalRollDataset = new Dataset("RC: Roll", Color.GREEN, 1, historyLength);
+	private Dataset rcSignalNickDataset = new Dataset("RC: Nick", Color.RED, 1, historyLength);
+	private Dataset rcSignalYawDataset = new Dataset("RC: Yaw", Color.YELLOW, 1, historyLength);
+	private Dataset rcSignalThrottleDataset = new Dataset("RC: Throttle", Color.GREEN, 1, historyLength);
+	private Dataset rcSignalLinPotiDataset = new Dataset("RC: Lin Poti", Color.RED, 1, historyLength);
+	private Dataset rcSignalSwitchDataset = new Dataset("RC: Switch", Color.YELLOW, 1, historyLength);
+	private Dataset rcSignalEnableDataset = new Dataset("RC: Motor enable", Color.YELLOW, 1, historyLength);
 
 	/* height */
-	private Dataset heightDataset = new Dataset("Height", Color.GREEN, 1,
-			historyLength);
-	private Dataset relHeightDataset = new Dataset("rel Height", Color.RED, 1,
-			historyLength);
-	private Dataset dHDataset = new Dataset("dH", Color.YELLOW, 1,
-			historyLength);
+	private Dataset heightDataset = new Dataset("Height", Color.GREEN, 1, historyLength);
+	private Dataset relHeightDataset = new Dataset("rel Height", Color.RED, 1, historyLength);
+	private Dataset dHDataset = new Dataset("dH", Color.YELLOW, 1, historyLength);
 
 	/* PID */
-	private Dataset pidXOutDataset = new Dataset("PID X", Color.GREEN, 1,
-			historyLength);
-	private Dataset pidYOutDataset = new Dataset("PID Y", Color.RED, 1,
-			historyLength);
-	private Dataset pidZOutDataset = new Dataset("PID Z", Color.YELLOW, 1,
-			historyLength);
-	
+	private Dataset pidXOutDataset = new Dataset("PID X", Color.GREEN, 1, historyLength);
+	private Dataset pidYOutDataset = new Dataset("PID Y", Color.RED, 1, historyLength);
+	private Dataset pidZOutDataset = new Dataset("PID Z", Color.YELLOW, 1, historyLength);
+
 	/* magnetometer */
 	private Dataset magnetometerXDataset = new Dataset("Magnetometer X", Color.GREEN, 1, historyLength);
 	private Dataset magnetometerYDataset = new Dataset("Magnetometer X", Color.GREEN, 1, historyLength);
 	private Dataset magnetometerZDataset = new Dataset("Magnetometer X", Color.GREEN, 1, historyLength);
 
 	/* temp */
-	private Dataset tempDataset = new Dataset("Temperature", Color.YELLOW, 1,
-			historyLength);
+	private Dataset tempDataset = new Dataset("Temperature", Color.YELLOW, 1, historyLength);
 
 	/* akku Voltage */
-	private Dataset akkuVoltageDataset = new Dataset("Akku Voltage",
-			Color.YELLOW, 1, historyLength);
-	
-	private Dataset cpuDataset = new Dataset("CPU Load",
-			Color.GREEN, 1, historyLength);
-	
+	private Dataset akkuVoltageDataset = new Dataset("Akku Voltage", Color.YELLOW, 1, historyLength);
+
+	private Dataset cpuDataset = new Dataset("CPU Load", Color.GREEN, 1, historyLength);
+
 	// #########################################################
 
 	// Bildschirmaufl�sung
@@ -208,7 +188,7 @@ public class Main {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	
+
 	private void initialize() {
 
 		frame = new JFrame();
@@ -327,11 +307,9 @@ public class Main {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					if (port == null || !port.isOpened()) {
-						port = new SerialPort(comboBox.getSelectedItem()
-								.toString());
+						port = new SerialPort(comboBox.getSelectedItem().toString());
 						int parity = 0;
-						String auswahl = comboBox_5.getSelectedItem()
-								.toString();
+						String auswahl = comboBox_5.getSelectedItem().toString();
 
 						if (auswahl == "even") {
 							parity = SerialPort.PARITY_EVEN;
@@ -342,12 +320,9 @@ public class Main {
 						}
 
 						port.openPort();
-						port.setParams(Integer.valueOf(comboBox_1
-								.getSelectedItem().toString()), Integer
-								.valueOf(comboBox_3.getSelectedItem()
-										.toString()), Integer
-								.valueOf(comboBox_4.getSelectedItem()
-										.toString()), parity);
+						port.setParams(Integer.valueOf(comboBox_1.getSelectedItem().toString()),
+								Integer.valueOf(comboBox_3.getSelectedItem().toString()),
+								Integer.valueOf(comboBox_4.getSelectedItem().toString()), parity);
 						quadrocopter = new QuadrocopterCommunicator(128);
 						quadrocopter.setPort(port);
 						messungAktiv = true;
@@ -362,7 +337,7 @@ public class Main {
 						statuslabel.setText("Port opened");
 						btnNewButton.setText("Close Port");
 						btnConfigurateQuadrocopter.setEnabled(true);
-						
+
 						frame.setState(Frame.ICONIFIED);
 
 					} else {
@@ -474,8 +449,7 @@ public class Main {
 			public void actionPerformed(ActionEvent arg0) {
 				messwertfenster.setVisible(true);
 				messwertfenster.setLocation(0, frame.getHeight());
-				messwertfenster.setSize(messwertfenster.getSize().width,
-						screen.height - frame.getHeight() - 40);
+				messwertfenster.setSize(messwertfenster.getSize().width, screen.height - frame.getHeight() - 40);
 			}
 		});
 		btnNewButton_1.setBounds(10, 45, 371, 23);
@@ -486,8 +460,7 @@ public class Main {
 			public void actionPerformed(ActionEvent arg0) {
 				visualisierungsfenster.setVisible(true);
 				visualisierungsfenster.setLocation(frame.getWidth(), 0);
-				visualisierungsfenster.setSize(screen.width - frame.getWidth(),
-						screen.height - 40);
+				visualisierungsfenster.setSize(screen.width - frame.getWidth(), screen.height - 40);
 			}
 		});
 		btnNewButton_3.setBounds(10, 79, 371, 23);
@@ -514,8 +487,7 @@ public class Main {
 						// Abwarten, bis Portzustand: idle
 					}
 
-					cfgWindow.openConfigWindow(port, statuslabel,
-							flagsToolBar.isConfigMode);
+					cfgWindow.openConfigWindow(port, statuslabel, flagsToolBar.isConfigMode);
 
 				}
 
@@ -572,10 +544,10 @@ public class Main {
 				// Timer wurde ausgelöst
 				// Timer neu einstellen
 				messtimer.setDelay((int) spinner.getValue());
-				
+
 				if (messungAktiv && port.isOpened()) {
 					// updateSensorGraphs();
-					getFrame();					
+					getFrame();
 				}
 			}
 		});
@@ -584,175 +556,214 @@ public class Main {
 		messwertfenster.setVisible(true);
 		messwertfenster.setLocation(0, 0);
 		messwertfenster.setSize(frame.getWidth(), screen.height);
-		//messwertfenster.setState(Frame.MAXIMIZED_VERT);
+		// messwertfenster.setState(Frame.MAXIMIZED_VERT);
 		visualisierungsfenster.setVisible(true);
 		visualisierungsfenster.setLocation(frame.getWidth(), 0);
 		visualisierungsfenster.setSize(screen.width - frame.getWidth(), screen.height);
 	}
-	
+
 	public void getFrame() {
 		int i = 0;
-		
-		if( messwertfenster.chckbxAccelerometer.isSelected() ) {
+
+		if (messwertfenster.chckbxAccelerometer.isSelected()) {
 			i++;
 		}
-		
-		if( messwertfenster.chckbxGyro.isSelected() ) {
+
+		if (messwertfenster.chckbxGyro.isSelected()) {
 			i++;
 		}
-		
-		if( messwertfenster.chckBxMagnetometer.isSelected() ) {
+
+		if (messwertfenster.chckBxMagnetometer.isSelected()) {
 			i++;
 		}
-		
-		if( messwertfenster.chckBxAngle.isSelected() ) {
+
+		if (messwertfenster.chckBxAngle.isSelected()) {
 			i++;
 		}
-		
-		if( messwertfenster.chckBxMotors.isSelected() ) {
+
+		if (messwertfenster.chckbxAngleSetpoints.isSelected()) {
 			i++;
 		}
-		
-		if( messwertfenster.chckBxRC.isSelected() ) {
+
+		if (messwertfenster.chckBxVel.isSelected()) {
 			i++;
 		}
-		
-//		if( messwertfenster.chckBxPID.isSelected() ) {
-//			i++;
-//		}
-		
-		if( messwertfenster.chckBxHeight.isSelected() ) {
+
+		if (messwertfenster.chckbxVelocitySetpoints.isSelected()) {
 			i++;
 		}
-		
-		if( messwertfenster.chckBxTemp.isSelected() ) {
+
+		if (messwertfenster.chckBxMotors.isSelected()) {
 			i++;
 		}
-		
-		if( messwertfenster.chckBxBatt.isSelected() ) {
+
+		if (messwertfenster.chckbxMotorSetpoints.isSelected()) {
 			i++;
 		}
-		
-		if( messwertfenster.chckBxCPU.isSelected() ) {
+
+		if (messwertfenster.chckBxRC.isSelected()) {
 			i++;
 		}
-		
+
+		if (messwertfenster.chckBxHeight.isSelected()) {
+			i++;
+		}
+
+		if (messwertfenster.chckBxTemp.isSelected()) {
+			i++;
+		}
+
+		if (messwertfenster.chckBxBatt.isSelected()) {
+			i++;
+		}
+
+		if (messwertfenster.chckBxCPU.isSelected()) {
+			i++;
+		}
+
 		QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS[] customFrame = new QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS[i];
-		
+
 		i = 0;
 		int responseLength = 0;
-		
-		if( messwertfenster.chckbxAccelerometer.isSelected() ) {
+
+		if (messwertfenster.chckbxAccelerometer.isSelected()) {
 			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.ACCEL;
 			i++;
 		}
-		
-		if( messwertfenster.chckbxGyro.isSelected() ) {
+
+		if (messwertfenster.chckbxGyro.isSelected()) {
 			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.GYRO;
 			i++;
 		}
-		
-		if( messwertfenster.chckBxMagnetometer.isSelected() ) {
+
+		if (messwertfenster.chckBxMagnetometer.isSelected()) {
 			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.MAGNETOMETER;
 			i++;
 		}
-		
-		if( messwertfenster.chckBxAngle.isSelected() ) {
+
+		if (messwertfenster.chckBxAngle.isSelected()) {
 			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.ANGLE;
 			i++;
 		}
-		
-		if( messwertfenster.chckBxMotors.isSelected() ) {
+
+		if (messwertfenster.chckbxAngleSetpoints.isSelected()) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.ANGLE_SP;
+			i++;
+		}
+
+		if (messwertfenster.chckBxVel.isSelected()) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.VELOCITY;
+			i++;
+		}
+
+		if (messwertfenster.chckbxVelocitySetpoints.isSelected()) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.VELOCITY_SP;
+			i++;
+		}
+
+		if (messwertfenster.chckbxMotorSetpoints.isSelected()) {
+			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.MOTOR_SP;
+			i++;
+		}
+
+		if (messwertfenster.chckBxMotors.isSelected()) {
 			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.MOTOR;
 			i++;
 		}
-		
-		if( messwertfenster.chckBxRC.isSelected() ) {
+
+		if (messwertfenster.chckBxRC.isSelected()) {
 			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.RC;
 			i++;
 		}
-		
-//		if( messwertfenster.chckBxPID.isSelected() ) {
-//			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.;
-//			i++;
-//		}
-		
-		if( messwertfenster.chckBxHeight.isSelected() ) {
+
+		if (messwertfenster.chckBxHeight.isSelected()) {
 			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.HEIGHT;
 			i++;
 		}
-		
-		if( messwertfenster.chckBxTemp.isSelected() ) {
+
+		if (messwertfenster.chckBxTemp.isSelected()) {
 			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.TEMP;
 			i++;
 		}
-		
-		if( messwertfenster.chckBxBatt.isSelected() ) {
+
+		if (messwertfenster.chckBxBatt.isSelected()) {
 			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.AKKU;
 			i++;
 		}
-		
-		if( messwertfenster.chckBxCPU.isSelected() ) {
+
+		if (messwertfenster.chckBxCPU.isSelected()) {
 			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.CPU;
 			i++;
 		}
-		
+
 		// receive custom frame from quadrocopter
 		quadrocopter.getCustomFrame(customFrame);
-		
+
 		// push new values in datasets
-		
+
 		// Accelerometer
-		accXDataset.addValue( quadrocopter.accelX );
-		accYDataset.addValue( quadrocopter.accelY );
-		accZDataset.addValue( quadrocopter.accelZ );
+		accXDataset.addValue(quadrocopter.accelX);
+		accYDataset.addValue(quadrocopter.accelY);
+		accZDataset.addValue(quadrocopter.accelZ);
 		// Gyro
-		rateXDataset.addValue( quadrocopter.gyroX );
-		rateYDataset.addValue( quadrocopter.gyroY );
-		rateZDataset.addValue( quadrocopter.gyroZ );
+		rateXDataset.addValue(quadrocopter.gyroX);
+		rateYDataset.addValue(quadrocopter.gyroY);
+		rateZDataset.addValue(quadrocopter.gyroZ);
 		// Magnetometer
-		magnetometerXDataset.addValue( quadrocopter.magnX );
-		magnetometerYDataset.addValue( quadrocopter.magnY );
-		magnetometerZDataset.addValue( quadrocopter.magnZ );
+		magnetometerXDataset.addValue(quadrocopter.magnX);
+		magnetometerYDataset.addValue(quadrocopter.magnY);
+		magnetometerZDataset.addValue(quadrocopter.magnZ);
 		// Angles
-		winkelXDataset.addValue( quadrocopter.angleX );
-		winkelYDataset.addValue( quadrocopter.angleY );
-		winkelZDataset.addValue( quadrocopter.angleZ );
+		winkelXDataset.addValue(quadrocopter.angleX);
+		winkelYDataset.addValue(quadrocopter.angleY);
+		winkelZDataset.addValue(quadrocopter.angleZ);
 		// AnglesSP
-		winkelSPXDataset.addValue( quadrocopter.angleSPX );
-		winkelSPYDataset.addValue( quadrocopter.angleSPY );
-		winkelSPZDataset.addValue( quadrocopter.angleSPZ );
+		winkelSPXDataset.addValue(quadrocopter.angleSPX);
+		winkelSPYDataset.addValue(quadrocopter.angleSPY);
+		winkelSPZDataset.addValue(quadrocopter.angleSPZ);
+		// Vel
+		velXDataset.addValue(quadrocopter.velocityX);
+		velYDataset.addValue(quadrocopter.velocityY);
+		velZDataset.addValue(quadrocopter.velocityZ);
+		// Vel SP
+		velSPXDataset.addValue(quadrocopter.velocitySPX);
+		velSPYDataset.addValue(quadrocopter.velocitySPY);
+		velSPZDataset.addValue(quadrocopter.velocitySPZ);
+		// motor sp
+		motorSPXDataset.addValue(quadrocopter.motorXSP);
+		motorSPYDataset.addValue(quadrocopter.motorYSP);
+		motorSPZDataset.addValue(quadrocopter.motorZSP);
 		// Height
-		heightDataset.addValue( quadrocopter.height );
-		dHDataset.addValue( quadrocopter.heightDelta );
-		relHeightDataset.addValue( quadrocopter.heightRel );
+		heightDataset.addValue(quadrocopter.height);
+		dHDataset.addValue(quadrocopter.heightDelta);
+		relHeightDataset.addValue(quadrocopter.heightRel);
 		// RC
-		rcSignalNickDataset.addValue( quadrocopter.rcNick );
-		rcSignalRollDataset.addValue( quadrocopter.rcRoll );
-		rcSignalYawDataset.addValue( quadrocopter.rcYaw );
-		rcSignalThrottleDataset.addValue( quadrocopter.rcThrottle );
-		rcSignalLinPotiDataset.addValue( quadrocopter.rcLinPoti );
-		if( quadrocopter.rcEnableMotors ) {
+		rcSignalNickDataset.addValue(quadrocopter.rcNick);
+		rcSignalRollDataset.addValue(quadrocopter.rcRoll);
+		rcSignalYawDataset.addValue(quadrocopter.rcYaw);
+		rcSignalThrottleDataset.addValue(quadrocopter.rcThrottle);
+		rcSignalLinPotiDataset.addValue(quadrocopter.rcLinPoti);
+		if (quadrocopter.rcEnableMotors) {
 			rcSignalEnableDataset.addValue(1.0f);
 		} else {
 			rcSignalEnableDataset.addValue(0.0f);
 		}
-		if( quadrocopter.rcSwitch ) {
+		if (quadrocopter.rcSwitch) {
 			rcSignalSwitchDataset.addValue(1.0f);
 		} else {
 			rcSignalSwitchDataset.addValue(0.0f);
 		}
-		
+
 		// Visualisierungen aktualisieren
 	}
-	
+
 	public void updateSensorGraphs() {
 		byte[] data = quadrocopter.getSensorData();
-		if( data[data.length - 1] == 1) {
+		if (data[data.length - 1] == 1) {
 			// Daten aus array auslesen
 			// Accelerometerwerte
 			float[] values = new float[7];
-			values[0] = quadrocopter.byteArrayToFloat(data, 0) ;
+			values[0] = quadrocopter.byteArrayToFloat(data, 0);
 			values[1] = quadrocopter.byteArrayToFloat(data, 4);
 			values[2] = quadrocopter.byteArrayToFloat(data, 8);
 			visualisierungsfenster.accGraph.update(values);
@@ -764,10 +775,10 @@ public class Main {
 			// Magnetfeldsensorwerte
 			// TODO: ANZEIGE FÜR KOMPASS
 			// Temperatur
-			visualisierungsfenster.tempAltimeter.update((int)quadrocopter.byteArrayToFloat(data, 36));
+			visualisierungsfenster.tempAltimeter.update((int) quadrocopter.byteArrayToFloat(data, 36));
 			// TODO: dataset für Hoehe
 			// rel Hoehe
-			visualisierungsfenster.relAltAltimeter.update((int)quadrocopter.byteArrayToFloat(data, 44));
+			visualisierungsfenster.relAltAltimeter.update((int) quadrocopter.byteArrayToFloat(data, 44));
 			// TODO: dataset für delta H
 			// Fernsteuerungswerte
 			values[0] = quadrocopter.byteArrayToFloat(data, 52) * 100 + 50;
