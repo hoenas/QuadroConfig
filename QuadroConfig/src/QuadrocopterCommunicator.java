@@ -78,7 +78,7 @@ public class QuadrocopterCommunicator {
 
 	/* get or update whole configuration */
 	public static int USB_CMD_GET_CONFIG = 0xC1;
-	public static int USB_CMD_GET_CONFIG_RESPONSE_LENGTH = 48;
+	public static int USB_CMD_GET_CONFIG_RESPONSE_LENGTH = 92;
 	public static int USB_CMD_UPDATE_CONFIG = 0xC2;
 	public static int USB_CMD_UPDATE_CONFIG_RESPONSE_LENGTH = 1;
 	public static int USB_CMD_UPDATE_CONFIG_ACK_BYTE = 0xC2;
@@ -191,9 +191,14 @@ public class QuadrocopterCommunicator {
 	public enum CUSTOM_FRAME_IDENTIFIERS {
 		// wenn hier was geändert wird dann bitte auch unten in der switch case
 		// #scheissjava
-		GYRO(0x01, 12), ACCEL(0x02, 12), MAGNETOMETER(0x03, 12), ANGLE(0x04, 12), ANGLE_SP(0x05, 12), VELOCITY(0x06,
-				12), VELOCITY_SP(0x07, 12), HEIGHT(0x08, 12), RC(0x09, 22), MOTOR(0x0A, 16), MOTOR_SP(0x0B,
-						12), CPU(0x0C, 4), AKKU(0x0D, 4), TEMP(0x0E, 4), BUFFER_OVERRUN(0xFF, 1);
+		GYRO(0x01, 12), ACCEL(0x02, 12), MAGNETOMETER(0x03, 12), ANGLE(0x04, 12), 
+		ANGLE_SP(0x05, 12), VELOCITY(0x06,12), VELOCITY_SP(0x07, 12), HEIGHT(0x08, 12), 
+		RC(0x09, 22), MOTOR(0x0A, 16), MOTOR_SP(0x0B,12), CPU(0x0C, 4), AKKU(0x0D, 4), 
+		TEMP(0x0E, 4), UPTIME(0x0F,4), GPS_LLH(0x10, 56), GPS_ECEF(0x11, 32), 
+		GPS_TIME(0x12, 15), GPS_FIX(0x13, 5), GPS_DOP(0x14, 14), COMP_FILTER(0x15,8),
+		PID_ANGLE_XY(0x16, 20), PID_ROT_Z(0x17, 20), PID_VEL(0x18, 20), 
+		PID_ACCEL(0x19, 20), QC_SETTING(0x1A, 4), GLOBAL_FLAGS(0x1B, 4),
+		BUFFER_OVERRUN(0xFF, 1);
 
 		private final int i;
 		private final int responseLength;
@@ -690,6 +695,143 @@ public class QuadrocopterCommunicator {
 							case 0x0E:
 								this.temperature = byteArrayToFloat(data, offset);
 								offset += 4;
+								break;
+							/* uptime */
+							case 0x0F:
+								// TODO
+								/* uint32 uptime */
+								break;
+							/* GPS LLH */
+							case 0x10:
+								// TODO
+								/* int32 latitude [e-7 deg]
+								 * int32 longitue [e-7 deg]
+								 * int32 height	  [mm]
+								 * int32 height(mean sea level) [mm]
+								 * uint32 vertical Accuracy [mm]
+								 * uint32 horizontal Accuracy [mm]
+								 * 
+								 * int32 velocity north [cm/s]
+								 * int32 velocity east [cm/s]
+								 * int32 velocity down [cm/s]
+								 * uint32 speed (3D) [cm/s]
+								 * uint32 groud speed [cm/s]
+								 * uin32 speed accurary [cm/s]
+								 * int32 heading [e-5 deg]
+								 * uint32 heading accuracy [e-5 deg]
+								 */
+								break;
+							/* GPS ECEF */
+							case 0x11:
+								// TODO
+								/* int32 x [cm]
+								 * int32 y [cm]
+								 * int32 z [cm] 
+								 * int32 velocity x [cm/s]
+								 * int32 velocity y [cm/s]
+								 * int32 velocity z [cm/s]
+								 * 
+								 * uin32 position accuracy [cm]
+								 * uin32 speed accurary[cm/s]
+								 */
+								break;
+							/* GPS TIME */
+							case 0x12:
+								// TODO
+								/* uint32 time of week [ms]
+								 * int16 gps week
+								 * 
+								 * uint8 hours
+								 * uint8 minutes
+								 * uint8 seconds
+								 * uint8 hundredth
+								 * uint8 validity 
+								 * 
+								 * uint16 year
+								 * uint8 month
+								 * uint8 day
+								 */
+								
+								break;
+							/* GPS FIX*/
+							case 0x13:
+								// TODO
+								/* uint8 gpsFix: 
+								 * 		NO_FIX          = 0x00,
+								 *   	DEAD_RECKONING  = 0x01,
+								 *	    GPS_FIX_2D      = 0x02,
+								 *	    GPS_FIX_3D      = 0x03,
+								 *	    GPS_FIX         = 0x04,
+								 *	    TIME_ONLY       = 0x05
+								 * uint8 fixStatus
+								 * uint8 number of SV
+								 * uint8 navStatusFlags
+								 * uint8 psmState
+								 *		ACCQUISITION    = 0x00,
+								 *	    TRACKING        = 0x01,
+								 *	    OPTIMIZED_TRACKING = 0x02,
+								 *	    INACTIVE        = 0x03
+								 */
+								break;
+							/* GPS DOP */
+							case 0x14:
+								// TODO
+								/* Dilution of precision scale 0.01
+								 * uint16 position
+								 * uint16 geometric
+								 * uint16 time
+								 * uint16 vertical
+								 * uint16 horizontal
+								 * uint16 north
+								 * uint16 east								 
+								 */
+								break;
+							/* Complementary Filter */
+							case 0x15:
+								// TODO
+								/* float compfilter angle xy
+								 * float compfilter angle z
+								 */
+								break;		
+						
+							/* all pids:
+							 * floats
+							 * p
+							 * i
+							 * d
+							 * gain
+							 * scale
+							 */
+								
+							/* PID angle XY */
+							case 0x16:
+								// TODO
+								break;
+							/* PID rot Z */
+							case 0x17:
+								// TODO
+								break;
+							/* PID velocity */
+							case 0x18:
+								// TODO
+								break;
+							/* PID acceleration */
+							case 0x19:
+								// TODO
+								break;
+							/* QC settings */
+							case 0x1A:
+								// TODO
+								/* uint8 enable low voltage warning
+								 * uint8 enable no rc signal warning
+								 * uint8 enable flightleds
+								 * uint8 enable motors
+								 */
+								break;
+							/* Global Flags */
+							case 0x1B:
+								// TODO
+								/* uint32 gloabal flags */
 								break;
 							// default:
 							// System.out.println("Unknown identifier!");
