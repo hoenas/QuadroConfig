@@ -760,13 +760,13 @@ public class Main {
 		visualisierungsfenster.motorGraph.update();
 		visualisierungsfenster.pidGraph.update();
 		visualisierungsfenster.rcGraph.update();
-		visualisierungsfenster.cpuAltimeter.update( (int)cpuDataset.getBuffer()[cpuDataset.getBuffer().length - 1] );
+		visualisierungsfenster.cpuAltimeter.update( (int)(cpuDataset.getBuffer()[cpuDataset.getBuffer().length - 1] * 100) );
 		visualisierungsfenster.horizonX.update( (int)winkelXDataset.getBuffer()[winkelXDataset.getBuffer().length - 1] );
 		visualisierungsfenster.horizonY.update( (int)winkelYDataset.getBuffer()[winkelYDataset.getBuffer().length - 1] );
 		visualisierungsfenster.horizonZ.update( (int)winkelZDataset.getBuffer()[winkelZDataset.getBuffer().length - 1] );
 		visualisierungsfenster.relAltAltimeter.update( (int) relHeightDataset.getBuffer()[relHeightDataset.getBuffer().length - 1] );
-		visualisierungsfenster.tempAltimeter.update( (int)tempDataset.getBuffer()[tempDataset.getBuffer().length - 1] );
-		visualisierungsfenster.voltAltimeter.update( (int) akkuVoltageDataset.getBuffer()[akkuVoltageDataset.getBuffer().length - 1] );
+		visualisierungsfenster.tempAltimeter.update( (int) tempDataset.getBuffer()[tempDataset.getBuffer().length - 1] );
+		visualisierungsfenster.voltAltimeter.update( (int)(akkuVoltageDataset.getBuffer()[akkuVoltageDataset.getBuffer().length - 1] * 1000) );
 	}
 	
 	/*
