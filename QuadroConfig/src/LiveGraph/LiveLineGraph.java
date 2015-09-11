@@ -55,7 +55,7 @@ public class LiveLineGraph extends Canvas{
 		graphlist.add(dataset);
 	}
 	
-	public void update( float[] values ) {
+	public void update() {
 		
 		if( this.isVisible() && bufferstrategy == null ) {
 			this.createBufferStrategy(2);
@@ -63,10 +63,11 @@ public class LiveLineGraph extends Canvas{
 		} else {
 		
 			Graphics2D g2 = (Graphics2D) bufferstrategy.getDrawGraphics();
+			/*
 			// neue Werte eintragen
 			for(int i = 0; i < graphlist.size(); i++) {
 				graphlist.get(i).addValue( values[i] );
-			}
+			}*/
 			// Graph loeschen
 			g2.setColor( backgroundColor );
 			g2.fillRect(0, 0, this.getWidth(), this.getHeight());

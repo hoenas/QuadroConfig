@@ -56,7 +56,7 @@ public class TestFrame extends JFrame {
 		liveArtificialHorizon.setBounds(222, 116, 100, 100);
 		contentPane.add(liveArtificialHorizon);
 		
-		Dataset dataset1 = new Dataset("LOL", Color.green, 1, 500);
+		Dataset dataset1 = new Dataset("LOL", Color.green, 1, 100);
 		Dataset dataset2 = new Dataset("ROFL", Color.blue, 1, 100);
 		
 		liveLineGraph.addGraph( dataset1 );
@@ -102,10 +102,9 @@ public class TestFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				liveAltimeter.update( ran.nextInt(100) );
 				liveArtificialHorizon.update( ran.nextInt(180) );
-				float[] floatis = new float[2];
-				floatis[0] = ran.nextFloat() * 100;
-				floatis[1] = ran.nextFloat() * 100;
-				liveLineGraph.update( floatis );
+				dataset1.addValue(ran.nextFloat() * 100);
+				dataset2.addValue(ran.nextFloat() * 100);
+				liveLineGraph.update();
 				liveCompass.update( ran.nextInt( 360 ) );
 				liveArtificialHorizon_1.update( ran.nextInt(180) );
 				liveArtificialHorizon_2.update( ran.nextInt(180) );
