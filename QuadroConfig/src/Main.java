@@ -753,7 +753,12 @@ public class Main {
 		} else {
 			rcSignalSwitchDataset.addValue(0.0f);
 		}
-
+		// Temp
+		tempDataset.addValue(quadrocopter.temperature);
+		// Akku
+		akkuVoltageDataset.addValue(quadrocopter.batteryVoltage);
+		
+		
 		// Visualisierungen aktualisieren
 		visualisierungsfenster.accGraph.update();
 		visualisierungsfenster.gyroGraph.update();
