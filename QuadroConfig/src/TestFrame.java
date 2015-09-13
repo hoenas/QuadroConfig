@@ -106,10 +106,13 @@ public class TestFrame extends JFrame {
 		chckbxGraphAnzeigen_1.setSelected(true);
 		contentPane.add(chckbxGraphAnzeigen_1);
 		
+		JCheckBox chckbxZufall = new JCheckBox("Zufallswerte");
+		chckbxZufall.setBounds(563, 56, 129, 23);
+		contentPane.add(chckbxZufall);
 		
-		
-		Timer timer = new Timer(500, new ActionListener() {
+		Timer timer = new Timer(100, new ActionListener() {
 			float percentage = 0.0f;
+			float winkel = 0.0f;
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
@@ -124,24 +127,45 @@ public class TestFrame extends JFrame {
 				} else {
 					dataset2.setVisible(false);
 				}
-				
-				liveAltimeter.update( ran.nextInt(100) );
-				liveArtificialHorizon.update( ran.nextInt(180) );
-				dataset1.addValue(ran.nextFloat() * 100);
-				dataset2.addValue(ran.nextFloat() * 100);
-				liveLineGraph.update();
-				liveCompass.update( ran.nextInt( 360 ) );
-				liveArtificialHorizon_1.update( ran.nextInt(180) );
-				liveArtificialHorizon_2.update( ran.nextInt(180) );
-				liveXYViewer.update( ran.nextInt(100), ran.nextInt(100) );
-				liveGauge.update( percentage );
-				
-				if(percentage >= 100.0f) {
-					percentage = 0.0f;
+				if( chckbxZufall.isSelected() ) {
+					liveAltimeter.update( ran.nextInt(100) );
+					liveArtificialHorizon.update( ran.nextInt(180) );
+					dataset1.addValue(ran.nextFloat() * 100);
+					dataset2.addValue(ran.nextFloat() * 100);
+					liveLineGraph.update();
+					liveCompass.update( ran.nextInt( 360 ) );
+					liveArtificialHorizon_1.update( ran.nextInt(180) );
+					liveArtificialHorizon_2.update( ran.nextInt(180) );
+					liveXYViewer.update( ran.nextInt(100), ran.nextInt(100) );
+					liveGauge.update( ran.nextFloat() * 100 );
 				} else {
-					percentage += 5.0f;
+					
+					double tmp = Math.sin(winkel);
+					
+					liveAltimeter.update( (int)(tmp * 100) );
+					liveArtificialHorizon.update( (int)(tmp * 180) );
+					dataset1.addValue( (float)tmp * 100 );
+					dataset2.addValue( (float)tmp * 50 );
+					liveLineGraph.update();
+					liveCompass.update( (int)(tmp * 360) );
+					liveArtificialHorizon_1.update( (int)(tmp * 180) );
+					liveArtificialHorizon_2.update( (int)(tmp * 180) );
+					liveXYViewer.update( (int)(tmp * 100), (int)(tmp * 100) );
+					liveGauge.update( (float)tmp * 100 );
+					
+					if(winkel>=Math.PI) {
+						winkel = 0.0f;
+					} else {
+						winkel += 0.05;
+					}
+					
+					if(percentage >= 100.0f) {
+						percentage = 0.0f;
+					} else {
+						percentage += 0.1f;
+					}
+					
 				}
-				
 			}
 		});
 		
