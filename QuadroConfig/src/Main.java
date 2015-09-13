@@ -757,7 +757,7 @@ public class Main {
 		tempDataset.addValue(quadrocopter.temperature);
 		// Akku
 		akkuVoltageDataset.addValue(quadrocopter.batteryVoltage);
-		
+		cpuDataset.addValue(quadrocopter.cpuLoad);
 		
 		// Visualisierungen aktualisieren
 		visualisierungsfenster.accGraph.update();
