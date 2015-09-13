@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Font;
 
 import javax.swing.JLabel;
@@ -46,6 +47,7 @@ public class FlagsToolBar extends JToolBar {
 		this.setToolTipText("Global Flags");
 		this.setFont(new Font("Dialog", Font.BOLD, 10));
 		this.setBounds(20, 265, 400, 19);
+		this.setBackground(Color.LIGHT_GRAY);
 
 		/* flags */
 		flagEEPROM = new JLabel(

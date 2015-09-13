@@ -20,6 +20,9 @@ import javax.swing.JTabbedPane;
 
 public class Visualisierungsfenster extends JFrame {
 	
+	private Color panel_background = Color.GRAY;
+	private Color window_background = Color.DARK_GRAY;
+	
 	// Globale Graphen-Definitionen
 	// Tab: Position Control
 	public LiveLineGraph accGraph;
@@ -40,11 +43,13 @@ public class Visualisierungsfenster extends JFrame {
 		setTitle("Monitoring Visualisation");
 		setBounds(100, 100, 805, 584);
 		getContentPane().setLayout(new BorderLayout(0, 0));
+		getContentPane().setBackground(window_background);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
-		
+		tabbedPane.setBackground(panel_background);
 		JPanel panel = new JPanel();
+		panel.setBackground(Color.GRAY);
 		tabbedPane.addTab("Position Control", null, panel, null);
 		panel.setLayout(new MigLayout("", "[75][100px:41.00,grow,fill]", "[15.00][10:75:75,grow 150,shrink 10,fill][][10:75:75,grow 150,shrink 10,fill][][10:75:75,grow 150,shrink 10,fill][][10:75:75,grow 150,shrink 10,fill][][10:75:75,grow 150,shrink 10,fill]"));
 		
@@ -112,6 +117,7 @@ public class Visualisierungsfenster extends JFrame {
 		panel.add(rcGraph, "cell 1 9,grow");
 		
 		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.GRAY);
 		tabbedPane.addTab("Instruments", null, panel_1, null);
 		panel_1.setLayout(new MigLayout("", "[100.00][100.00][100.00][100][]", "[14.00][100px:500.00,top]"));
 		

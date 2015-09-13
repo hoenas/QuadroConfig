@@ -24,6 +24,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import javax.swing.JCheckBox;
 
+
+
+
 public class ConfigWindow extends JDialog {
 
 //	private QuadrocopterCommunicator qc;
@@ -33,6 +36,9 @@ public class ConfigWindow extends JDialog {
 	private JLabel statuslabel;
 	JButton btnEnterConfigMode;
 	private boolean isConfigMode;
+	
+	private Color panel_background = Color.GRAY;
+	private Color window_background = Color.DARK_GRAY;
 
 	JSpinner gain_ang_z_spinner = new JSpinner();
 	JSpinner compFilterXY_Spinner = new JSpinner();
@@ -515,10 +521,12 @@ public class ConfigWindow extends JDialog {
 		setTitle("Configuration");
 		setBounds(433, 377, 700, 600);
 		getContentPane().setLayout(null);
+		getContentPane().setBackground(window_background);
 
 		JPanel PID_angle_XY_panel = new JPanel();
 		PID_angle_XY_panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		PID_angle_XY_panel.setBounds(12, 12, 166, 169);
+		PID_angle_XY_panel.setBackground(panel_background);
 		getContentPane().add(PID_angle_XY_panel);
 		PID_angle_XY_panel.setLayout(null);
 
@@ -570,6 +578,7 @@ public class ConfigWindow extends JDialog {
 		PID_angle_Z_panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		PID_angle_Z_panel.setLayout(null);
 		PID_angle_Z_panel.setBounds(184, 12, 166, 169);
+		PID_angle_Z_panel.setBackground(panel_background);
 		getContentPane().add(PID_angle_Z_panel);
 
 		p_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
@@ -619,6 +628,7 @@ public class ConfigWindow extends JDialog {
 		JPanel compfilter_panel = new JPanel();
 		compfilter_panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		compfilter_panel.setBounds(12, 188, 166, 91);
+		compfilter_panel.setBackground(panel_background);
 		getContentPane().add(compfilter_panel);
 		compfilter_panel.setLayout(null);
 
@@ -645,6 +655,7 @@ public class ConfigWindow extends JDialog {
 		JPanel eeprom_access_panel = new JPanel();
 		eeprom_access_panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		eeprom_access_panel.setBounds(12, 397, 383, 147);
+		eeprom_access_panel.setBackground(panel_background);
 		getContentPane().add(eeprom_access_panel);
 		eeprom_access_panel.setLayout(null);
 
@@ -716,6 +727,7 @@ public class ConfigWindow extends JDialog {
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel.setBounds(434, 299, 254, 245);
+		panel.setBackground(panel_background);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -779,25 +791,31 @@ public class ConfigWindow extends JDialog {
 		JPanel qc_setting_panel = new JPanel();
 		qc_setting_panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		qc_setting_panel.setBounds(12, 285, 185, 104);
+		qc_setting_panel.setBackground(panel_background);
 		getContentPane().add(qc_setting_panel);
 		qc_setting_panel.setLayout(null);
 
 		chckbxLowVoltageWarning.setBounds(8, 8, 175, 20);
+		chckbxLowVoltageWarning.setBackground(panel_background);
 		qc_setting_panel.add(chckbxLowVoltageWarning);
 
 		chckbxNoRcWarning.setBounds(8, 28, 175, 20);
+		chckbxNoRcWarning.setBackground(panel_background);
 		qc_setting_panel.add(chckbxNoRcWarning);
 
 		chckbxFlightled.setBounds(8, 49, 169, 20);
+		chckbxFlightled.setBackground(panel_background);
 		qc_setting_panel.add(chckbxFlightled);
 
 		chckbxMotor.setBounds(8, 70, 91, 20);
+		chckbxMotor.setBackground(panel_background);
 		qc_setting_panel.add(chckbxMotor);
 
 		JPanel pid_accel_panel = new JPanel();
 		pid_accel_panel.setLayout(null);
 		pid_accel_panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		pid_accel_panel.setBounds(356, 12, 166, 169);
+		pid_accel_panel.setBackground(panel_background);
 		getContentPane().add(pid_accel_panel);
 
 		p_accel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
@@ -849,6 +867,7 @@ public class ConfigWindow extends JDialog {
 		getContentPane().add(pid_vel_pannel);
 		pid_vel_pannel.setLayout(null);
 		pid_vel_pannel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		pid_vel_pannel.setBackground(panel_background);
 
 		p_vel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		p_vel_spinner.setBounds(77, 36, 60, 20);

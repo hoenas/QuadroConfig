@@ -18,6 +18,7 @@ import java.awt.event.WindowListener;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.Timer;
+import javax.swing.border.Border;
 
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -25,7 +26,9 @@ import java.awt.Toolkit;
 
 import LiveGraph.Dataset;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import javax.swing.border.MatteBorder;
 
 public class Main {
 
@@ -40,6 +43,11 @@ public class Main {
 	private int messintervall = 24;
 	private boolean messungAktiv = false;
 	FlagsToolBar flagsToolBar;
+	
+	private Color panel_background = Color.GRAY;
+	private Color window_background = Color.DARK_GRAY;
+
+	
 	// Protokoll
 	private static int protocolStatus = 0;
 	/*
@@ -195,6 +203,7 @@ public class Main {
 		frame.setBounds(100, 100, 433, 377);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		frame.getContentPane().setBackground(window_background);
 
 		// VISUALISIERUNG INITIALISIEREN
 		visualisierungsfenster.accGraph.addGraph(accXDataset);
@@ -220,16 +229,20 @@ public class Main {
 
 		JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
 		tabs.setBounds(10, 36, 396, 240);
+		tabs.setBackground(panel_background);
+	
 		frame.getContentPane().add(tabs);
 
 		statuslabel = new JLabel("idle");
 		statuslabel.setBounds(69, 11, 338, 14);
+		statuslabel.setBackground(panel_background);
 		frame.getContentPane().add(statuslabel);
 
 		tabPort = new JPanel();
 		tabs.addTab("Port", null, tabPort, null);
 		tabPort.setLayout(null);
-
+		tabPort.setBackground(panel_background);
+		
 		JLabel lblPortname = new JLabel("Port Name:");
 		lblPortname.setBounds(10, 11, 74, 14);
 		tabPort.add(lblPortname);
@@ -424,6 +437,7 @@ public class Main {
 		tabs.addTab("Monitoring", null, tabMessung, null);
 		tabs.setEnabledAt(1, true);
 		tabMessung.setLayout(null);
+		tabMessung.setBackground(panel_background);
 
 		btnMessungStarten = new JButton("Start Monitoring");
 		btnMessungStarten.addActionListener(new ActionListener() {
