@@ -51,7 +51,7 @@ public class LiveGauge extends Canvas{
 		this.unit = unit;
 	}
 	
-	public void update( int altitude) {
+	public void update( float percentage ) {
 		
 		if( this.isVisible() && bufferstrategy == null ) {
 			this.createBufferStrategy(2);
@@ -62,28 +62,35 @@ public class LiveGauge extends Canvas{
 			// Graph loeschen
 			g2.setColor( backgroundColor );
 			g2.fillRect(0, 0, this.getWidth(), this.getHeight());
-						
+			
+			// Alpha berechnen
+			float alpha = percentage / 100.0f * (float)Math.PI;
+			// Radius berechnen
+			int radius = 0;
+			if( this.getWidth() > this.getHeight() ) {
+				radius = this.getWidth() / 2;
+			} else {
+				radius = this.getHeight() / 2;
+			}
+			
 			// Beschriftung zeichnen
 			g2.setColor( rasterColor );
 			
-			int alpha = (int)(Math.atan( this.getWidth() / this.getHeight() ) * 2 * 360 / Math.PI);
-			g2.drawArc(0, this.getHeight()/ 2, this.getWidth(), this.getHeight()/ 2, 0, alpha);
-			g2.drawArc(this.getWidth()/ 4, 0, this.getWidth() / 2, this.getHeight()/ 4, 0, alpha);
-			g2.drawLine(0, this.getHeight()/ 2, this.getWidth()/ 4, 0);
-			g2.drawLine(this.getWidth(), this.getHeight()/ 2, this.getWidth() * 3 / 4, 0);
-			
-			// Skala zeichnen
-			if( useRaster ) {
-				g2.setStroke( stroke );
-				for(int i = 0; i < rasterCount; i++) {
-					// g2.drawLine(0, i * (this.getHeight() / (rasterCount-1)), 3, i * (this.getHeight() / (rasterCount-1)) );
-					// g2.drawLine(this.getWidth() - 3, i * (this.getHeight() / (rasterCount-1)), this.getWidth(), i * (this.getHeight() / (rasterCount-1)) );
-				}
-			}
+			// Hintergrund zeichnen
+			g2.fillArc(0, this.getHeight() - radius, 2 * radius, 2* radius, 0, 180);
 			
 			// Nadel zeichnen	
 			g2.setColor( color );
 			
+			// x und y berechnen
+			int x = x = this.getWidth() / 2 - (int)(Math.cos((double)alpha) * radius);
+			int y = y = this.getHeight() - (int)(Math.sin((double)alpha) * radius);
+			
+			g2.drawLine(this.getWidth() / 2, this.getHeight(), x, y);
+			
+			// untere Abdeckung zeichnen
+			g2.setColor(backgroundColor);
+			g2.fillArc((int)(this.getWidth() / 2 - 0.1f * radius), (int)(this.getHeight() - 0.1f * radius), (int)(0.2f * radius), (int)(0.2f * radius), 0, 180);
 			
 			bufferstrategy.show();
 			Toolkit.getDefaultToolkit().sync();

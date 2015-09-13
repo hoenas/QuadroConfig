@@ -8,6 +8,7 @@ public class Dataset {
 	private int thickness;
 	private int historyLength;
 	private float[] buffer;
+	private boolean visible;
 	
 	public Dataset( String title, Color color, int thickness, int historyLength ) {
 		this.title = title;
@@ -15,6 +16,8 @@ public class Dataset {
 		this.thickness = thickness;
 		this.historyLength = historyLength;
 		this.buffer = new float[historyLength];
+		
+		this.visible = true;
 		
 		for(int i = 0; i < buffer.length; i++) {
 			buffer[i] = 0.0f;
@@ -36,6 +39,14 @@ public class Dataset {
 	
 	public float[] getBuffer() {
 		return buffer;
+	}
+	
+	public boolean isVisible() {
+		return visible;
+	}
+	
+	public void setVisible( boolean visible ) {
+		this.visible = visible;
 	}
 	
 	public void addValue( float value ) {

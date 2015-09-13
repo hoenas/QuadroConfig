@@ -9,6 +9,7 @@ import java.awt.Color;
 import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
+import java.security.PermissionCollection;
 import java.awt.event.ActionEvent;
 import java.util.Random;
 
@@ -24,6 +25,7 @@ import java.awt.BorderLayout;
 
 import LiveGraph.LiveXYViewer;
 import LiveGraph.LiveGauge;
+import javax.swing.JCheckBox;
 
 
 public class TestFrame extends JFrame {
@@ -86,20 +88,43 @@ public class TestFrame extends JFrame {
 		LiveArtificialHorizon liveArtificialHorizon_2 = new LiveArtificialHorizon(Color.BLACK, Color.GREEN, Color.WHITE, true, 3);
 		panel_1.add(liveArtificialHorizon_2, BorderLayout.CENTER);
 		
-		LiveXYViewer liveXYViewer = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 100, 0, Color.WHITE, true, 1, 10);
+		LiveXYViewer liveXYViewer = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 100, 0, Color.WHITE, true, 1, 10, true);
 		liveXYViewer.setBounds(560, 116, 100, 100);
 		contentPane.add(liveXYViewer);
 		
-		LiveGauge liveGauge = new LiveGauge((Color) null, (Color) null, (Color) null, false, 0, 0, 0, (String) null);
-		liveGauge.setForeground(Color.GREEN);
-		liveGauge.setRasterColor(Color.WHITE);
+		LiveGauge liveGauge = new LiveGauge(Color.DARK_GRAY, Color.WHITE, Color.BLACK, false, 0, 0, 0, (String) null);
 		liveGauge.setBounds(560, 222, 132, 94);
 		contentPane.add(liveGauge);
 		
+		JCheckBox chckbxGraphAnzeigen = new JCheckBox("Graph1 anzeigen");
+		chckbxGraphAnzeigen.setBounds(560, 8, 148, 23);
+		chckbxGraphAnzeigen.setSelected(true);
+		contentPane.add(chckbxGraphAnzeigen);
+		
+		JCheckBox chckbxGraphAnzeigen_1 = new JCheckBox("Graph2 anzeigen");
+		chckbxGraphAnzeigen_1.setBounds(560, 35, 148, 23);
+		chckbxGraphAnzeigen_1.setSelected(true);
+		contentPane.add(chckbxGraphAnzeigen_1);
+		
+		
+		
 		Timer timer = new Timer(500, new ActionListener() {
-			
+			float percentage = 0.0f;
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				if( chckbxGraphAnzeigen.isSelected()) {
+					dataset1.setVisible(true);
+				} else {
+					dataset1.setVisible(false);
+				}
+				
+				if( chckbxGraphAnzeigen_1.isSelected()) {
+					dataset2.setVisible(true);
+				} else {
+					dataset2.setVisible(false);
+				}
+				
 				liveAltimeter.update( ran.nextInt(100) );
 				liveArtificialHorizon.update( ran.nextInt(180) );
 				dataset1.addValue(ran.nextFloat() * 100);
@@ -109,7 +134,13 @@ public class TestFrame extends JFrame {
 				liveArtificialHorizon_1.update( ran.nextInt(180) );
 				liveArtificialHorizon_2.update( ran.nextInt(180) );
 				liveXYViewer.update( ran.nextInt(100), ran.nextInt(100) );
-				liveGauge.update( ran.nextInt(100) );
+				liveGauge.update( percentage );
+				
+				if(percentage >= 100.0f) {
+					percentage = 0.0f;
+				} else {
+					percentage += 5.0f;
+				}
 				
 			}
 		});
@@ -127,7 +158,7 @@ public class TestFrame extends JFrame {
 				}
 			}
 		});
-		btnNewButton.setBounds(560, 11, 132, 23);
+		btnNewButton.setBounds(560, 87, 132, 23);
 		contentPane.add(btnNewButton);
 	}
 }

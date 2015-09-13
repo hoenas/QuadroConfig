@@ -44,6 +44,9 @@ public class LiveLineGraph extends Canvas{
 		this.rasterLineCountY = rasterY;
 	}
 	
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public LiveLineGraph( Color backgroundColor, int max, int offset ) {
 		this.backgroundColor = backgroundColor;
 		this.max = max;
@@ -55,6 +58,9 @@ public class LiveLineGraph extends Canvas{
 		graphlist.add(dataset);
 	}
 	
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public void update() {
 		
 		if( this.isVisible() && bufferstrategy == null ) {
@@ -83,17 +89,19 @@ public class LiveLineGraph extends Canvas{
 			
 			// Fuer jeden Graph Linien zeichnen
 			for( Dataset graph : graphlist ) {
-				// Farbe einstellen
-				g2.setColor( graph.getColor() );
-				// Liniendicke
-				g2.setStroke(new BasicStroke( graph.getThickness() ));
-				// Linien zeichnen
-				for( int i = 0; i < graph.getBuffer().length - 1; i++) {
-					int y1 = this.getHeight() - (int)((graph.getBuffer()[i] + offset)  * this.getHeight() / max );
-					int y2 = this.getHeight() - (int)((graph.getBuffer()[i+1] + offset) * this.getHeight() / max );
-					int x1 = i * this.getWidth() / graph.getBuffer().length;
-					int x2 = (i+1) * this.getWidth() / graph.getBuffer().length;
-					g2.drawLine(x1 ,y1, x2, y2);
+				if( graph.isVisible() ) {
+					// Farbe einstellen
+					g2.setColor( graph.getColor() );
+					// Liniendicke
+					g2.setStroke(new BasicStroke( graph.getThickness() ));
+					// Linien zeichnen
+					for( int i = 0; i < graph.getBuffer().length - 1; i++) {
+						int y1 = this.getHeight() - (int)((graph.getBuffer()[i] + offset)  * this.getHeight() / max );
+						int y2 = this.getHeight() - (int)((graph.getBuffer()[i+1] + offset) * this.getHeight() / max );
+						int x1 = i * this.getWidth() / graph.getBuffer().length;
+						int x2 = (i+1) * this.getWidth() / graph.getBuffer().length;
+						g2.drawLine(x1 ,y1, x2, y2);
+					}
 				}
 			}
 			

@@ -25,6 +25,7 @@ public class LiveXYViewer extends Canvas{
 	private int rasterLinesCount;
 	private BasicStroke rasterStroke;
 	private BasicStroke crossStroke;
+	private boolean drawLinkLine;
 	
 	public boolean isUseRaster() {
 		return useRaster;
@@ -42,7 +43,7 @@ public class LiveXYViewer extends Canvas{
 		this.rasterColor = rasterColor;
 	}
 	
-	public LiveXYViewer( Color backgroundColor, Color foregroundColor,int crossSize, int crossThickness, int max, int offset, Color rasterColor, boolean useRaster, int rasterWidth, int rasterLinesCount) {
+	public LiveXYViewer( Color backgroundColor, Color foregroundColor,int crossSize, int crossThickness, int max, int offset, Color rasterColor, boolean useRaster, int rasterWidth, int rasterLinesCount, boolean drawLinkLine) {
 		this.backgroundColor = backgroundColor;
 		this.color = foregroundColor;
 		this.crossThickness = crossThickness;
@@ -54,6 +55,7 @@ public class LiveXYViewer extends Canvas{
 		this.useRaster = useRaster;
 		this.rasterWidth = rasterWidth;
 		this.rasterLinesCount = rasterLinesCount;
+		this.drawLinkLine = drawLinkLine;
 		rasterStroke = new BasicStroke( rasterWidth );	
 		bufferstrategy = null;
 	}
@@ -77,7 +79,7 @@ public class LiveXYViewer extends Canvas{
 				g2.setStroke( rasterStroke );
 				g2.setColor( rasterColor );
 				
-				for(int i = 0; i < rasterLinesCount - 1; i++) {
+				for(int i = 1; i < rasterLinesCount - 1; i++) {
 					g2.drawLine( i * this.getWidth() / (rasterLinesCount - 1), 0, i * this.getWidth() / (rasterLinesCount - 1), this.getHeight() );
 					g2.drawLine( 0, i * this.getHeight() / (rasterLinesCount - 1), this.getWidth(), i * this.getWidth() / (rasterLinesCount - 1) );
 				}
@@ -88,9 +90,13 @@ public class LiveXYViewer extends Canvas{
 			x += offset;
 			y += offset;
 			
-			// Kreuz zeichnen
+			// Verbindungslinie zeichnen
 			g2.setStroke( crossStroke );
-			g2.setColor( color );		
+			g2.setColor( color );
+			if(drawLinkLine) {
+				g2.drawLine(this.getWidth() / 2, this.getHeight() / 2, this.getWidth() - x * this.getWidth() / max, this.getHeight() -  y * this.getHeight() / max);
+			}
+			// Kreuz zeichnen
 			g2.drawLine(this.getWidth() - x * this.getWidth() / max - crossSize / 2, this.getHeight() -  y, this.getWidth() - x * this.getWidth() / max + crossSize / 2, this.getHeight() - y );
 			g2.drawLine(this.getWidth() - x, this.getHeight() -  y * this.getHeight() / max - crossSize / 2, this.getWidth() - x, this.getHeight() -  y * this.getHeight() / max + crossSize / 2);
 			
