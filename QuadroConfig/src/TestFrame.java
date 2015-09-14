@@ -88,7 +88,7 @@ public class TestFrame extends JFrame {
 		LiveArtificialHorizon liveArtificialHorizon_2 = new LiveArtificialHorizon(Color.BLACK, Color.GREEN, Color.WHITE, true, 3);
 		panel_1.add(liveArtificialHorizon_2, BorderLayout.CENTER);
 		
-		LiveXYViewer liveXYViewer = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 100, 0, Color.WHITE, true, 1, 10, true);
+		LiveXYViewer liveXYViewer = new LiveXYViewer(dataset1, dataset2, Color.BLACK, Color.GREEN, 10, 2, 100, 0, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
 		liveXYViewer.setBounds(560, 116, 100, 100);
 		contentPane.add(liveXYViewer);
 		
@@ -136,24 +136,25 @@ public class TestFrame extends JFrame {
 					liveCompass.update( ran.nextInt( 360 ) );
 					liveArtificialHorizon_1.update( ran.nextInt(180) );
 					liveArtificialHorizon_2.update( ran.nextInt(180) );
-					liveXYViewer.update( ran.nextInt(100), ran.nextInt(100) );
+					liveXYViewer.update();
 					liveGauge.update( ran.nextFloat() * 100 );
 				} else {
 					
 					double tmp = Math.sin(winkel);
+					double tmp2 = Math.cos(winkel);
 					
-					liveAltimeter.update( (int)(tmp * 100) );
+					liveAltimeter.update( (int)(Math.abs(tmp) * 100) );
 					liveArtificialHorizon.update( (int)(tmp * 180) );
-					dataset1.addValue( (float)tmp * 100 );
-					dataset2.addValue( (float)tmp * 50 );
+					dataset1.addValue( Math.abs( (float)tmp) * 100 );
+					dataset2.addValue( Math.abs( (float)tmp2) * 100 );
 					liveLineGraph.update();
 					liveCompass.update( (int)(tmp * 360) );
 					liveArtificialHorizon_1.update( (int)(tmp * 180) );
 					liveArtificialHorizon_2.update( (int)(tmp * 180) );
-					liveXYViewer.update( (int)(tmp * 100), (int)(tmp * 100) );
-					liveGauge.update( (float)tmp * 100 );
+					liveXYViewer.update();
+					liveGauge.update( (float)Math.abs(tmp) * 100 );
 					
-					if(winkel>=Math.PI) {
+					if(winkel>= 2 * Math.PI) {
 						winkel = 0.0f;
 					} else {
 						winkel += 0.05;

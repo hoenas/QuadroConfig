@@ -177,8 +177,8 @@ public class Main {
 					window.frame.setVisible(true);
 					window.frame.setLocation(0, 0);
 					// Testframe um Komponenten zu testen
-					//TestFrame myFrame = new TestFrame();
-					//myFrame.setVisible(true);
+					TestFrame myFrame = new TestFrame();
+					myFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
