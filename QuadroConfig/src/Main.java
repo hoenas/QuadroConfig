@@ -229,8 +229,9 @@ public class Main {
 		visualisierungsfenster.rcGraph.addGraph(rcSignalLinPotiDataset);
 		visualisierungsfenster.rcGraph.addGraph(rcSignalSwitchDataset);
 		// Tab: PID
-		visualisierungsfenster.liveXYViewer_velocity.setDatasetX(velSPXDataset);
-		visualisierungsfenster.liveXYViewer_velocity.setDatasetY(velSPYDataset);
+		// TODO: wieder auf velocitySP umstellen
+		visualisierungsfenster.liveXYViewer_velocity.setDatasetX(velXDataset);
+		visualisierungsfenster.liveXYViewer_velocity.setDatasetY(velYDataset);
 		visualisierungsfenster.liveXYViewer_accel.setDatasetX(accXDataset);
 		visualisierungsfenster.liveXYViewer_accel.setDatasetY(accYDataset);
 		visualisierungsfenster.liveXYViewer_motor.setDatasetX(motorSPXDataset);
