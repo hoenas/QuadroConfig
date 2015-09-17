@@ -808,6 +808,10 @@ public class Main {
 		visualisierungsfenster.liveXYViewer_accel.update();
 		visualisierungsfenster.liveXYViewer_motor.update();
 		visualisierungsfenster.liveXYViewer_velocity.update();
+		
+		// Fancy Tab
+		visualisierungsfenster.fancyCPUGraph.update(quadrocopter.cpuLoad * 100);
+		visualisierungsfenster.fancyTempGauge.update(quadrocopter.temperature);
 	
 	}
 }

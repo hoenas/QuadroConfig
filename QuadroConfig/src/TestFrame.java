@@ -96,7 +96,7 @@ public class TestFrame extends JFrame {
 		liveXYViewer.setDatasetX(dataset3);
 		liveXYViewer.setDatasetY(dataset4);
 		
-		LiveGauge liveGauge = new LiveGauge(Color.DARK_GRAY, Color.WHITE, Color.BLACK, false, 0, 0, 0, (String) null);
+		LiveGauge liveGauge = new LiveGauge(Color.DARK_GRAY, Color.WHITE, Color.BLACK, true, 100);
 		liveGauge.setBounds(560, 222, 132, 94);
 		contentPane.add(liveGauge);
 		

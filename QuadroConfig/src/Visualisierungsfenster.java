@@ -47,6 +47,11 @@ public class Visualisierungsfenster extends JFrame {
 	public LiveLineGraph liveLineGraph_accel;
 	public LiveLineGraph liveLineGraph_motor;
 	private JLabel lblVel;
+	private JPanel panel_3;
+	private JLabel lblFancyCpuLoad;
+	public LiveGauge fancyCPUGraph;
+	private JLabel lblFancyTemp;
+	public LiveGauge fancyTempGauge;
 	
 	public Visualisierungsfenster() {
 		setTitle("Monitoring Visualisation");
@@ -196,6 +201,23 @@ public class Visualisierungsfenster extends JFrame {
 		
 		tempAltimeter = new LiveAltimeter(Color.BLACK, Color.RED, Color.WHITE, true, 1, 5, 50, "\u00B0C");
 		panel_1.add(tempAltimeter, "cell 3 1,grow");
+		
+		panel_3 = new JPanel();
+		panel_3.setBackground(Color.GRAY);
+		tabbedPane.addTab("Fancy Instruments", null, panel_3, null);
+		panel_3.setLayout(new MigLayout("", "[100][100]", "[][50]"));
+		
+		lblFancyCpuLoad = new JLabel("Fancy CPU Load");
+		panel_3.add(lblFancyCpuLoad, "cell 0 0");
+		
+		lblFancyTemp = new JLabel("Fancy Temp");
+		panel_3.add(lblFancyTemp, "cell 1 0");
+		
+		fancyCPUGraph = new LiveGauge(Color.GRAY, Color.WHITE, Color.DARK_GRAY, true, 100);
+		panel_3.add(fancyCPUGraph, "cell 0 1,grow");
+		
+		fancyTempGauge = new LiveGauge(Color.GRAY, Color.WHITE, Color.DARK_GRAY, true, 100);
+		panel_3.add(fancyTempGauge, "cell 1 1,grow");
 
 	}
 }
