@@ -50,11 +50,9 @@ public class LiveXYViewer extends Canvas {
 		this.rasterColor = rasterColor;
 	}
 
-	public LiveXYViewer(Dataset datasetX, Dataset datasetY, Color backgroundColor, Color foregroundColor, int crossSize,
+	public LiveXYViewer(Color backgroundColor, Color foregroundColor, int crossSize,
 			int crossThickness, int max, int offset, Color rasterColor, boolean useRaster, int rasterWidth,
 			int rasterLinesCount, boolean drawLinkLine, int pathLength, Color pathColor) {
-		this.datasetX = datasetX;
-		this.datasetY = datasetY;
 		this.backgroundColor = backgroundColor;
 		this.color = foregroundColor;
 		this.crossThickness = crossThickness;
@@ -147,5 +145,13 @@ public class LiveXYViewer extends Canvas {
 	public void setRasterWidth(int rasterWidth) {
 		this.rasterWidth = rasterWidth;
 		this.rasterStroke = new BasicStroke(rasterWidth);
+	}
+
+	public void setDatasetX(Dataset datasetX) {
+		this.datasetX = datasetX;
+	}
+
+	public void setDatasetY(Dataset datasetY) {
+		this.datasetY = datasetY;
 	}
 }

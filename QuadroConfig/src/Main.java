@@ -25,6 +25,8 @@ import java.awt.Frame;
 import java.awt.Toolkit;
 
 import LiveGraph.Dataset;
+import LiveGraph.LiveLineGraph;
+import LiveGraph.LiveXYViewer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -177,8 +179,8 @@ public class Main {
 					window.frame.setVisible(true);
 					window.frame.setLocation(0, 0);
 					// Testframe um Komponenten zu testen
-					TestFrame myFrame = new TestFrame();
-					myFrame.setVisible(true);
+					//TestFrame myFrame = new TestFrame();
+					//myFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -226,6 +228,19 @@ public class Main {
 		visualisierungsfenster.rcGraph.addGraph(rcSignalEnableDataset);
 		visualisierungsfenster.rcGraph.addGraph(rcSignalLinPotiDataset);
 		visualisierungsfenster.rcGraph.addGraph(rcSignalSwitchDataset);
+		// Tab: PID
+		visualisierungsfenster.liveXYViewer_velocity.setDatasetX(velSPXDataset);
+		visualisierungsfenster.liveXYViewer_velocity.setDatasetY(velSPYDataset);
+		visualisierungsfenster.liveXYViewer_accel.setDatasetX(accXDataset);
+		visualisierungsfenster.liveXYViewer_accel.setDatasetY(accYDataset);
+		visualisierungsfenster.liveXYViewer_motor.setDatasetX(motorSPXDataset);
+		visualisierungsfenster.liveXYViewer_motor.setDatasetY(motorSPYDataset);
+		visualisierungsfenster.liveLineGraph_velocity.addGraph(velSPXDataset);
+		visualisierungsfenster.liveLineGraph_velocity.addGraph(velSPYDataset);
+		visualisierungsfenster.liveLineGraph_accel.addGraph(accXDataset);
+		visualisierungsfenster.liveLineGraph_accel.addGraph(accYDataset);
+		visualisierungsfenster.liveLineGraph_motor.addGraph(motorSPXDataset);
+		visualisierungsfenster.liveLineGraph_motor.addGraph(motorSPYDataset);
 
 		JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
 		tabs.setBounds(10, 36, 396, 240);
@@ -752,18 +767,18 @@ public class Main {
 		dHDataset.addValue(quadrocopter.heightDelta);
 		relHeightDataset.addValue(quadrocopter.heightRel);
 		// RC
-		rcSignalNickDataset.addValue(quadrocopter.rcNick);
-		rcSignalRollDataset.addValue(quadrocopter.rcRoll);
-		rcSignalYawDataset.addValue(quadrocopter.rcYaw);
-		rcSignalThrottleDataset.addValue(quadrocopter.rcThrottle);
-		rcSignalLinPotiDataset.addValue(quadrocopter.rcLinPoti);
+		rcSignalNickDataset.addValue(quadrocopter.rcNick * 100 + 50);
+		rcSignalRollDataset.addValue(quadrocopter.rcRoll * 100 + 50);
+		rcSignalYawDataset.addValue(quadrocopter.rcYaw * 100 + 50);
+		rcSignalThrottleDataset.addValue(quadrocopter.rcThrottle * 100);
+		rcSignalLinPotiDataset.addValue(quadrocopter.rcLinPoti * 100);
 		if (quadrocopter.rcEnableMotors) {
-			rcSignalEnableDataset.addValue(1.0f);
+			rcSignalEnableDataset.addValue(1.0f * 100);
 		} else {
 			rcSignalEnableDataset.addValue(0.0f);
 		}
 		if (quadrocopter.rcSwitch) {
-			rcSignalSwitchDataset.addValue(1.0f);
+			rcSignalSwitchDataset.addValue(1.0f * 100);
 		} else {
 			rcSignalSwitchDataset.addValue(0.0f);
 		}
@@ -786,6 +801,13 @@ public class Main {
 		visualisierungsfenster.relAltAltimeter.update( (int) relHeightDataset.getBuffer()[relHeightDataset.getBuffer().length - 1] );
 		visualisierungsfenster.tempAltimeter.update( (int) tempDataset.getBuffer()[tempDataset.getBuffer().length - 1] );
 		visualisierungsfenster.voltAltimeter.update( (int)(akkuVoltageDataset.getBuffer()[akkuVoltageDataset.getBuffer().length - 1] * 1000) );
+	
+		visualisierungsfenster.liveLineGraph_motor.update();
+		visualisierungsfenster.liveLineGraph_motor.update();
+		visualisierungsfenster.liveXYViewer_accel.update();
+		visualisierungsfenster.liveXYViewer_motor.update();
+		visualisierungsfenster.liveXYViewer_velocity.update();
+	
 	}
 	
 	/*

@@ -39,6 +39,15 @@ public class Visualisierungsfenster extends JFrame {
 	public LiveAltimeter voltAltimeter;
 	public LiveAltimeter tempAltimeter;
 	
+	// Tab: PID
+	public LiveXYViewer liveXYViewer_velocity;
+	public LiveXYViewer liveXYViewer_accel;
+	public LiveXYViewer liveXYViewer_motor;
+	public LiveLineGraph liveLineGraph_velocity;
+	public LiveLineGraph liveLineGraph_accel;
+	public LiveLineGraph liveLineGraph_motor;
+	private JLabel lblVel;
+	
 	public Visualisierungsfenster() {
 		setTitle("Monitoring Visualisation");
 		setBounds(100, 100, 805, 584);
@@ -115,6 +124,49 @@ public class Visualisierungsfenster extends JFrame {
 		rcGraph.setRastertYColor(Color.WHITE);
 		rcGraph.setRasterLineCountY(5);
 		panel.add(rcGraph, "cell 1 9,grow");
+		
+		JPanel panel_2 = new JPanel();
+		tabbedPane.addTab("PIDPIDPIDPID", null, panel_2, null);
+		panel_2.setLayout(new MigLayout("", "[100][550]", "[20][100][20][100][20][100px]"));
+		
+		lblVel = new JLabel("Vel");
+		panel_2.add(lblVel, "cell 0 0");
+		
+		liveXYViewer_velocity = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 100, 0, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
+		liveXYViewer_velocity.setForeground(Color.RED);
+		liveXYViewer_velocity.setRastertColor(Color.WHITE);
+		liveXYViewer_velocity.setRasterWidth(1);
+		liveXYViewer_velocity.setRasterThickness(1);
+		liveXYViewer_velocity.setBackground(Color.BLACK);
+		panel_2.add(liveXYViewer_velocity, "cell 0 1,grow");
+		
+		liveLineGraph_velocity = new LiveLineGraph(Color.BLACK, 100, 0);
+		liveLineGraph_velocity.setBackground(Color.BLACK);
+		panel_2.add(liveLineGraph_velocity, "cell 1 1,grow");
+		
+		liveXYViewer_accel = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 100, 0, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
+		liveXYViewer_accel.setRastertColor(Color.WHITE);
+		liveXYViewer_accel.setRasterWidth(1);
+		liveXYViewer_accel.setRasterThickness(1);
+		liveXYViewer_accel.setForeground(Color.GREEN);
+		liveXYViewer_accel.setBackground(Color.BLACK);
+		panel_2.add(liveXYViewer_accel, "cell 0 3,grow");
+		
+		liveLineGraph_accel = new LiveLineGraph(Color.BLACK, 100, 0);
+		liveLineGraph_accel.setBackground(Color.BLACK);
+		panel_2.add(liveLineGraph_accel, "cell 1 3,grow");
+		
+		liveXYViewer_motor = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 100, 0, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
+		liveXYViewer_motor.setRastertColor(Color.WHITE);
+		liveXYViewer_motor.setRasterWidth(1);
+		liveXYViewer_motor.setRasterThickness(1);
+		liveXYViewer_motor.setForeground(Color.BLUE);
+		liveXYViewer_motor.setBackground(Color.BLACK);
+		panel_2.add(liveXYViewer_motor, "cell 0 5,grow");
+		
+		liveLineGraph_motor = new LiveLineGraph(Color.BLACK, 100, 0);
+		liveLineGraph_motor.setBackground(Color.BLACK);
+		panel_2.add(liveLineGraph_motor, "cell 1 5,grow");
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.GRAY);

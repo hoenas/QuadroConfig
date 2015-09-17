@@ -88,9 +88,11 @@ public class TestFrame extends JFrame {
 		LiveArtificialHorizon liveArtificialHorizon_2 = new LiveArtificialHorizon(Color.BLACK, Color.GREEN, Color.WHITE, true, 3);
 		panel_1.add(liveArtificialHorizon_2, BorderLayout.CENTER);
 		
-		LiveXYViewer liveXYViewer = new LiveXYViewer(dataset1, dataset2, Color.BLACK, Color.GREEN, 10, 2, 100, 0, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
+		LiveXYViewer liveXYViewer = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 100, 0, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
 		liveXYViewer.setBounds(560, 116, 100, 100);
 		contentPane.add(liveXYViewer);
+		liveXYViewer.setDatasetX(dataset1);
+		liveXYViewer.setDatasetY(dataset2);
 		
 		LiveGauge liveGauge = new LiveGauge(Color.DARK_GRAY, Color.WHITE, Color.BLACK, false, 0, 0, 0, (String) null);
 		liveGauge.setBounds(560, 222, 132, 94);
