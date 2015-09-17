@@ -132,7 +132,7 @@ public class Visualisierungsfenster extends JFrame {
 		lblVel = new JLabel("Vel");
 		panel_2.add(lblVel, "cell 0 0");
 		
-		liveXYViewer_velocity = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 20, 10, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
+		liveXYViewer_velocity = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 40, 20, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
 		liveXYViewer_velocity.setForeground(Color.RED);
 		liveXYViewer_velocity.setRastertColor(Color.WHITE);
 		liveXYViewer_velocity.setRasterWidth(1);
@@ -144,7 +144,7 @@ public class Visualisierungsfenster extends JFrame {
 		liveLineGraph_velocity.setBackground(Color.BLACK);
 		panel_2.add(liveLineGraph_velocity, "cell 1 1,grow");
 		
-		liveXYViewer_accel = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 20, 10, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
+		liveXYViewer_accel = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 40, 20, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
 		liveXYViewer_accel.setRastertColor(Color.WHITE);
 		liveXYViewer_accel.setRasterWidth(1);
 		liveXYViewer_accel.setRasterThickness(1);
@@ -156,7 +156,7 @@ public class Visualisierungsfenster extends JFrame {
 		liveLineGraph_accel.setBackground(Color.BLACK);
 		panel_2.add(liveLineGraph_accel, "cell 1 3,grow");
 		
-		liveXYViewer_motor = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 20, 10, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
+		liveXYViewer_motor = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 40, 20, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
 		liveXYViewer_motor.setRastertColor(Color.WHITE);
 		liveXYViewer_motor.setRasterWidth(1);
 		liveXYViewer_motor.setRasterThickness(1);

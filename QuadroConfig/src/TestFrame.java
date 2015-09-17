@@ -60,6 +60,8 @@ public class TestFrame extends JFrame {
 		
 		Dataset dataset1 = new Dataset("LOL", Color.green, 1, 100);
 		Dataset dataset2 = new Dataset("ROFL", Color.blue, 1, 100);
+		Dataset dataset3 = new Dataset("LMAO", Color.green, 1, 100);
+		Dataset dataset4 = new Dataset("OMG", Color.blue, 1, 100);
 		
 		liveLineGraph.addGraph( dataset1 );
 		liveLineGraph.addGraph( dataset2 );
@@ -88,11 +90,11 @@ public class TestFrame extends JFrame {
 		LiveArtificialHorizon liveArtificialHorizon_2 = new LiveArtificialHorizon(Color.BLACK, Color.GREEN, Color.WHITE, true, 3);
 		panel_1.add(liveArtificialHorizon_2, BorderLayout.CENTER);
 		
-		LiveXYViewer liveXYViewer = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 100, 0, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
+		LiveXYViewer liveXYViewer = new LiveXYViewer(Color.BLACK, Color.GREEN, 10, 2, 200, 100, Color.WHITE, true, 1, 10, true, 25, Color.GREEN);
 		liveXYViewer.setBounds(560, 116, 100, 100);
 		contentPane.add(liveXYViewer);
-		liveXYViewer.setDatasetX(dataset1);
-		liveXYViewer.setDatasetY(dataset2);
+		liveXYViewer.setDatasetX(dataset3);
+		liveXYViewer.setDatasetY(dataset4);
 		
 		LiveGauge liveGauge = new LiveGauge(Color.DARK_GRAY, Color.WHITE, Color.BLACK, false, 0, 0, 0, (String) null);
 		liveGauge.setBounds(560, 222, 132, 94);
@@ -134,6 +136,8 @@ public class TestFrame extends JFrame {
 					liveArtificialHorizon.update( ran.nextInt(180) );
 					dataset1.addValue(ran.nextFloat() * 100);
 					dataset2.addValue(ran.nextFloat() * 100);
+					dataset3.addValue(ran.nextFloat() * 100);
+					dataset4.addValue(ran.nextFloat() * 100);
 					liveLineGraph.update();
 					liveCompass.update( ran.nextInt( 360 ) );
 					liveArtificialHorizon_1.update( ran.nextInt(180) );
@@ -149,6 +153,8 @@ public class TestFrame extends JFrame {
 					liveArtificialHorizon.update( (int)(tmp * 180) );
 					dataset1.addValue( Math.abs( (float)tmp) * 100 );
 					dataset2.addValue( Math.abs( (float)tmp2) * 100 );
+					dataset3.addValue( (float)tmp * 100 );
+					dataset4.addValue( (float)tmp2 * 100 );
 					liveLineGraph.update();
 					liveCompass.update( (int)(tmp * 360) );
 					liveArtificialHorizon_1.update( (int)(tmp * 180) );

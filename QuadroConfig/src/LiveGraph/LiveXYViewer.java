@@ -127,10 +127,10 @@ public class LiveXYViewer extends Canvas {
 						this.getHeight() - y * this.getHeight() / max);
 			}
 			// Kreuz zeichnen
-			g2.drawLine(this.getWidth() - x * this.getWidth() / max - crossSize / 2, this.getHeight() - y,
-					this.getWidth() - x * this.getWidth() / max + crossSize / 2, this.getHeight() - y);
-			g2.drawLine(this.getWidth() - x, this.getHeight() - y * this.getHeight() / max - crossSize / 2,
-					this.getWidth() - x, this.getHeight() - y * this.getHeight() / max + crossSize / 2);
+			g2.drawLine(this.getWidth() - x * this.getWidth() / max - crossSize / 2, this.getHeight() - y * this.getHeight() / max,
+					this.getWidth() - x * this.getWidth() / max + crossSize / 2, this.getHeight() - y * this.getHeight() / max);
+			g2.drawLine(this.getWidth() - x * this.getWidth() / max, this.getHeight() - y * this.getHeight() / max - crossSize / 2,
+					this.getWidth() - x * this.getWidth() / max, this.getHeight() - y * this.getHeight() / max + crossSize / 2);
 
 			bufferstrategy.show();
 			Toolkit.getDefaultToolkit().sync();
