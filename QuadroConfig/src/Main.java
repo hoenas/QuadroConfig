@@ -809,43 +809,4 @@ public class Main {
 		visualisierungsfenster.liveXYViewer_velocity.update();
 	
 	}
-	
-	/*
-	public void updateSensorGraphs() {
-		byte[] data = quadrocopter.getSensorData();
-		if (data[data.length - 1] == 1) {
-			// Daten aus array auslesen
-			// Accelerometerwerte
-			float[] values = new float[7];
-			values[0] = quadrocopter.byteArrayToFloat(data, 0);
-			values[1] = quadrocopter.byteArrayToFloat(data, 4);
-			values[2] = quadrocopter.byteArrayToFloat(data, 8);
-			visualisierungsfenster.accGraph.update(values);
-			// Gyrowerte
-			values[0] = quadrocopter.byteArrayToFloat(data, 12) / 10;
-			values[1] = quadrocopter.byteArrayToFloat(data, 16) / 10;
-			values[2] = quadrocopter.byteArrayToFloat(data, 20) / 10;
-			visualisierungsfenster.gyroGraph.update(values);
-			// Magnetfeldsensorwerte
-			// TODO: ANZEIGE FÜR KOMPASS
-			// Temperatur
-			visualisierungsfenster.tempAltimeter.update((int) quadrocopter.byteArrayToFloat(data, 36));
-			// TODO: dataset für Hoehe
-			// rel Hoehe
-			visualisierungsfenster.relAltAltimeter.update((int) quadrocopter.byteArrayToFloat(data, 44));
-			// TODO: dataset für delta H
-			// Fernsteuerungswerte
-			values[0] = quadrocopter.byteArrayToFloat(data, 52) * 100 + 50;
-			values[1] = quadrocopter.byteArrayToFloat(data, 56) * 100 + 50;
-			values[2] = quadrocopter.byteArrayToFloat(data, 60) * 100 + 50;
-			values[3] = quadrocopter.byteArrayToFloat(data, 64) * 100;
-			values[4] = quadrocopter.byteArrayToFloat(data, 68) * 100;
-			values[5] = quadrocopter.byteArrayToFloat(data, 72) * 100;
-			values[6] = quadrocopter.byteArrayToFloat(data, 76) * 100;
-			visualisierungsfenster.rcGraph.update(values);
-		} else {
-			statuslabel.setText("FEHLER BEI SENSORMESSWERTEN!");
-		}
-	}
-	*/
 }
