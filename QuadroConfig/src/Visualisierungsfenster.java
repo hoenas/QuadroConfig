@@ -47,11 +47,15 @@ public class Visualisierungsfenster extends JFrame {
 	public LiveLineGraph liveLineGraph_accel;
 	public LiveLineGraph liveLineGraph_motor;
 	private JLabel lblVel;
+	
+	// Tab: Fancy Instruments
 	private JPanel panel_3;
 	private JLabel lblFancyCpuLoad;
 	public LiveGauge fancyCPUGraph;
 	private JLabel lblFancyTemp;
 	public LiveGauge fancyTempGauge;
+	public LiveGauge fancyBatteryGauge;
+	private JLabel lblFancyBattery;
 	
 	public Visualisierungsfenster() {
 		setTitle("Monitoring Visualisation");
@@ -205,7 +209,7 @@ public class Visualisierungsfenster extends JFrame {
 		panel_3 = new JPanel();
 		panel_3.setBackground(Color.GRAY);
 		tabbedPane.addTab("Fancy Instruments", null, panel_3, null);
-		panel_3.setLayout(new MigLayout("", "[100][100]", "[][50]"));
+		panel_3.setLayout(new MigLayout("", "[100][100][100]", "[][50]"));
 		
 		lblFancyCpuLoad = new JLabel("Fancy CPU Load");
 		panel_3.add(lblFancyCpuLoad, "cell 0 0");
@@ -213,11 +217,17 @@ public class Visualisierungsfenster extends JFrame {
 		lblFancyTemp = new JLabel("Fancy Temp");
 		panel_3.add(lblFancyTemp, "cell 1 0");
 		
+		lblFancyBattery = new JLabel("Fancy Battery");
+		panel_3.add(lblFancyBattery, "cell 2 0");
+		
 		fancyCPUGraph = new LiveGauge(Color.GRAY, Color.WHITE, Color.DARK_GRAY, true, 100);
 		panel_3.add(fancyCPUGraph, "cell 0 1,grow");
 		
 		fancyTempGauge = new LiveGauge(Color.GRAY, Color.WHITE, Color.DARK_GRAY, true, 100);
 		panel_3.add(fancyTempGauge, "cell 1 1,grow");
+		
+		fancyBatteryGauge = new LiveGauge(Color.GRAY, Color.WHITE, Color.DARK_GRAY, true, 16000);
+		panel_3.add(fancyBatteryGauge, "cell 2 1,grow");
 
 	}
 }

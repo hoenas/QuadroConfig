@@ -812,6 +812,7 @@ public class Main {
 		// Fancy Tab
 		visualisierungsfenster.fancyCPUGraph.update(quadrocopter.cpuLoad * 100);
 		visualisierungsfenster.fancyTempGauge.update(quadrocopter.temperature);
+		visualisierungsfenster.fancyBatteryGauge.update(quadrocopter.batteryVoltage * 1000);
 	
 	}
 }
