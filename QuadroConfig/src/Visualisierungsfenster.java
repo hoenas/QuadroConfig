@@ -149,7 +149,10 @@ public class Visualisierungsfenster extends JFrame {
 		liveXYViewer_velocity.setBackground(Color.BLACK);
 		panel_2.add(liveXYViewer_velocity, "cell 0 1,grow");
 		
-		liveLineGraph_velocity = new LiveLineGraph(Color.BLACK, 100, 0);
+		liveLineGraph_velocity = new LiveLineGraph(Color.BLACK, 20,10);
+		liveLineGraph_velocity.setUseRasterY(true);
+		liveLineGraph_velocity.setRastertYColor(Color.WHITE);
+		liveLineGraph_velocity.setRasterLineCountY(5);
 		liveLineGraph_velocity.setBackground(Color.BLACK);
 		panel_2.add(liveLineGraph_velocity, "cell 1 1,grow");
 		
@@ -161,7 +164,8 @@ public class Visualisierungsfenster extends JFrame {
 		liveXYViewer_accel.setBackground(Color.BLACK);
 		panel_2.add(liveXYViewer_accel, "cell 0 3,grow");
 		
-		liveLineGraph_accel = new LiveLineGraph(Color.BLACK, 100, 0);
+		liveLineGraph_accel = new LiveLineGraph(Color.BLACK, 20, 0);
+		liveLineGraph_accel.setUseRasterY(true);
 		liveLineGraph_accel.setBackground(Color.BLACK);
 		panel_2.add(liveLineGraph_accel, "cell 1 3,grow");
 		
@@ -173,7 +177,8 @@ public class Visualisierungsfenster extends JFrame {
 		liveXYViewer_motor.setBackground(Color.BLACK);
 		panel_2.add(liveXYViewer_motor, "cell 0 5,grow");
 		
-		liveLineGraph_motor = new LiveLineGraph(Color.BLACK, 100, 0);
+		liveLineGraph_motor = new LiveLineGraph(Color.BLACK, 16, 8);
+		liveLineGraph_motor.setUseRasterY(true);
 		liveLineGraph_motor.setBackground(Color.BLACK);
 		panel_2.add(liveLineGraph_motor, "cell 1 5,grow");
 		

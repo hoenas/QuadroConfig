@@ -236,10 +236,8 @@ public class Main {
 		visualisierungsfenster.liveXYViewer_accel.setDatasetY(accYDataset);
 		visualisierungsfenster.liveXYViewer_motor.setDatasetX(motorSPXDataset);
 		visualisierungsfenster.liveXYViewer_motor.setDatasetY(motorSPYDataset);
-		visualisierungsfenster.liveLineGraph_velocity.addGraph(velSPXDataset);
-		visualisierungsfenster.liveLineGraph_velocity.addGraph(velSPYDataset);
-		visualisierungsfenster.liveLineGraph_accel.addGraph(accXDataset);
-		visualisierungsfenster.liveLineGraph_accel.addGraph(accYDataset);
+		visualisierungsfenster.liveLineGraph_velocity.addGraph(velZDataset);
+		visualisierungsfenster.liveLineGraph_accel.addGraph(accZDataset);
 		visualisierungsfenster.liveLineGraph_motor.addGraph(motorSPXDataset);
 		visualisierungsfenster.liveLineGraph_motor.addGraph(motorSPYDataset);
 
@@ -804,7 +802,8 @@ public class Main {
 		visualisierungsfenster.voltAltimeter.update( (int)(akkuVoltageDataset.getBuffer()[akkuVoltageDataset.getBuffer().length - 1] * 1000) );
 	
 		visualisierungsfenster.liveLineGraph_motor.update();
-		visualisierungsfenster.liveLineGraph_motor.update();
+		visualisierungsfenster.liveLineGraph_velocity.update();
+		visualisierungsfenster.liveLineGraph_accel.update();
 		visualisierungsfenster.liveXYViewer_accel.update();
 		visualisierungsfenster.liveXYViewer_motor.update();
 		visualisierungsfenster.liveXYViewer_velocity.update();
