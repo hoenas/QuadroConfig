@@ -30,6 +30,8 @@ public class Messwertfenster extends JFrame {
 	public JCheckBox chckbxAngleSetpoints;
 	public JCheckBox chckbxVelocitySetpoints;
 	public JCheckBox chckbxMotorSetpoints;
+	private JLabel lblMessung;
+	public QuadrocopterCommunicator Quadrocopter;
 
 	public Messwertfenster() {
 		setTitle("Monitoring Values");
@@ -40,13 +42,13 @@ public class Messwertfenster extends JFrame {
 		splitPane.setBounds(0, 0, 417, 664);
 		getContentPane().add(splitPane);
 
-		JLabel lblmonitoringValuesaccX = new JLabel(
+		lblMessung = new JLabel(
 				"<html><h2>Monitoring Values:</h2><table><tr><td><b>Acc. X: </b><br><b>Acc. Y: </b><br><b>Acc. Z: </b><br></td><td><dynamic> m/s²<br><dynamic> m/s²<br><dynamic> m/s²<br></td></tr><tr><td><b>Rate X: </b><br><b>Rate Y: </b><br><b>Rate Z: </b><br></td><td><dynamic> °/s<br><dynamic> °/s<br><dynamic> °/s<br></td></tr><tr><td><b>Magnet X: </b><br><b>Magnet Y: </b><br><b>Magnet Z: </b><br></td><td><dynamic>?<br><dynamic>?<br><dynamic>?<br></td></tr><tr><td><b>Angle X: </b><br><b>Angle Y: </b><br><b>Angle Z: </b><br></td><td><dynamic> °<br><dynamic> °<br><dynamic> °<br></td></tr><tr><td><b>Motor 1: </b><br><b>Motor 2: </b><br><b>Motor 3: </b><br><b>Motor 4: </b><br></td><td><dynamic> %<br><dynamic> %<br><dynamic> %<br><dynamic> %<br></td></tr><tr><td><b>RC Signal Roll: </b><br><b>RC Signal Nick: </b><br><b>RC Signal Yaw: </b><br><b>RC Signal Throttle: </b><br><b>RC Signal Enable: </b><br><b>RC Signal Lin Poti: </b><br><b>RC Signal Switch: </b><br></td><td><dynamic> <br><dynamic> <br><dynamic> <br><dynamic> <br><dynamic> <br><dynamic> <br><dynamic> <br></td></tr><tr><td><b>PID X: </b><br><b>PID Y: </b><br><b>PID Z: </b><br></td><td><dynamic> <br><dynamic> <br><dynamic> <br></td></tr><tr><td><b>Height: </b><br><b>rel Height: </b><br><b>dH: </b><br></td><td><dynamic> m<br><dynamic> m<br><dynamic> m<br></td></tr><tr><td><b>Temp: </b><br><b>Batt. Voltage: </b><br><b>CPU Load: </b><br></td><td><dynamic> °C<br><dynamic> V<br><dynamic> %<br></td></tr></table></html>");
-		lblmonitoringValuesaccX.setForeground(Color.WHITE);
-		lblmonitoringValuesaccX.setBackground(Color.DARK_GRAY);
-		lblmonitoringValuesaccX.setVerticalAlignment(SwingConstants.TOP);
-		lblmonitoringValuesaccX.setHorizontalAlignment(SwingConstants.LEFT);
-		splitPane.setLeftComponent(lblmonitoringValuesaccX);
+		lblMessung.setForeground(Color.WHITE);
+		lblMessung.setBackground(Color.DARK_GRAY);
+		lblMessung.setVerticalAlignment(SwingConstants.TOP);
+		lblMessung.setHorizontalAlignment(SwingConstants.LEFT);
+		splitPane.setLeftComponent(lblMessung);
 
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.DARK_GRAY);
@@ -123,7 +125,8 @@ public class Messwertfenster extends JFrame {
 		chckBxCPU.setBounds(6, 422, 224, 25);
 		panel.add(chckBxCPU);
 
-		JLabel lblRequestData = new JLabel("<html><h2>Request Data:</h2></html>");
+		JLabel lblRequestData = new JLabel(
+				"<html><h2>Request Data:</h2></html>");
 		lblRequestData.setForeground(Color.WHITE);
 		lblRequestData.setBounds(6, 11, 224, 21);
 		panel.add(lblRequestData);
@@ -146,7 +149,8 @@ public class Messwertfenster extends JFrame {
 		chckbxMotorSetpoints.setBounds(6, 242, 158, 25);
 		panel.add(chckbxMotorSetpoints);
 		float[] zeros = new float[128];
-		setLabelText(zeros);
+
+		this.Quadrocopter = Quadrocopter;
 	}
 
 	private String roundedString(float value, int digits) {
@@ -163,6 +167,184 @@ public class Messwertfenster extends JFrame {
 
 	}
 
-	public void setLabelText(float[] values) {
+	public void update() {
+		if (this.Quadrocopter != null) {
+			lblMessung.setText("<html>" + "<h2>Monitoring Values:</h2>"
+					+ "<table>" + "<tr>" + "<td>" + "<b>Acc. X: </b><br>"
+					+ "<b>Acc. Y: </b><br>" + "<b>Acc. Z: </b><br>" + "</td>"
+					+ "<td>"
+					+ roundedString(Quadrocopter.accelX, 2)
+					+ " m/s²<br>"
+					+ roundedString(Quadrocopter.accelY, 2)
+					+ " m/s²<br>"
+					+ roundedString(Quadrocopter.accelZ, 2)
+					+ " m/s²<br>"
+					+ "</td>"
+					+ "</tr>"
+					+ "<tr>"
+					+ "<td>"
+					+ "<b>Rate X: </b><br>"
+					+ "<b>Rate Y: </b><br>"
+					+ "<b>Rate Z: </b><br>"
+					+ "</td>"
+					+ "<td>"
+					+ roundedString(Quadrocopter.gyroX, 2)
+					+ " °/s<br>"
+					+ roundedString(Quadrocopter.gyroY, 2)
+					+ " °/s<br>"
+					+ roundedString(Quadrocopter.gyroZ, 2)
+					+ " °/s<br>"
+					+ "</td>"
+					+ "</tr>"
+					+ "<tr>"
+					+ "<td>"
+					+ "<b>Magnet X: </b><br>"
+					+ "<b>Magnet Y: </b><br>"
+					+ "<b>Magnet Z: </b><br>"
+					+ "</td>"
+					+ "<td>"
+					+ roundedString(Quadrocopter.magnX, 2)
+					+ "?<br>"
+					+ roundedString(Quadrocopter.magnY, 2)
+					+ "?<br>"
+					+ roundedString(Quadrocopter.magnZ, 2)
+					+ "?<br>"
+					+ "</td>"
+					+ "</tr>"
+					+ "<tr>"
+					+ "<td>"
+					+ "<b>Angle X: </b><br>"
+					+ "<b>Angle Y: </b><br>"
+					+ "<b>Angle Z: </b><br>"
+					+ "</td>"
+					+ "<td>"
+					+ roundedString(Quadrocopter.angleX, 2)
+					+ " °<br>"
+					+ roundedString(Quadrocopter.angleY, 2)
+					+ " °<br>"
+					+ roundedString(Quadrocopter.angleZ, 2)
+					+ " °<br>"
+					+ "</td>"
+					+ "</tr>"
+					+ "<tr>"
+					+ "<td>"
+					+ "<b>Vel X: </b><br>"
+					+ "<b>Vel Y: </b><br>"
+					+ "<b>Vel Z: </b><br>"
+					+ "</td>"
+					+ "<td>"
+					+ roundedString(Quadrocopter.velocityX, 2)
+					+ "<br>"
+					+ roundedString(Quadrocopter.velocityY, 2)
+					+ "<br>"
+					+ roundedString(Quadrocopter.velocityZ, 2)
+					+ "<br>"
+					+ "</td>"
+					+ "</tr>"
+					+ "<tr>"
+					+ "<td>"
+					+ "<b>Vel SP X: </b><br>"
+					+ "<b>Vel SP Y: </b><br>"
+					+ "<b>Vel SP Z: </b><br>"
+					+ "</td>"
+					+ "<td>"
+					+ roundedString(Quadrocopter.velocitySPX, 2)
+					+ "<br>"
+					+ roundedString(Quadrocopter.velocitySPY, 2)
+					+ "<br>"
+					+ roundedString(Quadrocopter.velocitySPZ, 2)
+					+ "<br>"
+					+ "</td>"
+					+ "</tr>"
+					+ "<tr>"
+					+ "<td>"
+					+ "<b>Motor 1: </b><br>"
+					+ "<b>Motor 2: </b><br>"
+					+ "<b>Motor 3: </b><br>"
+					+ "<b>Motor 4: </b><br>"
+					+ "</td>"
+					+ "<td>"
+					+ roundedString(Quadrocopter.motor1, 2)
+					+ " %<br>"
+					+ roundedString(Quadrocopter.motor2, 2)
+					+ " %<br>"
+					+ roundedString(Quadrocopter.motor3, 2)
+					+ " %<br>"
+					+ roundedString(Quadrocopter.motor4, 2)
+					+ " %<br>"
+					+ "</td>"
+					+ "</tr>"
+					+ "<tr>"
+					+ "<td>"
+					+ "<b>RC Signal Roll: </b><br>"
+					+ "<b>RC Signal Nick: </b><br>"
+					+ "<b>RC Signal Yaw: </b><br>"
+					+ "<b>RC Signal Throttle: </b><br>"
+					+ "<b>RC Signal Enable: </b><br>"
+					+ "<b>RC Signal Lin Poti: </b><br>"
+					+ "<b>RC Signal Switch: </b><br>"
+					+ "</td>"
+					+ "<td>"
+					+ roundedString(Quadrocopter.rcRoll, 2)
+					+ " <br>"
+					+ roundedString(Quadrocopter.rcNick, 2)
+					+ " <br>"
+					+ roundedString(Quadrocopter.rcYaw, 2)
+					+ " <br>"
+					+ roundedString(Quadrocopter.rcThrottle, 2)
+					+ " <br>"
+					+ String.valueOf(Quadrocopter.rcEnableMotors)
+					+ " <br>"
+					+ roundedString(Quadrocopter.rcLinPoti, 2)
+					+ " <br>"
+					+ String.valueOf(Quadrocopter.rcSwitch)
+					+ " <br>"
+					+ "</td>"
+					+ "</tr>"
+					+ "<tr>"
+					+ "<td>"
+					+ "<b>PID X: </b><br>"
+					+ "<b>PID Y: </b><br>"
+					+ "<b>PID Z: </b><br>"
+					+ "</td>"
+					+ "<td>"
+					+ roundedString(Quadrocopter.angleSPX, 2)
+					+ " <br>"
+					+ roundedString(Quadrocopter.angleSPY, 2)
+					+ " <br>"
+					+ roundedString(Quadrocopter.angleSPZ, 2)
+					+ " <br>"
+					+ "</td>"
+					+ "</tr>"
+					+ "<tr>"
+					+ "<td>"
+					+ "<b>Height: </b><br>"
+					+ "<b>rel Height: </b><br>"
+					+ "<b>dH: </b><br>"
+					+ "</td>"
+					+ "<td>"
+					+ roundedString(Quadrocopter.height, 2)
+					+ " m<br>"
+					+ roundedString(Quadrocopter.heightRel, 2)
+					+ " m<br>"
+					+ roundedString(Quadrocopter.heightDelta, 2)
+					+ " m<br>"
+					+ "</td>"
+					+ "</tr>"
+					+ "<tr>"
+					+ "<td>"
+					+ "<b>Temp: </b><br>"
+					+ "<b>Batt. Voltage: </b><br>"
+					+ "<b>CPU Load: </b><br>"
+					+ "</td>"
+					+ "<td>"
+					+ roundedString(Quadrocopter.temperature, 2)
+					+ " °C<br>"
+					+ roundedString(Quadrocopter.batteryVoltage, 2)
+					+ " V<br>"
+					+ roundedString(Quadrocopter.cpuLoad * 100, 2)
+					+ " %<br>"
+					+ "</td>" + "</tr>" + "</table>" + "</html>");
+		}
 	}
 }

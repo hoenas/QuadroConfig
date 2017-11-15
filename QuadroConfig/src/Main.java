@@ -353,6 +353,7 @@ public class Main {
 						quadrocopter = new QuadrocopterCommunicator(128);
 						quadrocopter.setPort(port);
 						messungAktiv = true;
+						messwertfenster.Quadrocopter = quadrocopter;
 						messtimer.start();
 						btnMessungStarten.setText("Stop Monitoring");
 
@@ -812,6 +813,8 @@ public class Main {
 		visualisierungsfenster.fancyCPUGraph.update(quadrocopter.cpuLoad * 100);
 		visualisierungsfenster.fancyTempGauge.update(quadrocopter.temperature);
 		visualisierungsfenster.fancyBatteryGauge.update(quadrocopter.batteryVoltage * 1000);
-	
+		
+		// messwertefenster
+		messwertfenster.update();
 	}
 }
