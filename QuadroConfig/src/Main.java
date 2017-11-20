@@ -45,11 +45,10 @@ public class Main {
 	private int messintervall = 24;
 	private boolean messungAktiv = false;
 	FlagsToolBar flagsToolBar;
-	
+
 	private Color panel_background = Color.GRAY;
 	private Color window_background = Color.DARK_GRAY;
 
-	
 	// Protokoll
 	private static int protocolStatus = 0;
 	/*
@@ -179,8 +178,8 @@ public class Main {
 					window.frame.setVisible(true);
 					window.frame.setLocation(0, 0);
 					// Testframe um Komponenten zu testen
-					//TestFrame myFrame = new TestFrame();
-					//myFrame.setVisible(true);
+					// TestFrame myFrame = new TestFrame();
+					// myFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -244,7 +243,7 @@ public class Main {
 		JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
 		tabs.setBounds(10, 36, 396, 240);
 		tabs.setBackground(panel_background);
-	
+
 		frame.getContentPane().add(tabs);
 
 		statuslabel = new JLabel("idle");
@@ -256,7 +255,7 @@ public class Main {
 		tabs.addTab("Port", null, tabPort, null);
 		tabPort.setLayout(null);
 		tabPort.setBackground(panel_background);
-		
+
 		JLabel lblPortname = new JLabel("Port Name:");
 		lblPortname.setBounds(10, 11, 74, 14);
 		tabPort.add(lblPortname);
@@ -649,6 +648,8 @@ public class Main {
 		if (messwertfenster.chckBxCPU.isSelected()) {
 			i++;
 		}
+		/* always get global flags */
+		i++;
 
 		QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS[] customFrame = new QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS[i];
 
@@ -724,6 +725,9 @@ public class Main {
 			customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.CPU;
 			i++;
 		}
+		/* always get global flags */
+		customFrame[i] = QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.GLOBAL_FLAGS;
+		i++;
 
 		// receive custom frame from quadrocopter
 		quadrocopter.getCustomFrame(customFrame);
@@ -787,34 +791,38 @@ public class Main {
 		// Akku
 		akkuVoltageDataset.addValue(quadrocopter.batteryVoltage);
 		cpuDataset.addValue(quadrocopter.cpuLoad);
-		
+
 		// Visualisierungen aktualisieren
 		visualisierungsfenster.accGraph.update();
 		visualisierungsfenster.gyroGraph.update();
 		visualisierungsfenster.motorGraph.update();
 		visualisierungsfenster.pidGraph.update();
 		visualisierungsfenster.rcGraph.update();
-		visualisierungsfenster.cpuAltimeter.update( (int)(cpuDataset.getBuffer()[cpuDataset.getBuffer().length - 1] * 100) );
-		visualisierungsfenster.horizonX.update( (int)winkelXDataset.getBuffer()[winkelXDataset.getBuffer().length - 1] );
-		visualisierungsfenster.horizonY.update( (int)winkelYDataset.getBuffer()[winkelYDataset.getBuffer().length - 1] );
-		visualisierungsfenster.horizonZ.update( (int)winkelZDataset.getBuffer()[winkelZDataset.getBuffer().length - 1] );
-		visualisierungsfenster.relAltAltimeter.update( (int) relHeightDataset.getBuffer()[relHeightDataset.getBuffer().length - 1] );
-		visualisierungsfenster.tempAltimeter.update( (int) tempDataset.getBuffer()[tempDataset.getBuffer().length - 1] );
-		visualisierungsfenster.voltAltimeter.update( (int)(akkuVoltageDataset.getBuffer()[akkuVoltageDataset.getBuffer().length - 1] * 1000) );
-	
+		visualisierungsfenster.cpuAltimeter
+				.update((int) (cpuDataset.getBuffer()[cpuDataset.getBuffer().length - 1] * 100));
+		visualisierungsfenster.horizonX.update((int) winkelXDataset.getBuffer()[winkelXDataset.getBuffer().length - 1]);
+		visualisierungsfenster.horizonY.update((int) winkelYDataset.getBuffer()[winkelYDataset.getBuffer().length - 1]);
+		visualisierungsfenster.horizonZ.update((int) winkelZDataset.getBuffer()[winkelZDataset.getBuffer().length - 1]);
+		visualisierungsfenster.relAltAltimeter
+				.update((int) relHeightDataset.getBuffer()[relHeightDataset.getBuffer().length - 1]);
+		visualisierungsfenster.tempAltimeter.update((int) tempDataset.getBuffer()[tempDataset.getBuffer().length - 1]);
+		visualisierungsfenster.voltAltimeter
+				.update((int) (akkuVoltageDataset.getBuffer()[akkuVoltageDataset.getBuffer().length - 1] * 1000));
+
 		visualisierungsfenster.liveLineGraph_motor.update();
 		visualisierungsfenster.liveLineGraph_velocity.update();
 		visualisierungsfenster.liveLineGraph_accel.update();
 		visualisierungsfenster.liveXYViewer_accel.update();
 		visualisierungsfenster.liveXYViewer_motor.update();
 		visualisierungsfenster.liveXYViewer_velocity.update();
-		
+
 		// Fancy Tab
 		visualisierungsfenster.fancyCPUGraph.update(quadrocopter.cpuLoad * 100);
 		visualisierungsfenster.fancyTempGauge.update(quadrocopter.temperature);
 		visualisierungsfenster.fancyBatteryGauge.update(quadrocopter.batteryVoltage * 1000);
-		
+
 		// messwertefenster
 		messwertfenster.update();
+		flagsToolBar.update(quadrocopter.global_flags);
 	}
 }
