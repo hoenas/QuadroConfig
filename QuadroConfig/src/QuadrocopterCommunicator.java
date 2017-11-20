@@ -792,12 +792,12 @@ public class QuadrocopterCommunicator {
 								break;
 							/* Global Flags */
 							case 0x1B:
-								// TODO
 								/* uint32 gloabal flags */
 								this.global_flags[0] = data[offset];
 								this.global_flags[1] = data[offset + 1];
 								this.global_flags[2] = data[offset + 2];
 								this.global_flags[3] = data[offset + 3];
+								offset += 4;
 								break;
 							// default:
 							// System.out.println("Unknown identifier!");
