@@ -264,13 +264,13 @@ public class Messwertfenster extends JFrame {
 					+ "<b>Motor 4: </b><br>"
 					+ "</td>"
 					+ "<td>"
-					+ roundedString(Quadrocopter.motor1, 2)
+					+ roundedString(100.0f * Quadrocopter.motor1, 2)
 					+ " %<br>"
-					+ roundedString(Quadrocopter.motor2, 2)
+					+ roundedString(100.0f * Quadrocopter.motor2, 2)
 					+ " %<br>"
-					+ roundedString(Quadrocopter.motor3, 2)
+					+ roundedString(100.0f * Quadrocopter.motor3, 2)
 					+ " %<br>"
-					+ roundedString(Quadrocopter.motor4, 2)
+					+ roundedString(100.0f * Quadrocopter.motor4, 2)
 					+ " %<br>"
 					+ "</td>"
 					+ "</tr>"
