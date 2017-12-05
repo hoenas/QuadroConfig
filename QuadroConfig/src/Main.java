@@ -515,7 +515,7 @@ public class Main {
 						// Abwarten, bis Portzustand: idle
 					}
 
-					cfgWindow.openConfigWindow(port, statuslabel, flagsToolBar.isConfigMode);
+					cfgWindow.openConfigWindow(quadrocopter, statuslabel, flagsToolBar.isConfigMode);
 
 				}
 
@@ -537,9 +537,7 @@ public class Main {
 					}
 
 					try {
-						byte[] outbuffer = new byte[1];
-						outbuffer[0] = USB_CMD_RESET;
-						port.writeBytes(outbuffer);
+						quadrocopter.sendToQuadrocopter(new byte[] {USB_CMD_RESET});
 						statuslabel.setText("Reset");
 
 						// dummy read
