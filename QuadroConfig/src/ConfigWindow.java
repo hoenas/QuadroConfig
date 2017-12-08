@@ -73,12 +73,12 @@ public class ConfigWindow extends JDialog {
 	JButton btnReloadEeprom = new JButton("reload from eeprom");
 
 	/* configuration */
-	private static byte USB_CMD_CONFIG_MODE = (byte) 0xC0;
+	private static byte[] USB_CMD_CONFIG_MODE = {(byte) 0xC0};
 
-	private static byte USB_CMD_GET_CONFIG = (byte) 0xC1;
+	private static byte[] USB_CMD_GET_CONFIG = {(byte) 0xC1};
 	private static byte USB_CMD_UPDATE_CONFIG = (byte) 0xC2;
-	private static byte USB_CMD_SAVE_CONFIG = (byte) 0xCE;
-	private static byte USB_CMD_RESTORE_CONFIG = (byte) 0xCF;
+	private static byte[] USB_CMD_SAVE_CONFIG = {(byte) 0xCE};
+	private static byte[] USB_CMD_RESTORE_CONFIG = {(byte) 0xCF};
 
 	/* eeprom acces */
 	private static byte USB_CMD_READ_BYTE = (byte) 0xC3;
@@ -89,7 +89,7 @@ public class ConfigWindow extends JDialog {
 	private static byte USB_CMD_WRITE_2BYTES = (byte) 0xC7;
 	private static byte USB_CMD_WRITE_4BYTES = (byte) 0xC8;
 
-	private static byte USB_CMD_RELOAD_EEPROM = (byte) 0xC9;
+	private static byte[] USB_CMD_RELOAD_EEPROM = {(byte) 0xC9};
 
 	private static int CONFIGURATION_FRAME_LENGTH = 92;
 
@@ -138,7 +138,7 @@ public class ConfigWindow extends JDialog {
 	private void loadConfig() {
 		try {
 			if (!quadrocopter
-					.sendToQuadrocopter(new byte[] { USB_CMD_GET_CONFIG })) {
+					.sendToQuadrocopter(USB_CMD_GET_CONFIG)) {
 				throw (new Exception());
 			}
 			statuslabel.setText("loaded configuration");
@@ -190,9 +190,7 @@ public class ConfigWindow extends JDialog {
 	private void restoreHardcodedCfg() {
 
 		try {
-			byte[] outbuffer = new byte[1];
-			outbuffer[0] = USB_CMD_RESTORE_CONFIG;
-			if (!quadrocopter.sendToQuadrocopter(outbuffer)) {
+			if (!quadrocopter.sendToQuadrocopter(USB_CMD_RESTORE_CONFIG)) {
 				throw (new Exception());
 			}
 			statuslabel.setText("resetting to hardcoded settings");
@@ -210,7 +208,7 @@ public class ConfigWindow extends JDialog {
 	private void reloadEEPROM() {
 		try {
 			if (!quadrocopter
-					.sendToQuadrocopter(new byte[] { USB_CMD_RELOAD_EEPROM })) {
+					.sendToQuadrocopter(USB_CMD_RELOAD_EEPROM)) {
 				throw (new Exception());
 			}
 			statuslabel.setText("Reloading EEPROM");
@@ -341,7 +339,7 @@ public class ConfigWindow extends JDialog {
 
 		try {
 			if (!quadrocopter
-					.sendToQuadrocopter(new byte[] { USB_CMD_SAVE_CONFIG })) {
+					.sendToQuadrocopter(USB_CMD_SAVE_CONFIG)) {
 				throw (new Exception());
 			}
 			statuslabel.setText("save Configuration -> reset");
@@ -564,7 +562,7 @@ public class ConfigWindow extends JDialog {
 
 		try {
 			if (!quadrocopter
-					.sendToQuadrocopter(new byte[] { USB_CMD_CONFIG_MODE })) {
+					.sendToQuadrocopter(USB_CMD_CONFIG_MODE)) {
 				throw (new Exception());
 			}
 
