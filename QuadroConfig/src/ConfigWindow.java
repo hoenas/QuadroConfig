@@ -73,12 +73,12 @@ public class ConfigWindow extends JDialog {
 	JButton btnReloadEeprom = new JButton("reload from eeprom");
 
 	/* configuration */
-	private static byte[] USB_CMD_CONFIG_MODE = {(byte) 0xC0};
+	private static byte[] USB_CMD_CONFIG_MODE = { (byte) 0xC0 };
 
-	private static byte[] USB_CMD_GET_CONFIG = {(byte) 0xC1};
+	private static byte[] USB_CMD_GET_CONFIG = { (byte) 0xC1 };
 	private static byte USB_CMD_UPDATE_CONFIG = (byte) 0xC2;
-	private static byte[] USB_CMD_SAVE_CONFIG = {(byte) 0xCE};
-	private static byte[] USB_CMD_RESTORE_CONFIG = {(byte) 0xCF};
+	private static byte[] USB_CMD_SAVE_CONFIG = { (byte) 0xCE };
+	private static byte[] USB_CMD_RESTORE_CONFIG = { (byte) 0xCF };
 
 	/* eeprom acces */
 	private static byte USB_CMD_READ_BYTE = (byte) 0xC3;
@@ -89,12 +89,11 @@ public class ConfigWindow extends JDialog {
 	private static byte USB_CMD_WRITE_2BYTES = (byte) 0xC7;
 	private static byte USB_CMD_WRITE_4BYTES = (byte) 0xC8;
 
-	private static byte[] USB_CMD_RELOAD_EEPROM = {(byte) 0xC9};
+	private static byte[] USB_CMD_RELOAD_EEPROM = { (byte) 0xC9 };
 
 	private static int CONFIGURATION_FRAME_LENGTH = 92;
 
-	public void openConfigWindow(QuadrocopterCommunicator quadrocopter,
-			JLabel statuslabel, boolean isConfigMode) {
+	public void openConfigWindow(QuadrocopterCommunicator quadrocopter, JLabel statuslabel, boolean isConfigMode) {
 		this.statuslabel = statuslabel;
 		this.quadrocopter = quadrocopter;
 		this.setVisible(true);
@@ -106,8 +105,7 @@ public class ConfigWindow extends JDialog {
 	}
 
 	private float byte2float(byte[] byteArray, int offset) {
-		return ByteBuffer.wrap(byteArray, offset, 4)
-				.order(ByteOrder.LITTLE_ENDIAN).getFloat();
+		return ByteBuffer.wrap(byteArray, offset, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 	}
 
 	private boolean byte2bool(byte input) {
@@ -137,14 +135,10 @@ public class ConfigWindow extends JDialog {
 
 	private void loadConfig() {
 		try {
-			if (!quadrocopter
-					.sendToQuadrocopter(USB_CMD_GET_CONFIG)) {
-				throw (new Exception());
-			}
+			quadrocopter.sendToQuadrocopter(USB_CMD_GET_CONFIG);
 			statuslabel.setText("loaded configuration");
 
-			byte[] inbuffer = quadrocopter
-					.receiveFromQuadrocopter(CONFIGURATION_FRAME_LENGTH);
+			byte[] inbuffer = quadrocopter.receiveFromQuadrocopter(CONFIGURATION_FRAME_LENGTH);
 			if (inbuffer == null) {
 				throw (new Exception());
 			}
@@ -190,9 +184,7 @@ public class ConfigWindow extends JDialog {
 	private void restoreHardcodedCfg() {
 
 		try {
-			if (!quadrocopter.sendToQuadrocopter(USB_CMD_RESTORE_CONFIG)) {
-				throw (new Exception());
-			}
+			quadrocopter.sendToQuadrocopter(USB_CMD_RESTORE_CONFIG);
 			statuslabel.setText("resetting to hardcoded settings");
 
 			// dummy read
@@ -207,10 +199,7 @@ public class ConfigWindow extends JDialog {
 
 	private void reloadEEPROM() {
 		try {
-			if (!quadrocopter
-					.sendToQuadrocopter(USB_CMD_RELOAD_EEPROM)) {
-				throw (new Exception());
-			}
+			quadrocopter.sendToQuadrocopter(USB_CMD_RELOAD_EEPROM);
 			statuslabel.setText("Reloading EEPROM");
 
 			// dummy read
@@ -231,87 +220,39 @@ public class ConfigWindow extends JDialog {
 			byte[] outbuffer = new byte[100];
 			outbuffer[0] = USB_CMD_UPDATE_CONFIG;
 
-			outbuffer[1] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_ANGLE_XY
-					.getIdentifier();
-			outbuffer = float2byte(
-					Float.parseFloat(p_ang_xy_spinner.getValue().toString()),
-					outbuffer, 2);
-			outbuffer = float2byte(
-					Float.parseFloat(i_ang_xy_spinner.getValue().toString()),
-					outbuffer, 6);
-			outbuffer = float2byte(
-					Float.parseFloat(d_ang_xy_spinner.getValue().toString()),
-					outbuffer, 10);
-			outbuffer = float2byte(
-					Float.parseFloat(gain_ang_xy_spinner.getValue().toString()),
-					outbuffer, 14);
-			outbuffer = float2byte(Float.parseFloat(scale_ang_xy_spinner
-					.getValue().toString()), outbuffer, 18);
+			outbuffer[1] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_ANGLE_XY.getIdentifier();
+			outbuffer = float2byte(Float.parseFloat(p_ang_xy_spinner.getValue().toString()), outbuffer, 2);
+			outbuffer = float2byte(Float.parseFloat(i_ang_xy_spinner.getValue().toString()), outbuffer, 6);
+			outbuffer = float2byte(Float.parseFloat(d_ang_xy_spinner.getValue().toString()), outbuffer, 10);
+			outbuffer = float2byte(Float.parseFloat(gain_ang_xy_spinner.getValue().toString()), outbuffer, 14);
+			outbuffer = float2byte(Float.parseFloat(scale_ang_xy_spinner.getValue().toString()), outbuffer, 18);
 
-			outbuffer[22] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_ROT_Z
-					.getIdentifier();
-			outbuffer = float2byte(
-					Float.parseFloat(p_ang_z_spinner.getValue().toString()),
-					outbuffer, 23);
-			outbuffer = float2byte(
-					Float.parseFloat(i_ang_z_spinner.getValue().toString()),
-					outbuffer, 27);
-			outbuffer = float2byte(
-					Float.parseFloat(d_ang_z_spinner.getValue().toString()),
-					outbuffer, 31);
-			outbuffer = float2byte(
-					Float.parseFloat(gain_ang_z_spinner.getValue().toString()),
-					outbuffer, 35);
-			outbuffer = float2byte(
-					Float.parseFloat(scale_ang_z_spinner.getValue().toString()),
-					outbuffer, 39);
+			outbuffer[22] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_ROT_Z.getIdentifier();
+			outbuffer = float2byte(Float.parseFloat(p_ang_z_spinner.getValue().toString()), outbuffer, 23);
+			outbuffer = float2byte(Float.parseFloat(i_ang_z_spinner.getValue().toString()), outbuffer, 27);
+			outbuffer = float2byte(Float.parseFloat(d_ang_z_spinner.getValue().toString()), outbuffer, 31);
+			outbuffer = float2byte(Float.parseFloat(gain_ang_z_spinner.getValue().toString()), outbuffer, 35);
+			outbuffer = float2byte(Float.parseFloat(scale_ang_z_spinner.getValue().toString()), outbuffer, 39);
 
-			outbuffer[43] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.COMP_FILTER
-					.getIdentifier();
-			outbuffer = float2byte(Float.parseFloat(compFilterXY_Spinner
-					.getValue().toString()), outbuffer, 44);
-			outbuffer = float2byte(
-					Float.parseFloat(compFilterZ_Spinner.getValue().toString()),
-					outbuffer, 48);
+			outbuffer[43] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.COMP_FILTER.getIdentifier();
+			outbuffer = float2byte(Float.parseFloat(compFilterXY_Spinner.getValue().toString()), outbuffer, 44);
+			outbuffer = float2byte(Float.parseFloat(compFilterZ_Spinner.getValue().toString()), outbuffer, 48);
 
-			outbuffer[52] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_ACCEL
-					.getIdentifier();
-			outbuffer = float2byte(
-					Float.parseFloat(p_accel_spinner.getValue().toString()),
-					outbuffer, 53);
-			outbuffer = float2byte(
-					Float.parseFloat(i_accel_spinner.getValue().toString()),
-					outbuffer, 57);
-			outbuffer = float2byte(
-					Float.parseFloat(d_accel_spinner.getValue().toString()),
-					outbuffer, 61);
-			outbuffer = float2byte(
-					Float.parseFloat(gain_accel_spinner.getValue().toString()),
-					outbuffer, 65);
-			outbuffer = float2byte(
-					Float.parseFloat(scale_accel_spinner.getValue().toString()),
-					outbuffer, 69);
+			outbuffer[52] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_ACCEL.getIdentifier();
+			outbuffer = float2byte(Float.parseFloat(p_accel_spinner.getValue().toString()), outbuffer, 53);
+			outbuffer = float2byte(Float.parseFloat(i_accel_spinner.getValue().toString()), outbuffer, 57);
+			outbuffer = float2byte(Float.parseFloat(d_accel_spinner.getValue().toString()), outbuffer, 61);
+			outbuffer = float2byte(Float.parseFloat(gain_accel_spinner.getValue().toString()), outbuffer, 65);
+			outbuffer = float2byte(Float.parseFloat(scale_accel_spinner.getValue().toString()), outbuffer, 69);
 
-			outbuffer[73] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_VEL
-					.getIdentifier();
-			outbuffer = float2byte(
-					Float.parseFloat(p_vel_spinner.getValue().toString()),
-					outbuffer, 74);
-			outbuffer = float2byte(
-					Float.parseFloat(i_vel_spinner.getValue().toString()),
-					outbuffer, 78);
-			outbuffer = float2byte(
-					Float.parseFloat(d_vel_spinner.getValue().toString()),
-					outbuffer, 82);
-			outbuffer = float2byte(
-					Float.parseFloat(gain_vel_spinner.getValue().toString()),
-					outbuffer, 86);
-			outbuffer = float2byte(
-					Float.parseFloat(scale_vel_spinner.getValue().toString()),
-					outbuffer, 90);
+			outbuffer[73] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_VEL.getIdentifier();
+			outbuffer = float2byte(Float.parseFloat(p_vel_spinner.getValue().toString()), outbuffer, 74);
+			outbuffer = float2byte(Float.parseFloat(i_vel_spinner.getValue().toString()), outbuffer, 78);
+			outbuffer = float2byte(Float.parseFloat(d_vel_spinner.getValue().toString()), outbuffer, 82);
+			outbuffer = float2byte(Float.parseFloat(gain_vel_spinner.getValue().toString()), outbuffer, 86);
+			outbuffer = float2byte(Float.parseFloat(scale_vel_spinner.getValue().toString()), outbuffer, 90);
 
-			outbuffer[94] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.QC_SETTING
-					.getIdentifier();
+			outbuffer[94] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.QC_SETTING.getIdentifier();
 			outbuffer[95] = bool2byte(chckbxLowVoltageWarning.isSelected());
 			outbuffer[96] = bool2byte(chckbxNoRcWarning.isSelected());
 			outbuffer[97] = bool2byte(chckbxFlightled.isSelected());
@@ -319,9 +260,7 @@ public class ConfigWindow extends JDialog {
 
 			/* send end of frame */
 			outbuffer[99] = (byte) 0x00;
-			if (!quadrocopter.sendToQuadrocopter(outbuffer)) {
-				throw (new Exception());
-			}
+			quadrocopter.sendToQuadrocopter(outbuffer);
 			statuslabel.setText("update Configuration");
 
 			// dummy read
@@ -338,10 +277,7 @@ public class ConfigWindow extends JDialog {
 	private void saveConfig() {
 
 		try {
-			if (!quadrocopter
-					.sendToQuadrocopter(USB_CMD_SAVE_CONFIG)) {
-				throw (new Exception());
-			}
+			quadrocopter.sendToQuadrocopter(USB_CMD_SAVE_CONFIG);
 			statuslabel.setText("save Configuration -> reset");
 
 			// dummy read
@@ -365,10 +301,8 @@ public class ConfigWindow extends JDialog {
 			return false;
 		}
 		try {
-			outbuffer[offset] = (byte) Integer.parseUnsignedInt(
-					temp.substring(0, 2), 16);
-			outbuffer[offset + 1] = (byte) Integer.parseUnsignedInt(
-					temp.substring(2), 16);
+			outbuffer[offset] = (byte) Integer.parseUnsignedInt(temp.substring(0, 2), 16);
+			outbuffer[offset + 1] = (byte) Integer.parseUnsignedInt(temp.substring(2), 16);
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 			errorlabel.setText("wrong address");
@@ -384,15 +318,13 @@ public class ConfigWindow extends JDialog {
 
 		if (format_comboBox.getSelectedIndex() == 0) {
 			/* hex */
-			ByteTmp = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN)
-					.putInt(Integer.valueOf(tmp, 16)).array();
+			ByteTmp = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(Integer.valueOf(tmp, 16)).array();
 			for (int i = 0; i < numOfBytes; i++) {
 				outbuffer[3 + i] = ByteTmp[i];
 			}
 		} else if (format_comboBox.getSelectedIndex() == 1) {
 			/* dec */
-			ByteTmp = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN)
-					.putInt((Integer.valueOf(tmp, 10))).array();
+			ByteTmp = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt((Integer.valueOf(tmp, 10))).array();
 			for (int i = 0; i < numOfBytes; i++) {
 				outbuffer[3 + i] = ByteTmp[i];
 			}
@@ -400,8 +332,7 @@ public class ConfigWindow extends JDialog {
 		} else if (format_comboBox.getSelectedIndex() == 2) {
 			/* float */
 			if (numOfBytes == 4) {
-				ByteTmp = ByteBuffer.allocate(4)
-						.putFloat(Float.parseFloat(tmp)).array();
+				ByteTmp = ByteBuffer.allocate(4).putFloat(Float.parseFloat(tmp)).array();
 				outbuffer[3] = ByteTmp[0];
 				outbuffer[4] = ByteTmp[1];
 				outbuffer[5] = ByteTmp[2];
@@ -435,21 +366,18 @@ public class ConfigWindow extends JDialog {
 			for (int i = numOfBytes; i < 4; i++) {
 				bytebuffer[i] = 0;
 			}
-			tmp = Integer.toHexString(ByteBuffer.wrap(bytebuffer, 0, 4)
-					.order(ByteOrder.LITTLE_ENDIAN).getInt());
+			tmp = Integer.toHexString(ByteBuffer.wrap(bytebuffer, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getInt());
 		} else if (format_comboBox.getSelectedIndex() == 1) {
 			/* dec */
 			byte[] bytebuffer = new byte[4];
 			for (int i = 0; i < numOfBytes; i++) {
 				bytebuffer[i] = inbuffer[i];
 			}
-			tmp = Integer.toUnsignedString(ByteBuffer.wrap(bytebuffer, 0, 4)
-					.order(ByteOrder.LITTLE_ENDIAN).getInt());
+			tmp = Integer.toUnsignedString(ByteBuffer.wrap(bytebuffer, 0, 4).order(ByteOrder.LITTLE_ENDIAN).getInt());
 		} else if (format_comboBox.getSelectedIndex() == 2) {
 			/* float */
 			if (numOfBytes == 4) {
-				tmp = Float.toString(ByteBuffer.wrap(inbuffer, 0, 4)
-						.order(ByteOrder.BIG_ENDIAN).getFloat());
+				tmp = Float.toString(ByteBuffer.wrap(inbuffer, 0, 4).order(ByteOrder.BIG_ENDIAN).getFloat());
 			} else {
 				errorlabel.setText("wrong data format");
 				return;
@@ -482,14 +410,10 @@ public class ConfigWindow extends JDialog {
 
 		if (parseAddress(outbuffer, 1)) {
 			try {
-				if (!quadrocopter.sendToQuadrocopter(outbuffer)) {
-					throw (new Exception());
-				}
-
+				quadrocopter.sendToQuadrocopter(outbuffer);
 				statuslabel.setText("reading eeprom");
 
-				byte[] inbuffer = quadrocopter
-						.receiveFromQuadrocopter(numberOfBytes);
+				byte[] inbuffer = quadrocopter.receiveFromQuadrocopter(numberOfBytes);
 				if (inbuffer == null) {
 					throw (new Exception());
 				}
@@ -524,9 +448,7 @@ public class ConfigWindow extends JDialog {
 			if (parseData(outbuffer, numberOfBytes)) {
 
 				try {
-					if (!quadrocopter.sendToQuadrocopter(outbuffer)) {
-						throw (new Exception());
-					}
+					quadrocopter.sendToQuadrocopter(outbuffer);
 					statuslabel.setText("writing eeprom");
 
 					// dummy read
@@ -561,10 +483,7 @@ public class ConfigWindow extends JDialog {
 	private void toggleConfigMode() {
 
 		try {
-			if (!quadrocopter
-					.sendToQuadrocopter(USB_CMD_CONFIG_MODE)) {
-				throw (new Exception());
-			}
+			quadrocopter.sendToQuadrocopter(USB_CMD_CONFIG_MODE);
 
 			// dummy read
 			if (quadrocopter.receiveFromQuadrocopter(1) == null) {
@@ -591,28 +510,23 @@ public class ConfigWindow extends JDialog {
 		getContentPane().add(PID_angle_XY_panel);
 		PID_angle_XY_panel.setLayout(null);
 
-		p_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		p_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		p_ang_xy_spinner.setBounds(77, 36, 60, 20);
 		PID_angle_XY_panel.add(p_ang_xy_spinner);
 
-		i_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		i_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		i_ang_xy_spinner.setBounds(77, 60, 60, 20);
 		PID_angle_XY_panel.add(i_ang_xy_spinner);
 
-		d_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		d_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		d_ang_xy_spinner.setBounds(77, 84, 60, 20);
 		PID_angle_XY_panel.add(d_ang_xy_spinner);
 
-		scale_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1),
-				null, null, new Float(0.1)));
+		scale_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		scale_ang_xy_spinner.setBounds(77, 132, 60, 20);
 		PID_angle_XY_panel.add(scale_ang_xy_spinner);
 
-		gain_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		gain_ang_xy_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		gain_ang_xy_spinner.setBounds(77, 108, 60, 20);
 		PID_angle_XY_panel.add(gain_ang_xy_spinner);
 
@@ -647,28 +561,23 @@ public class ConfigWindow extends JDialog {
 		PID_angle_Z_panel.setBackground(panel_background);
 		getContentPane().add(PID_angle_Z_panel);
 
-		p_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		p_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		p_ang_z_spinner.setBounds(77, 36, 60, 20);
 		PID_angle_Z_panel.add(p_ang_z_spinner);
 
-		i_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		i_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		i_ang_z_spinner.setBounds(77, 60, 60, 20);
 		PID_angle_Z_panel.add(i_ang_z_spinner);
 
-		d_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		d_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		d_ang_z_spinner.setBounds(77, 84, 60, 20);
 		PID_angle_Z_panel.add(d_ang_z_spinner);
 
-		scale_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		scale_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		scale_ang_z_spinner.setBounds(77, 132, 60, 20);
 		PID_angle_Z_panel.add(scale_ang_z_spinner);
 
-		gain_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		gain_ang_z_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		gain_ang_z_spinner.setBounds(77, 108, 60, 20);
 		PID_angle_Z_panel.add(gain_ang_z_spinner);
 
@@ -715,13 +624,11 @@ public class ConfigWindow extends JDialog {
 		lblZ.setBounds(22, 58, 50, 15);
 		compfilter_panel.add(lblZ);
 
-		compFilterXY_Spinner.setModel(new SpinnerNumberModel(new Float(1),
-				null, null, new Float(0.1)));
+		compFilterXY_Spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		compFilterXY_Spinner.setBounds(65, 34, 60, 20);
 		compfilter_panel.add(compFilterXY_Spinner);
 
-		compFilterZ_Spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		compFilterZ_Spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		compFilterZ_Spinner.setBounds(65, 58, 60, 20);
 		compfilter_panel.add(compFilterZ_Spinner);
 
@@ -891,28 +798,23 @@ public class ConfigWindow extends JDialog {
 		pid_accel_panel.setBackground(panel_background);
 		getContentPane().add(pid_accel_panel);
 
-		p_accel_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		p_accel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		p_accel_spinner.setBounds(77, 36, 60, 20);
 		pid_accel_panel.add(p_accel_spinner);
 
-		i_accel_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		i_accel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		i_accel_spinner.setBounds(77, 60, 60, 20);
 		pid_accel_panel.add(i_accel_spinner);
 
-		d_accel_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		d_accel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		d_accel_spinner.setBounds(77, 84, 60, 20);
 		pid_accel_panel.add(d_accel_spinner);
 
-		scale_accel_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		scale_accel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		scale_accel_spinner.setBounds(77, 132, 60, 20);
 		pid_accel_panel.add(scale_accel_spinner);
 
-		gain_accel_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		gain_accel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		gain_accel_spinner.setBounds(77, 108, 60, 20);
 		pid_accel_panel.add(gain_accel_spinner);
 
@@ -947,28 +849,23 @@ public class ConfigWindow extends JDialog {
 		pid_vel_pannel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		pid_vel_pannel.setBackground(panel_background);
 
-		p_vel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null,
-				new Float(0.1)));
+		p_vel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		p_vel_spinner.setBounds(77, 36, 60, 20);
 		pid_vel_pannel.add(p_vel_spinner);
 
-		i_vel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null,
-				new Float(0.1)));
+		i_vel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		i_vel_spinner.setBounds(77, 60, 60, 20);
 		pid_vel_pannel.add(i_vel_spinner);
 
-		d_vel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null,
-				new Float(0.1)));
+		d_vel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		d_vel_spinner.setBounds(77, 84, 60, 20);
 		pid_vel_pannel.add(d_vel_spinner);
 
-		gain_vel_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		gain_vel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		gain_vel_spinner.setBounds(77, 132, 60, 20);
 		pid_vel_pannel.add(gain_vel_spinner);
 
-		scale_vel_spinner.setModel(new SpinnerNumberModel(new Float(1), null,
-				null, new Float(0.1)));
+		scale_vel_spinner.setModel(new SpinnerNumberModel(new Float(1), null, null, new Float(0.1)));
 		scale_vel_spinner.setBounds(77, 108, 60, 20);
 		pid_vel_pannel.add(scale_vel_spinner);
 

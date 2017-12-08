@@ -231,7 +231,7 @@ public class QuadrocopterCommunicator {
 		this.frameBufferSize = frameBufferSize;
 	}
 
-	public boolean sendToQuadrocopter(byte[] buffer) {
+	public void sendToQuadrocopter(byte[] buffer) throws Exception {
 		byte[] tmpBuffer = new byte[buffer.length + 1];
 		// Pufferlaenge an erster Stelle senden
 		tmpBuffer[0] = (byte) buffer.length;
@@ -240,22 +240,13 @@ public class QuadrocopterCommunicator {
 			tmpBuffer[i] = buffer[i - 1];
 		}
 		// Puffer senden
-		try {
-			port.writeBytes(tmpBuffer);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
+		port.writeBytes(tmpBuffer);
 	}
 
-	public byte[] receiveFromQuadrocopter(int length) {
-		try {
+	public byte[] receiveFromQuadrocopter(int length) throws Exception {
 			while (port.getInputBufferBytesCount() < length)
 				;
 			return port.readBytes();
-		} catch (Exception e) {
-			return null;
-		}
 	}
 
 	private boolean checkTimeout(LocalTime begin, long timeout_in_ms) {
