@@ -439,7 +439,7 @@ public class ConfigWindow extends JDialog {
 		getContentPane().add(panel);
 		panel.setLayout(null);
 
-		JButton btnLoad = new JButton("load ");
+		JButton btnLoad = new JButton("download settings");
 		btnLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				loadConfig();
@@ -448,7 +448,7 @@ public class ConfigWindow extends JDialog {
 		btnLoad.setBounds(8, 12, 238, 25);
 		panel.add(btnLoad);
 
-		JButton btnUpdate = new JButton("update");
+		JButton btnUpdate = new JButton("upload settings");
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				sendConfig();
