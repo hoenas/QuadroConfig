@@ -217,7 +217,7 @@ public class ConfigWindow extends JDialog {
 
 		try {
 
-			byte[] outbuffer = new byte[100];
+			byte[] outbuffer = new byte[54];
 			outbuffer[0] = USB_CMD_UPDATE_CONFIG;
 
 			outbuffer[1] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_ANGLE_XY.getIdentifier();
@@ -227,7 +227,7 @@ public class ConfigWindow extends JDialog {
 			outbuffer = float2byte(Float.parseFloat(gain_ang_xy_spinner.getValue().toString()), outbuffer, 14);
 			outbuffer = float2byte(Float.parseFloat(scale_ang_xy_spinner.getValue().toString()), outbuffer, 18);
 
-			outbuffer[22] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_ROT_Z.getIdentifier();
+			outbuffer[19] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_ROT_Z.getIdentifier();
 			outbuffer = float2byte(Float.parseFloat(p_ang_z_spinner.getValue().toString()), outbuffer, 23);
 			outbuffer = float2byte(Float.parseFloat(i_ang_z_spinner.getValue().toString()), outbuffer, 27);
 			outbuffer = float2byte(Float.parseFloat(d_ang_z_spinner.getValue().toString()), outbuffer, 31);
@@ -237,37 +237,53 @@ public class ConfigWindow extends JDialog {
 			outbuffer[43] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.COMP_FILTER.getIdentifier();
 			outbuffer = float2byte(Float.parseFloat(compFilterXY_Spinner.getValue().toString()), outbuffer, 44);
 			outbuffer = float2byte(Float.parseFloat(compFilterZ_Spinner.getValue().toString()), outbuffer, 48);
-
-			outbuffer[52] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_ACCEL.getIdentifier();
-			outbuffer = float2byte(Float.parseFloat(p_accel_spinner.getValue().toString()), outbuffer, 53);
-			outbuffer = float2byte(Float.parseFloat(i_accel_spinner.getValue().toString()), outbuffer, 57);
-			outbuffer = float2byte(Float.parseFloat(d_accel_spinner.getValue().toString()), outbuffer, 61);
-			outbuffer = float2byte(Float.parseFloat(gain_accel_spinner.getValue().toString()), outbuffer, 65);
-			outbuffer = float2byte(Float.parseFloat(scale_accel_spinner.getValue().toString()), outbuffer, 69);
-
-			outbuffer[73] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_VEL.getIdentifier();
-			outbuffer = float2byte(Float.parseFloat(p_vel_spinner.getValue().toString()), outbuffer, 74);
-			outbuffer = float2byte(Float.parseFloat(i_vel_spinner.getValue().toString()), outbuffer, 78);
-			outbuffer = float2byte(Float.parseFloat(d_vel_spinner.getValue().toString()), outbuffer, 82);
-			outbuffer = float2byte(Float.parseFloat(gain_vel_spinner.getValue().toString()), outbuffer, 86);
-			outbuffer = float2byte(Float.parseFloat(scale_vel_spinner.getValue().toString()), outbuffer, 90);
-
-			outbuffer[94] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.QC_SETTING.getIdentifier();
-			outbuffer[95] = bool2byte(chckbxLowVoltageWarning.isSelected());
-			outbuffer[96] = bool2byte(chckbxNoRcWarning.isSelected());
-			outbuffer[97] = bool2byte(chckbxFlightled.isSelected());
-			outbuffer[98] = bool2byte(chckbxMotor.isSelected());
-
+			
 			/* send end of frame */
-			outbuffer[99] = (byte) 0x00;
+			outbuffer[53] = (byte) 0x00;
 			quadrocopter.sendToQuadrocopter(outbuffer);
 			statuslabel.setText("update Configuration");
 
 			// dummy read
 			if (quadrocopter.receiveFromQuadrocopter(1) == null) {
-				throw (new Exception());
+				//throw (new Exception());
+				System.out.println("1 failed.");
 			}
+			/*
+			outbuffer = new byte[46];
+			outbuffer[0] = USB_CMD_UPDATE_CONFIG;
+			
+			outbuffer[1] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_ACCEL.getIdentifier();
+			outbuffer = float2byte(Float.parseFloat(p_accel_spinner.getValue().toString()), outbuffer, 2);
+			outbuffer = float2byte(Float.parseFloat(i_accel_spinner.getValue().toString()), outbuffer, 6);
+			outbuffer = float2byte(Float.parseFloat(d_accel_spinner.getValue().toString()), outbuffer, 10);
+			outbuffer = float2byte(Float.parseFloat(gain_accel_spinner.getValue().toString()), outbuffer, 14);
+			outbuffer = float2byte(Float.parseFloat(scale_accel_spinner.getValue().toString()), outbuffer, 18);
 
+			outbuffer[22] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.PID_VEL.getIdentifier();
+			outbuffer = float2byte(Float.parseFloat(p_vel_spinner.getValue().toString()), outbuffer, 23);
+			outbuffer = float2byte(Float.parseFloat(i_vel_spinner.getValue().toString()), outbuffer, 27);
+			outbuffer = float2byte(Float.parseFloat(d_vel_spinner.getValue().toString()), outbuffer, 31);
+			outbuffer = float2byte(Float.parseFloat(gain_vel_spinner.getValue().toString()), outbuffer, 35);
+			outbuffer = float2byte(Float.parseFloat(scale_vel_spinner.getValue().toString()), outbuffer, 39);
+
+			outbuffer[40] = (byte) QuadrocopterCommunicator.CUSTOM_FRAME_IDENTIFIERS.QC_SETTING.getIdentifier();
+			outbuffer[41] = bool2byte(chckbxLowVoltageWarning.isSelected());
+			outbuffer[42] = bool2byte(chckbxNoRcWarning.isSelected());
+			outbuffer[43] = bool2byte(chckbxFlightled.isSelected());
+			outbuffer[44] = bool2byte(chckbxMotor.isSelected());
+			*/
+			/* send end of frame */
+			/*
+			outbuffer[45] = (byte) 0x00;
+			quadrocopter.sendToQuadrocopter(outbuffer);
+			statuslabel.setText("update Configuration");
+
+			// dummy read
+			if (quadrocopter.receiveFromQuadrocopter(1) == null) {
+				//throw (new Exception());
+				System.out.println("2 failed.");
+			}
+			*/
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
